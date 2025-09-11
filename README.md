@@ -66,9 +66,9 @@ This Python code **approximates Chladni figures using a field-based method**:
 1. **Grid setup:** A 2D grid \$(X,Y)\$ of size `resolution × resolution` represents the plate.
 2. **Mode superposition:** The total displacement at a driving frequency \$f\$ is computed as a **weighted sum of all modes**, with damping γ controlling the contribution of each mode:
 
-    $$
-    Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
-    $$
+$$
+Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
+$$
 
 3. **Visualization:**
     - The absolute displacement \$|Z|^{0.2}\$ is visualized with a colormap. The **dark regions (low amplitude) approximate the nodal lines** where particles would accumulate in a real experiment, while bright regions are anti-nodes (areas of high vibration).
