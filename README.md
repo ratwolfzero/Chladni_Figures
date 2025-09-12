@@ -26,6 +26,8 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
 
 Ernst Chladni (1756–1827), often called the *father of acoustics*, studied how vibrating plates caused **particles like sand or powder to accumulate along nodal lines**—regions where the plate remains stationary. These patterns, now known as **Chladni figures**, visually reveal the **standing wave patterns** on the plate.
 
+![Chladni](Chladni_3.png)
+
 In his experiments:
 
 - A thin metal plate is fixed at its center or edges.
