@@ -26,13 +26,16 @@ plt.axvline(x=f0, color='k', linestyle='--', alpha=0.5, label=f'Resonance Freque
 plt.grid(True, alpha=0.3)
 plt.legend()
 
-# Highlight the resonance width for one curve
+# Highlight the resonance width for the MEDIUM curve (γ = 1.0)
 gamma_example = 1.0
 A_max = 1 / (gamma_example**2)
 fwhm = 2 * gamma_example  # Full Width at Half Maximum
+
+# Draw the arrow and label for the green curve
 plt.annotate('', xy=(f0 - gamma_example, A_max/2), xytext=(f0 + gamma_example, A_max/2),
-             arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
-plt.text(f0, A_max/2 + 0.02, 'Resonance Width', ha='center', fontweight='bold')
+             arrowprops=dict(arrowstyle='<->', color='green', lw=2.5)) # Make arrow green and thicker
+plt.text(f0, A_max/2 + 0.05, 'FWHM\n', ha='center', fontweight='bold', color='green') # Label in green, add FWHM acronym
+plt.text(f0, A_max/2 + 0.02, f'= {fwhm}', ha='center', color='green', fontweight='bold') # Add the numeric value
 
 plt.ylim(0, 1.1)
 plt.tight_layout()
