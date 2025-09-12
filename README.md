@@ -103,7 +103,11 @@ $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
 $$
 
-Here, **γ** is the **damping parameter**. Its role:
+Here, **γ** is the **damping factor**. The following graph illustrates its primary function: controlling the resonance width and amplitude peak. A smaller γ results in a sharper, taller response, meaning only frequencies very close to the resonant frequency $f_{mn}$ will excite that mode. A larger γ creates a broader, shorter response, allowing multiple nearby modes to contribute to the pattern simultaneously.
+
+![Chladni](Resonance_and_Damping_Factors_Graph.png)
+
+Its role in the simulation is multi-faceted:
 
 1. **Resonance Width:**
     - Small γ → narrow resonance: only modes very close to \$f\$ contribute.
