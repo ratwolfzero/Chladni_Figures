@@ -10,7 +10,7 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
   - [Table of Contents](#table-of-contents)
   - [Historical Context](#historical-context)
   - [Physical Principles](#physical-principles)
-  - [Simulation Implementation](#simulation-implementation)
+  - [Simulation Principles](#simulation-principles)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -63,24 +63,21 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 
 ---
 
-## Simulation Implementation
+## Simulation Principles
 
-This Python code **approximates Chladni figures using a field-based method**:
-
-1. **Grid setup:** A 2D grid \$(X,Y)\$ of size `resolution × resolution` represents the plate.
-2. **Mode superposition:** The total displacement at a **single** driving frequency \$f\$ is computed as a **weighted sum of all modes**, with damping γ controlling the contribution of each mode:
+The total displacement at a **single driving frequency** $f$ is computed by summing the response of all modes, weighted by a resonance term that includes the damping factor $\gamma$:
 
 $$
-Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
+Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
 $$
 
->Note: While real Chladni plates are excited by a violin bow (a broad spectrum), the resulting patterns are similar because only modes near the driving frequency dominate. Small γ emphasizes a single mode, whereas larger γ blends multiple modes, roughly capturing the richness of the experimental patterns.
+Here, $\gamma$ controls the influence of each mode: small $\gamma$ produces a sharp resonance, exciting primarily a single mode, while larger $\gamma$ broadens the response, allowing multiple modes to contribute — roughly mimicking the richness of real Chladni patterns, where a plate excited by a violin bow naturally drives several nearby modes simultaneously.
 
-3. **Visualization:**
+1. **Visualization:**
     - The absolute displacement \$|Z|^{0.2}\$ is visualized with a colormap. The **dark regions (low amplitude) approximate the nodal lines** where particles would accumulate in a real experiment, while bright regions are anti-nodes (areas of high vibration).
     - The title displays the current driving frequency and the eigenfrequency of the **closest resonant mode(s)**. **Important:** The visualized pattern is a *superposition* of all modes significantly excited at frequency `f`. Therefore, even if the title lists a single mode's frequency (e.g., `f_mn ≈ 5.099`), the resulting pattern will be a blend of that mode and any other modes with similar frequencies, with the blending controlled by the damping factor `γ`. A small `γ` results in a pattern dominated by one mode, while a large `γ` blends several modes into a more complex, often asymmetric pattern.
 
-4. **Approximation and Model Choice:**
+2. **Approximation and Model Choice:**
     - **Particles are not explicitly simulated**.
     - The mathematical model used is for an ideal flexible **membrane** (like a drumhead) under tension, characterized by sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This is a simplification of the more complex physics governing rigid **plates** with bending stiffness (which require solutions to the biharmonic equation, ∆²Z = λZ).
     - The membrane model was chosen for its **computational efficiency**, allowing for real-time interactive exploration. Solving the plate equation requires numerically solving a large eigenvalue problem, which is computationally prohibitive for this type of application. This approach successfully captures the qualitative behavior and visual essence of modal patterns, which is the goal of this demonstration. A true plate model would be necessary for quantitatively accurate predictions of specific real-world experiments.
