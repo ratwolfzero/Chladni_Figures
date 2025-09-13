@@ -41,7 +41,7 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ## Physical Principles
 
-For a **rectangular plate** of size \$L\_x \times L\_y\$, the displacement \$Z(x,y,t)\$ for mode numbers \$(m,n)\$ can be expressed as:
+The displacement field of a **single vibrational mode** \$(m,n)\$ on a rectangular plate of size \$L\_x \times L\_y\$ is given by:
 
 $$
 Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t)
@@ -49,16 +49,17 @@ $$
 
 where:
 
-- \$m, n \in \mathbb{N}\$ are mode numbers along \$x\$ and \$y\$ axes.
+- \$m, n \in \mathbb{N}\$ are the number of nodal lines along the \$x\$ and \$y\$ axes, respectively.
+- \$A\$ is the amplitude of oscillation.
 - \$f\_{mn}\$ is the eigenfrequency of the \$(m,n)\$ mode:
 
 $$
 f_{mn} = k \sqrt{\left(\frac{m}{L_x}\right)^2 + \left(\frac{n}{L_y}\right)^2}
 $$
 
-- \$A\$ is the amplitude of oscillation.
+- $k$ sets the overall frequency scale. In real plates it depends on material properties, but in this simplified simulation we take $k=1$.
 
-The **nodal lines**, where \$Z\_{mn}(x,y,t) = 0\$, are where particles accumulate in real experiments.
+The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are where particles accumulate in real experiments to form the classic Chladni figures.
 
 ---
 
