@@ -8,15 +8,16 @@ f = np.linspace(0, 20, 1000)  # Frequency range
 # Define damping factors (gamma)
 gammas = [0.5, 1.0, 2.0]  # Small, medium, large gamma
 colors = ['blue', 'green', 'red'] # Colors for the lines
-labels = ['Small γ (0.5)', 'Medium γ (1.0)', 'Large γ (2.0)']
+labels = ['Small γ', 'Medium γ', 'Large γ']
 
-# Create the plot
 plt.figure(figsize=(10, 6))
 
 for gamma, color, label in zip(gammas, colors, labels):
-    # Calculate amplitude (Lorentzian function)
     A = 1 / ((f - f0)**2 + gamma**2)
     plt.plot(f, A, color=color, linewidth=2, label=label)
+
+# Add a dummy plot for FWHM in the legend
+plt.plot([], [], color='green', linewidth=2.5, label='FWHM (Full Width Half Maximum)')
 
 # Add labels and title
 plt.title('Resonance Curve: Effect of Damping Factor γ', fontsize=14)
@@ -31,11 +32,9 @@ gamma_example = 1.0
 A_max = 1 / (gamma_example**2)
 fwhm = 2 * gamma_example  # Full Width at Half Maximum
 
-# Draw the arrow and label for the green curve
 plt.annotate('', xy=(f0 - gamma_example, A_max/2), xytext=(f0 + gamma_example, A_max/2),
-             arrowprops=dict(arrowstyle='<->', color='green', lw=2.5)) # Make arrow green and thicker
-plt.text(f0, A_max/2 + 0.05, 'FWHM\n', ha='center', fontweight='bold', color='green') # Label in green, add FWHM acronym
-plt.text(f0, A_max/2 + 0.02, f'= {fwhm}', ha='center', color='green', fontweight='bold') # Add the numeric value
+             arrowprops=dict(arrowstyle='<->', color='green', lw=2.5))
+plt.text(f0, A_max/2 + 0.01, 'FWHM', ha='center', fontweight='bold', color='green')
 
 plt.ylim(0, 1.1)
 plt.tight_layout()
