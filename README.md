@@ -12,6 +12,7 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
   - [Physical Principles](#physical-principles)
   - [Simulation Implementation](#simulation-implementation)
   - [Key Parameters](#key-parameters)
+  - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
   - [Visualizing Mode Superposition and γ](#visualizing-mode-superposition-and-γ)
   - [Example Patterns for Different γ Values](#example-patterns-for-different-γ-values)
@@ -94,6 +95,41 @@ $$
 | `init_freq`  | Initial driving frequency            | Starting frequency when simulation launches                                                                                                             |
 
 ---
+
+## Frequency Scaling Factor *k*
+
+In the eigenfrequency expression
+
+$$
+f_{mn} = k \sqrt{\left(\frac{m}{L_x}\right)^2 + \left(\frac{n}{L_y}\right)^2},
+$$
+
+the parameter **k** sets the **overall frequency scale** of the simulation.
+
+1. **Physical Meaning:**
+
+   - For a real membrane or plate, the eigenfrequency depends on **geometry** (plate dimensions) and **material properties** (tension, density, stiffness).
+   - These details are collapsed into a single proportionality constant. In this simplified model, that constant is represented by **k**.
+
+2. **Role in the Simulation:**
+
+   - **Larger k** → shifts all resonances to **higher frequencies**.
+   - **Smaller k** → shifts all resonances to **lower frequencies**.
+   - Importantly, **k does not change the shape of the modal patterns**—only their placement along the frequency axis.
+
+3. **Interpretation:**
+
+   - Think of **k** as a **tuning knob** that lets you control where in the frequency range the resonances appear.
+   - While **γ** governs how sharply modes appear and blend, **k** simply sets the “frequency scale” of the entire system.
+
+4. **Guidelines:**
+
+   - Adjust **k** to place resonances in a convenient range for exploration.
+   - Once chosen, k can usually remain fixed, while **γ** and the driving frequency `f` are varied interactively.
+
+---
+
+Do you want me to also add a **figure or small table of example effects** (like you did for γ) — e.g. showing how changing *k* shifts the resonance spectrum but leaves the nodal line shapes unchanged?
 
 ## Damping Factor γ
 
