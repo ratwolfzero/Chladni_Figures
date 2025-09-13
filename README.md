@@ -68,11 +68,13 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 This Python code **approximates Chladni figures using a field-based method**:
 
 1. **Grid setup:** A 2D grid \$(X,Y)\$ of size `resolution × resolution` represents the plate.
-2. **Mode superposition:** The total displacement at a driving frequency \$f\$ is computed as a **weighted sum of all modes**, with damping γ controlling the contribution of each mode:
+2. **Mode superposition:** The total displacement at a **single** driving frequency \$f\$ is computed as a **weighted sum of all modes**, with damping γ controlling the contribution of each mode:
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
 $$
+
+>Note: While real Chladni plates are excited by a violin bow (a broad spectrum), the resulting patterns are similar because only modes near the driving frequency dominate. Small γ emphasizes a single mode, whereas larger γ blends multiple modes, roughly capturing the richness of the experimental patterns.
 
 3. **Visualization:**
     - The absolute displacement \$|Z|^{0.2}\$ is visualized with a colormap. The **dark regions (low amplitude) approximate the nodal lines** where particles would accumulate in a real experiment, while bright regions are anti-nodes (areas of high vibration).
