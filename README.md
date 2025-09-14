@@ -32,7 +32,7 @@ Ernst Chladni (1756–1827), often called the *father of acoustics*, studied how
 In his experiments:
 
 - A thin metal plate is fixed at its center or edges.
-- It is vibrated with a violin bow or speaker at different frequencies.
+- It is vibrated with a violin bow at different frequencies.
 - Fine particles move away from areas of high vibration and collect along **nodal lines**, producing beautiful geometric patterns.
 
 Chladni figures were key in understanding **vibrational modes** and laid foundations for acoustics, wave physics, and modern mechanical engineering.
@@ -85,7 +85,7 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
 
    - **Particles are not explicitly simulated**.
    - The mathematical model uses an ideal flexible **membrane** (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This simplifies the physics of rigid **plates** with bending stiffness.
-   - The membrane model was chosen for **computational efficiency**, allowing real-time interactive exploration. This approach successfully captures the qualitative behavior and visual essence of modal patterns, reproducing the kinds of figures observed when a real plate is driven by a bow or speaker.
+   - The membrane model was chosen for **computational efficiency**, allowing real-time interactive exploration. This approach successfully captures the qualitative behavior and visual essence of modal patterns, reproducing the kinds of figures observed when a real plate is driven by a bow.
 
 ---
 
