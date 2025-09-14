@@ -63,10 +63,6 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 
 ---
 
-Here’s a fully rewritten, polished **Simulation Principles** section for your README, integrating the single-frequency drive, damping, mode superposition, and violin bow analogy:
-
----
-
 ## Simulation Principles
 
 Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term that includes the damping factor \$\gamma\$:
