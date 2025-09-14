@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 from typing import List, Tuple
 
+
 class ChladniSimulator:
     """
     A class to simulate and visualize Chladni figures for a square membrane.
@@ -37,7 +38,8 @@ class ChladniSimulator:
         # Precompute sorted list for UI (mode labels, jumping)
         self.eigenfrequencies = [
             (m, n, f_mn) for (m, n), f_mn in zip(
-                [(m, n) for m in range(1, max_mode+1) for n in range(1, max_mode+1)],
+                [(m, n) for m in range(1, max_mode+1)
+                 for n in range(1, max_mode+1)],
                 self.mode_frequencies
             )
         ]
@@ -51,11 +53,13 @@ class ChladniSimulator:
                 f_mn = self.k * np.sqrt(m**2 + n**2)
                 self.mode_frequencies.append(f_mn)
                 # Calculate and store the mode shape (the spatial part)
-                mode_shape = np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
+                mode_shape = np.sin(m * np.pi * self.X) * \
+                    np.sin(n * np.pi * self.Y)
                 self.mode_shapes.append(mode_shape)
         # Convert to NumPy arrays for efficient vectorized operations
         self.mode_frequencies = np.array(self.mode_frequencies)
-        self.mode_shapes = np.array(self.mode_shapes) # Shape: (max_mode², resolution, resolution)
+        # Shape: (max_mode², resolution, resolution)
+        self.mode_shapes = np.array(self.mode_shapes)
 
     def compute_displacement(self, f: float) -> np.ndarray:
         """
@@ -72,7 +76,8 @@ class ChladniSimulator:
         weights = 1.0 / ((f - self.mode_frequencies)**2 + self.gamma**2)
         # Apply weights to each mode and sum them up
         # weights[:, np.newaxis, np.newaxis] reshapes the weights to (n_modes, 1, 1) for broadcasting
-        Z = np.sum(weights[:, np.newaxis, np.newaxis] * self.mode_shapes, axis=0)
+        Z = np.sum(weights[:, np.newaxis, np.newaxis]
+                   * self.mode_shapes, axis=0)
         return Z
 
     def find_close_modes(self, f: float, tolerance: float = 0.1) -> List[Tuple[int, int, float]]:
@@ -108,8 +113,10 @@ class ChladniUI:
         # Initialize plot
         self.init_freq = 5.0
         Z_init = self.simulator.compute_displacement(self.init_freq)
-        self.im = self.ax.imshow(np.abs(Z_init)**0.2, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
-        self.cbar = plt.colorbar(self.im, ax=self.ax, label='Displacement (|Z|^0.2)')
+        self.im = self.ax.imshow(
+            np.abs(Z_init)**0.2, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
+        self.cbar = plt.colorbar(
+            self.im, ax=self.ax, label='Displacement (|Z|^0.2)')
         self._setup_axes()
         self._setup_widgets()
 
@@ -130,7 +137,8 @@ class ChladniUI:
         """Create and set up all interactive widgets (sliders, buttons)."""
         # Slider for frequency
         ax_freq = plt.axes([0.1, 0.1, 0.8, 0.03])
-        self.freq_slider = Slider(ax_freq, 'Frequency', 0.0, 20.0, valinit=self.init_freq, valstep=0.01)
+        self.freq_slider = Slider(
+            ax_freq, 'Frequency', 0.0, 20.0, valinit=self.init_freq, valstep=0.01)
         self.freq_slider.on_changed(self.update)
 
         # Buttons for auto-scanning
@@ -177,7 +185,7 @@ class ChladniUI:
         """Button callback: Jump to the next highest resonance frequency."""
         current_f = self.freq_slider.val
         next_f = min([fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn > current_f],
-                    default=self.simulator.eigenfrequencies[0][2])
+                     default=self.simulator.eigenfrequencies[0][2])
         self.freq_slider.set_val(next_f)
 
     def start_scan(self, event):
@@ -193,7 +201,8 @@ class ChladniUI:
             self.freq_slider.set_val(f)
             return self.im,
 
-        self.scan_ani = FuncAnimation(self.fig, update_scan, interval=50, blit=True, cache_frame_data=False)
+        self.scan_ani = FuncAnimation(
+            self.fig, update_scan, interval=50, blit=True, cache_frame_data=False)
         self.fig.canvas.draw_idle()
 
     def stop_scan(self, event):
@@ -210,7 +219,8 @@ class ChladniUI:
 def main():
     """Main function to create and run the application."""
     # 1. Initialize the simulator with desired parameters
-    simulator = ChladniSimulator(resolution=200, max_mode=15, gamma=0.06, k=1.0)
+    simulator = ChladniSimulator(
+        resolution=200, max_mode=15, gamma=0.06, k=1.0)
 
     # 2. Initialize the UI, passing the simulator
     ui = ChladniUI(simulator)

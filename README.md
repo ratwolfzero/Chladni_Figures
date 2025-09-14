@@ -71,7 +71,7 @@ $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
 $$
 
-Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute. This superposition **roughly captures the richness of real Chladni patterns**, where the physical plate responds to the bow by exciting several nearby modes simultaneously.
+Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute.
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with|Z|^0.2 to enhance contrast of nodal lines.
