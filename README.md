@@ -78,15 +78,18 @@ $$
 Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute. This superposition **roughly captures the richness of real Chladni patterns**, where the physical plate responds to the bow by exciting several nearby modes simultaneously.
 
 1. **Visualization:**
+   - The absolute displacement is visualized as colormap with|Z|^0.2 to enhance contrast of nodal lines.
+     Dark regions approximate nodal lines; bright regions are anti-nodes.
+   - The resulting superposition (modulated by γ) roughly captures the richness of real Chladni patterns,
+     where the physical plate responds to the bow by exciting several nearby modes simultaneously.
 
-   * The absolute displacement \$|Z|^{0.2}\$ is visualized with a colormap. The **dark regions (low amplitude) approximate the nodal lines**, while bright regions are anti-nodes.
-   * The title displays the current driving frequency and the eigenfrequency of the **closest resonant mode(s)**. **Important:** the resulting pattern is a *superposition* of all significantly excited modes at frequency `f`. A small `γ` results in a pattern dominated by one mode, while a large `γ` blends several modes into a more complex, often asymmetric pattern.
+   - The title displays the current driving frequency and the eigenfrequency of the **closest resonant mode(s)**. **Important:** the resulting pattern is a *superposition* of all significantly excited modes at frequency `f`. A small `γ` results in a pattern dominated by one mode, while a large `γ` blends several modes into a more complex, often asymmetric pattern.
 
 2. **Approximation and Model Choice:**
 
-   * **Particles are not explicitly simulated**.
-   * The mathematical model uses an ideal flexible **membrane** (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This simplifies the physics of rigid **plates** with bending stiffness.
-   * The membrane model was chosen for **computational efficiency**, allowing real-time interactive exploration. This approach successfully captures the qualitative behavior and visual essence of modal patterns, reproducing the kinds of figures observed when a real plate is driven by a bow or speaker.
+   - **Particles are not explicitly simulated**.
+   - The mathematical model uses an ideal flexible **membrane** (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This simplifies the physics of rigid **plates** with bending stiffness.
+   - The membrane model was chosen for **computational efficiency**, allowing real-time interactive exploration. This approach successfully captures the qualitative behavior and visual essence of modal patterns, reproducing the kinds of figures observed when a real plate is driven by a bow or speaker.
 
 ---
 
@@ -134,8 +137,6 @@ the parameter **k** sets the **overall frequency scale** of the simulation.
    - Once chosen, k can usually remain fixed, while **γ** and the driving frequency `f` are varied interactively.
 
 ---
-
-Do you want me to also add a **figure or small table of example effects** (like you did for γ) — e.g. showing how changing *k* shifts the resonance spectrum but leaves the nodal line shapes unchanged?
 
 ## Damping Factor γ
 
