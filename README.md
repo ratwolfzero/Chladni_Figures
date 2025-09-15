@@ -157,7 +157,7 @@ Its role in the simulation is multi-faceted:
 
 2. **Mode Superposition & Symmetry:**
     - For degenerate modes (e.g., (m,n) and (n,m) on a square plate), **very small γ** will cause them to be excited **equally**, resulting in a new, highly symmetric combined pattern.
-    - **Larger γ** can break this symmetry. If the driving frequency is not perfectly tuned, one mode may be favored over its degenerate partner, and other non-degenerate modes may contribute, leading to asymmetric patterns. This mimics imperfections in a real physical system.
+    - **Larger γ** can break this symmetry. If the driving frequency is not perfectly tuned (analogous to the bow), one mode may be favored over its degenerate partner, and other non-degenerate modes may contribute, leading to asymmetric patterns.
 
 3. **Mimicking Physical Imperfections:**
     - Real plates have variations in thickness, material, or boundaries.
