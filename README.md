@@ -16,8 +16,8 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
-  - [Visualizing Mode Superposition and γ](#visualizing-mode-superposition-and-γ)
-  - [Example Patterns for Different γ Values](#example-patterns-for-different-γ-values)
+  - [Mode Superposition and γ](#mode-superposition-and-γ)
+  - [Patterns for Different γ Values](#patterns-for-different-γ-values)
   - [Usage](#usage)
   - [Controls](#controls)
   - [Limitations](#limitations)
@@ -176,19 +176,19 @@ Its role in the simulation is multi-faceted:
 
 ---
 
-## Visualizing Mode Superposition and γ
+## Mode Superposition and γ
 
 | γ Regime               | Mode Contribution                                                                         | Resulting Pattern Description                                                                            |
 | ---------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | **Small (≈0.01–0.03)** | Single dominant mode **or degenerate pair**                                               | Sharp, symmetric patterns with well-defined nodal lines.                                                 |
 | **Medium (≈0.05–0.1)** | Degenerate or near-degenerate modes blend; nearby non-degenerate modes start contributing | Slight asymmetry emerges; patterns begin to merge subtly.                                                |
-| **Large (>0.1)**       | Multiple overlapping modes contribute significantly                                       | Diffuse, complex, asymmetric patterns; nodal lines are less distinct, simulating physical imperfections. |
+| **Large (>0.1)**       | Multiple overlapping modes contribute significantly                                       | Diffuse, complex, asymmetric patterns; nodal lines are less distinct|
 
 > This illustrates how nodal lines deform as γ increases, simulating physical imperfections in the plate.
 
 ---
 
-## Example Patterns for Different γ Values
+## Patterns for Different γ Values
 
 | γ Range          | Description                                                                                                                               |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
