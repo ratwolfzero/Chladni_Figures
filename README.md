@@ -154,8 +154,11 @@ Its role in the simulation is multi-faceted:
     - Large γ → wide resonance: multiple modes contribute simultaneously.
 
 2. **Mode Superposition & Symmetry:**
-    - For degenerate modes (e.g., (m,n) and (n,m) on a square plate), **very small γ** will cause them to be excited **equally**, resulting in a new, highly symmetric combined pattern.
-    - **Larger γ** can break this symmetry. If the driving frequency is not perfectly tuned (analogous to the bow), one mode may be favored over its degenerate partner, and other non-degenerate modes may contribute, leading to asymmetric patterns.
+   In an ideal plate, some vibration modes are **degenerate** (same eigenfrequency), e.g., $f_{12} = f_{21}$ on a square plate. The **damping factor γ** controls how modes combine:
+
+    - **Very small γ** excites one mode or a degenerate pair nearly equally, producing **highly symmetric, clean patterns**.
+    - **Increasing γ** allows nearby non-degenerate modes to contribute, introducing **subtle asymmetries**.
+    - **Large γ** excites many overlapping modes, yielding **diffuse, complex patterns**, simulating imperfections present in real plates.
 
 3. **Mimicking Physical Imperfections:**
     - Real plates have variations in thickness, material, or boundaries.
@@ -175,13 +178,11 @@ Its role in the simulation is multi-faceted:
 
 ## Visualizing Mode Superposition and γ
 
-The damping factor γ controls how nearby modes contribute. In an ideal plate, some modes are **degenerate** (same eigenfrequency), e.g., \$f_{12} = f_{21}\$.
-
-| γ Regime        | Mode Contribution                                                                                                | Resulting Pattern Description                                                                                                |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| **γ ≈ 0.01**    | Single dominant mode                                                                                             | Highly symmetric, clean patterns with sharp, well-defined nodal lines.                                                       |
-| **γ ≈ 0.05**    | Two near-degenerate modes contribute                                                                             | Slight asymmetry emerges; patterns begin to blend as the contributions of both modes become visible.                         |
-| **γ > 0.1**     | Multiple overlapping modes contribute significantly                                                              | Diffuse, asymmetric, and complex patterns; nodal lines are less distinct, simulating a realistic, imperfect physical system. |
+| γ Regime               | Mode Contribution                                                                         | Resulting Pattern Description                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Small (≈0.01–0.03)** | Single dominant mode **or degenerate pair**                                               | Sharp, symmetric patterns with well-defined nodal lines.                                                 |
+| **Medium (≈0.05–0.1)** | Degenerate or near-degenerate modes blend; nearby non-degenerate modes start contributing | Slight asymmetry emerges; patterns begin to merge subtly.                                                |
+| **Large (>0.1)**       | Multiple overlapping modes contribute significantly                                       | Diffuse, complex, asymmetric patterns; nodal lines are less distinct, simulating physical imperfections. |
 
 > This illustrates how nodal lines deform as γ increases, simulating physical imperfections in the plate.
 
