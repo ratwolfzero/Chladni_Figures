@@ -9,8 +9,8 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
 - [Chladni Figures Simulation](#chladni-figures-simulation)
   - [Table of Contents](#table-of-contents)
   - [Historical Context](#historical-context)
-  - [Physical Principles](#physical-principles)
-  - [Simulation Principles](#simulation-principles)
+  - [Physical Principles of Simulation](#physical-principles-of-simulation)
+  - [Simulation Implementation Principles](#simulation-implementation-principles)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -39,7 +39,7 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ---
 
-## Physical Principles
+## Physical Principles of Simulation
 
 The displacement field of a **single vibrational mode** \$(m,n)\$ on a rectangular plate of size \$L\_x \times L\_y\$ is given by:
 
@@ -63,7 +63,7 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 
 ---
 
-## Simulation Principles
+## Simulation Implementation Principles
 
 Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term (modulating the amplitude) that includes the damping factor \$\gamma\$:
 
