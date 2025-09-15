@@ -75,13 +75,16 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with|Z|^0.2 to enhance contrast of nodal lines.
-     Dark regions approximate nodal lines; bright regions are anti-nodes.
+   Dark regions approximate nodal lines; bright regions are anti-nodes.
    - The resulting superposition (modulated by γ) roughly captures the richness of real Chladni patterns,
-     where the physical plate responds to the bow by exciting several nearby modes simultaneously.
+   where the physical plate responds to the bow by exciting several nearby modes simultaneously.
+
+   - The resulting superposition (modulated by γ) roughly captures the richness of real Chladni patterns.
+   While the simulation assumes a nearly single-frequency drive (like a bow), γ mimics real-world plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
 
    - The title displays the current driving frequency and the eigenfrequency of the **closest resonant mode(s)**. **Important:** the resulting pattern is a *superposition* of all significantly excited modes at frequency `f`. A small `γ` results in a pattern dominated by one mode, while a large `γ` blends several modes into a more complex, often asymmetric pattern.
 
-2. **Approximation and Model Choice:**
+1. **Approximation and Model Choice:**
 
    - **Particles are not explicitly simulated**.
    - The mathematical model uses an ideal flexible **membrane** (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This simplifies the physics of rigid **plates** with bending stiffness.
