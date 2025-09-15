@@ -65,7 +65,7 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 
 ## Simulation Principles
 
-Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term that includes the damping factor \$\gamma\$:
+Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term (modulating the amplitude) that includes the damping factor \$\gamma\$:
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
