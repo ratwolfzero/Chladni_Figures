@@ -156,9 +156,9 @@ Its role in the simulation is multi-faceted:
 2. **Mode Superposition & Symmetry:**
    In an ideal plate, some vibration modes are **degenerate** (same eigenfrequency), e.g., $f_{12} = f_{21}$ on a square plate. The **damping factor γ** controls how modes combine:
 
-    - **Very small γ** excites one mode or a degenerate pair nearly equally, producing **highly symmetric, clean patterns**.
+    - **Very small γ** excites one mode or a degenerate pair nearly equally, producing **highly symmetric, patterns**.
     - **Increasing γ** allows nearby non-degenerate modes to contribute, introducing **subtle asymmetries**.
-    - **Large γ** excites many overlapping modes, yielding **diffuse, complex patterns**, simulating imperfections present in real plates.
+    - **Large γ** excites many overlapping modes, yielding **asymetric, complex patterns**
 
 3. **Mimicking Physical Imperfections:**
     - Real plates have variations in thickness, material, or boundaries.
