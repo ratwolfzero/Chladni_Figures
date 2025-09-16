@@ -217,6 +217,8 @@ Its role in the simulation is multi-faceted:
 
 ## References
 
+- Chladni, Ernst F. F. Neue Beyträge zur Akustik. Breitkopf und Härtel, 1817. Accessed via the Internet Archive:
+  <https://archive.org/details/neuebeytrgezura00chlagoog>
 - Paul Bourke, *Chladni Figures*, [http://paulbourke.net/geometry/chladni/](http://paulbourke.net/geometry/chladni/)
 - Wikipedia: [Chladni Patterns](https://en.wikipedia.org/wiki/Chladni_pattern)
 - Standard vibration theory for rectangular plates
