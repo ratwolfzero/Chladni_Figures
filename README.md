@@ -73,7 +73,7 @@ $$
 Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute.
 
 1. **Visualization:**
-   - The absolute displacement is visualized as colormap with|Z|^0.2 to enhance contrast of nodal lines.
+   - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
    Dark regions approximate nodal lines; bright regions are anti-nodes.
 
    - The resulting superposition (modulated by γ) roughly captures the richness of real Chladni patterns.
@@ -175,7 +175,7 @@ Its role in the simulation is multi-faceted:
 
 ### Combined Effect of γ on Mode Superposition and Patterns
 
-| γ Range        | Mode Contribution                                                                | Resulting Pattern Description                                                                    |
+| γ Range        | Mode Excitation                                                               | Resulting Pattern Description                                                                    |
 | -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | **≈0.01–0.03** | Single dominant mode or nearly degenerate pair dominates                         | Sharp, symmetric nodal patterns — idealized plate behavior                                       |
 | **≈0.05–0.1**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
