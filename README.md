@@ -217,9 +217,9 @@ Its role in the simulation is multi-faceted:
 
 ## References
 
-- Chladni, Ernst F. F. *Neue Beyträge zur Akustik*. Breitkopf und Härtel, 1817. Accessed via the Internet Archive:
-  <https://archive.org/details/neuebeytrgezura00chlagoog>
-- Herman, Russell L. *Vibrations of Rectangular Membranes*. LibreTexts. 
+- Chladni, Ernst Florens Friedrich. Entdeckungen über die Theorie des Klanges. Leipzig: Weidmanns Erben und Reich, 1787. ETH-Bibliothek Zürich,
+  Rar 5284. https://doi.org/10.3931/e-rara-4235. Public Domain Mark.
+- Herman, Russell L. *Vibrations of Rectangular Membranes*. LibreTexts.
   <https://math.libretexts.org/Bookshelves/Differential_Equations/Introduction_to_Partial_Differential_Equations_(Herman)/06%3A_Problems_in_Higher_Dimensions/6.01%3A_Vibrations_of_Rectangular_Membranes>
 - Paul Bourke, *CChladni Plate Mathematics, 2D*, [http://paulbourke.net/geometry/chladni/](http://paulbourke.net/geometry/chladni/)
 - Wikipedia: [Ernst Chladni](https://en.wikipedia.org/wiki/Chladni_pattern)
