@@ -16,8 +16,7 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
-  - [Mode Superposition and γ](#mode-superposition-and-γ)
-  - [Patterns for Different γ Values](#patterns-for-different-γ-values)
+    - [Combined Effect of γ on Mode Superposition and Patterns](#combined-effect-of-γ-on-mode-superposition-and-patterns)
   - [Usage](#usage)
   - [Controls](#controls)
   - [Limitations](#limitations)
@@ -95,7 +94,7 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
 | Parameter    | Description                          | Typical Effect                                                                                                                                          |
 | ------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `max_mode`   | Maximum mode numbers \$M\$ and \$N\$ | Higher values allow more complex patterns, slower computation                                                                                           |
-| `gamma`      | Damping factor in mode contributions | Small γ → sharp, symmetric patterns; large γ → broad, potentially asymmetric patterns; controls resonance width, lifts degeneracy, mimics imperfections |
+| `gamma`      | Damping factor in mode contributions | Small γ (≈0.01–0.03) → excites primarily one mode or symmetric mode pairs, producing sharp, symmetric patterns; Medium γ (≈0.05–0.1) → nearby modes start contributing, introducing slight asymmetry; Large γ (>0.1) → many modes overlap, producing diffuse, complex patterns and mimicking plate imperfections|
 | `k`          | Frequency scaling factor             | Adjusts eigenfrequency scale                                                                                                                            |
 | `resolution` | Grid resolution                      | Higher → smoother visual patterns, slower computation                                                                                                   |
 | `init_freq`  | Initial driving frequency            | Starting frequency when simulation launches                                                                                                             |
@@ -143,60 +142,46 @@ $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
 $$
 
-Here, **γ** is the **damping factor**. The following graph illustrates its primary function: controlling the resonance width and amplitude peak. A smaller γ results in a sharper, taller response, meaning only frequencies very close to the resonant frequency $f_{mn}$ will excite that mode. A larger γ creates a broader, shorter response, allowing multiple nearby modes to contribute to the pattern simultaneously.
+Here, **γ** is the **damping factor**. The following graph illustrates its primary function: controlling the resonance width and amplitude peak. A smaller γ results in a sharper, taller response, meaning only frequencies very close to the resonant frequency \$f\_{mn}\$ will excite that mode. A larger γ creates a broader, shorter response, allowing multiple nearby modes to contribute to the pattern simultaneously.
 
 ![Chladni](Resonance_and_Damping_Factors_Graph.png)
 
 Its role in the simulation is multi-faceted:
 
-1. **Resonance Width:**
-    - Small γ → narrow resonance: only modes very close to \$f\$ contribute.
-    - Large γ → wide resonance: multiple modes contribute simultaneously.
+1. **Resonance Width**
 
-2. **Mode Superposition & Symmetry:**
-   In an ideal plate, some vibration modes are **degenerate** (same eigenfrequency), e.g., $f_{12} = f_{21}$ on a square plate. The **damping factor γ** controls how modes combine:
+   - Small γ → narrow resonance: only modes very close to \$f\$ contribute.
+   - Large γ → wide resonance: multiple modes contribute simultaneously.
 
-    - **Very small γ** excites one mode or a degenerate pair nearly equally, producing **highly symmetric, patterns**.
-    - **Increasing γ** allows nearby non-degenerate modes to contribute, introducing **subtle asymmetries**.
-    - **Large γ** excites many overlapping modes, yielding **asymetric, complex patterns**
+2. **Mode Superposition & Symmetry**
+   In an ideal plate, some vibration modes are **degenerate** (same eigenfrequency), e.g., \$f\_{12} = f\_{21}\$ on a square plate. The damping factor γ controls how modes combine:
 
-3. **Mimicking Physical Imperfections:**
-    - Real plates have variations in thickness, material, or boundaries.
-    - Increasing γ reproduces the effect of these imperfections by broadening resonance peaks.
+   - Very small γ excites one mode or a degenerate pair nearly equally → highly symmetric patterns.
+   - Increasing γ allows nearby non-degenerate modes to contribute → subtle asymmetries.
+   - Large γ excites many overlapping modes → asymmetric, complex patterns.
 
-4. **Amplitude Control:**
-    - Maximum mode contribution at resonance (\$f=f\_{mn}\$) is \$1/\gamma^2\$.
-    - Smaller γ → sharper nodal lines, higher amplitude.
-    - Larger γ → blended, lower-amplitude patterns.
+3. **Mimicking Physical Imperfections**
 
-5. **Guidelines:**
-    - γ ≈ 0.01–0.03 → sharp, symmetric patterns
-    - γ ≈ 0.05–0.1 → slight asymmetry
-    - γ > 0.1 → diffuse, asymmetric patterns
+   - Real plates have variations in thickness, material, or boundaries.
+   - Increasing γ reproduces the effect of these imperfections by broadening resonance peaks.
+
+4. **Amplitude Control**
+
+   - Maximum mode contribution at resonance (\$f=f\_{mn}\$) is \$1/\gamma^2\$.
+   - Smaller γ → sharper nodal lines, higher amplitude.
+   - Larger γ → blended, lower-amplitude patterns.
 
 ---
 
-## Mode Superposition and γ
+### Combined Effect of γ on Mode Superposition and Patterns
 
-| γ Regime               | Mode Contribution                                                                         | Resulting Pattern Description                                                                            |
-| ---------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Small (≈0.01–0.03)** | Single dominant mode **or degenerate pair**                                               | Sharp, symmetric patterns with well-defined nodal lines.                                                 |
-| **Medium (≈0.05–0.1)** | Degenerate or near-degenerate modes blend; nearby non-degenerate modes start contributing | Slight asymmetry emerges; patterns begin to merge subtly.                                                |
-| **Large (>0.1)**       | Multiple overlapping modes contribute significantly                                       | Diffuse, complex, asymmetric patterns; nodal lines are less distinct|
+| γ Range        | Mode Contribution                                                                | Resulting Pattern Description                                                                    |
+| -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **≈0.01–0.03** | Single dominant mode or nearly degenerate pair dominates                         | Sharp, symmetric nodal patterns — idealized plate behavior                                       |
+| **≈0.05–0.1**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
+| **>0.1**       | Many overlapping modes contribute significantly                                  | Diffuse, asymmetric, complex patterns; nodal lines blur, simulating strong damping/imperfections |
 
-> This illustrates how nodal lines deform as γ increases, simulating physical imperfections in the plate.
-
----
-
-## Patterns for Different γ Values
-
-| γ Range          | Description                                                                                                                               |
-| :--------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
-| **γ ≈ 0.01–0.03** | Sharp, near-perfectly symmetric patterns. Idealized behavior of a perfect plate.                                                          |
-| **γ ≈ 0.05–0.1**  | Patterns start blending, showing slight asymmetry. Represents a plate with minor imperfections or energy loss.                            |
-| **γ > 0.1**       | Strong superposition of modes results in diffuse, asymmetric nodal lines. Simulates a system with significant damping or strong imperfections. |
-
-> **Tip:** Adjust γ in your simulation to see the transition from symmetric to complex, realistic patterns.
+> **Tip:** Adjust γ in your simulation to watch the transition from symmetric idealized figures to complex, realistic Chladni patterns.
 
 ---
 
