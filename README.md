@@ -79,7 +79,7 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
    - The resulting superposition (modulated by γ) roughly captures the richness of real Chladni patterns.
    While the simulation assumes a nearly single-frequency drive (like a bow), γ mimics real-world plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
 
-   - The title displays the current driving frequency and the eigenfrequency of the **closest resonant mode(s)**. **Important:** the resulting pattern is a *superposition* of all significantly excited modes at frequency `f`. A small `γ` results in a pattern dominated by one mode, while a large `γ` blends several modes into a more complex, often asymmetric pattern.
+   - The title shows the driving frequency and the frequency of the most dominant mode. The displayed pattern may be a single mode or a superposition of multiple modes, with the strongest contributions near resonances. At other frequencies (e.g., when manually moving the frequency slider), the plate still responds, but the patterns do not represent true Chladni figures.
 
 2. **Approximation and Model Choice:**
 
