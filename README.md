@@ -132,6 +132,8 @@ the parameter **k** sets the **overall frequency scale** of the simulation.
    - Adjust **k** to place resonances in a convenient range for exploration.
    - Once chosen, k can usually remain fixed, while **γ** and the driving frequency `f` are varied interactively.
 
+>Practical Note: Increasing k spreads all eigenfrequencies farther apart. For a fixed γ, this means fewer modes are significantly excited at a given driving frequency, making patterns appear more symmetric — similar to the effect of using a smaller γ. In the simulation title, only the driving frequency and the most dominant mode’s eigenfrequency are displayed, so this spread of other modes is not visible there.
+
 ---
 
 ## Damping Factor γ
