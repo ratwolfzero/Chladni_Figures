@@ -222,5 +222,5 @@ Its role in the simulation is multi-faceted:
 - Herman, Russell L. *Vibrations of Rectangular Membranes*. LibreTexts.
   <https://math.libretexts.org/Bookshelves/Differential_Equations/Introduction_to_Partial_Differential_Equations_(Herman)/06%3A_Problems_in_Higher_Dimensions/6.01%3A_Vibrations_of_Rectangular_Membranes>
 - Wikipedia contributors: ["Ernst Chladni"](https://en.wikipedia.org/wiki/Chladni_pattern)
-- Further Reading
+- Further Reading  
   Paul Bourke, *CChladni Plate Mathematics, 2D*, [http://paulbourke.net/geometry/chladni/](http://paulbourke.net/geometry/chladni/)
