@@ -4,7 +4,7 @@ from matplotlib.animation import FuncAnimation, PillowWriter
 
 # --- Minimal Chladni simulation class (simplified) ---
 class ChladniSimulator:
-    def __init__(self, resolution=200, max_mode=10, gamma=0.06, k=1.0):
+    def __init__(self, resolution=200, max_mode=25, gamma=0.06, k=1.0):
         self.resolution = resolution
         self.max_mode = max_mode
         self.gamma = gamma
@@ -32,23 +32,30 @@ class ChladniSimulator:
 sim = ChladniSimulator(resolution=400, max_mode=25, gamma=0.06, k=1.0)
 
 fig, ax = plt.subplots(figsize=(6,6))
-Z = sim.compute_displacement(5.0)                                           
+Z = sim.compute_displacement(5.0)
 im = ax.imshow(np.abs(Z)**0.2, cmap='plasma', origin='lower', extent=[0,1,0,1])
 ax.set_axis_off()
 
 # Frequency range for GIF
-frequencies = np.linspace(5, 15, 60)  # 60 frames, slower sweep for clarity
+frequencies = np.linspace(5, 15, 60)
+tolerance = 0.05  # how close to an eigenfrequency to consider it a resonance
 
-def update(frame):                                                          
+def update(frame):
     f = frequencies[frame]
     Z = sim.compute_displacement(f)
     im.set_data(np.abs(Z)**0.2)
+    
+    # Check if f is near any eigenfrequency
+    if np.any(np.abs(sim.mode_frequencies - f) < tolerance):
+        ax.set_title(f"Resonance f ≈ {f:.2f}", fontsize=14)
+    else:
+        ax.set_title("")  # no title if off-resonance
+    
     return [im]
 
 ani = FuncAnimation(fig, update, frames=len(frequencies), blit=True)
 
-# Save as GIF (slower to make nodal lines visible)
-ani.save("chladni_simulation.gif", writer=PillowWriter(fps=5))  # fps=5 slows it down
+# Save as GIF
+ani.save("chladni_simulation_resonance_titles.gif", writer=PillowWriter(fps=2))
 
 plt.close(fig)
-
