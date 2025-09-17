@@ -220,7 +220,7 @@ def main():
     """Main function to create and run the application."""
     # 1. Initialize the simulator with desired parameters
     simulator = ChladniSimulator(
-        resolution=200, max_mode=15, gamma=0.06, k=1.0)
+        resolution=200, max_mode=15, gamma=0.01, k=1.0)
 
     # 2. Initialize the UI, passing the simulator
     ui = ChladniUI(simulator)
