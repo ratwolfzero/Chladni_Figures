@@ -99,14 +99,16 @@ class ChladniUI:
     A class to handle the matplotlib user interface for the Chladni simulator.
     """
 
-    def __init__(self, simulator: ChladniSimulator):
+    def __init__(self, simulator: ChladniSimulator, show_axes: bool = True):
         """
         Initialize the UI.
 
         Args:
             simulator: An instance of ChladniSimulator.
+            show_axes: If False, hide axis ticks/labels for a cleaner figure.
         """
         self.simulator = simulator
+        self.show_axes = show_axes
         self.fig, self.ax = plt.subplots(figsize=(10, 8))
         plt.subplots_adjust(left=0.1, bottom=0.25)
 
@@ -128,10 +130,17 @@ class ChladniUI:
 
     def _setup_axes(self):
         """Configure the plot axes."""
-        self.ax.set_xlim(0, 1)
-        self.ax.set_ylim(0, 1)
-        self.ax.set_xlabel('X')
-        self.ax.set_ylabel('Y')
+        if self.show_axes:
+            self.ax.set_xlim(0, 1)
+            self.ax.set_ylim(0, 1)
+            self.ax.set_xlabel('X')
+            self.ax.set_ylabel('Y')
+        else:
+            self.ax.set_xticks([])
+            self.ax.set_yticks([])
+            self.ax.set_xlabel('')
+            self.ax.set_ylabel('')
+
 
     def _setup_widgets(self):
         """Create and set up all interactive widgets (sliders, buttons)."""
@@ -223,7 +232,7 @@ def main():
         resolution=200, max_mode=15, gamma=0.01, k=1.0)
 
     # 2. Initialize the UI, passing the simulator
-    ui = ChladniUI(simulator)
+    ui = ChladniUI(simulator, show_axes=False)
 
     # 3. Run the application
     ui.show()
