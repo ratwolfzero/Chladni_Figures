@@ -219,12 +219,19 @@ Its role in the simulation is multi-faceted:
 
 - Chladni, Ernst Florens Friedrich. *Entdeckungen über die Theorie des Klanges*. Leipzig: Weidmanns Erben und Reich, 1787. ETH-Bibliothek Zürich,
   Rar 5284. <https://doi.org/10.3931/e-rara-4235>. Public Domain Mark.
+
 - Compeau, P., et al. (2024). Compladni: Efficient Computational Simulation of Chladni Patterns from Musical Input. Carnegie Mellon University.    <https://compeau.cbd.cmu.edu/wp-content/uploads/2024/12/groupboops_125884_12099696_final_report_v0.4.pdf?utm_source=chatgpt.com>
+
 - Herman, Russell L. *Vibrations of Rectangular Membranes*. LibreTexts.
   <https://math.libretexts.org/Bookshelves/Differential_Equations/Introduction_to_Partial_Differential_Equations_(Herman)/06%3A_Problems_in_Higher_Dimensions/6.01%3A_Vibrations_of_Rectangular_Membranes>
+  
 - Wikipedia contributors: ["Ernst Chladni"](https://en.wikipedia.org/wiki/Chladni_pattern)
-- Further Reading  
-  Paul Bourke, *CChladni Plate Mathematics, 2D*, [http://paulbourke.net/geometry/chladni/](http://paulbourke.net/geometry/chladni/)  
+  
+Further Reading  
+
+- Paul Bourke, *CChladni Plate Mathematics, 2D*, [http://paulbourke.net/geometry/chladni/](http://paulbourke.net/geometry/chladni/)  
+
 - Tuan, P.H., Lai, Y.H., Wen, C.P. et al. Point-driven modern Chladni figures with symmetry breaking. Sci Rep 8, 10844 (2018).
   <https://doi.org/10.1038/s41598-018-29244-6>
+
 - Tseng, Yu-Chen, Yu-Hsin Hsu, Yu-Hsiang Lai, Yan-Ting Yu, Hsing-Chih Liang, Kai-Feng Huang, and Yung-Fu Chen. 2021. “Exploiting Modern Chladni Plates to Analogously Manifest the Point Interaction” Applied Sciences 11, no. 21: 10094. <https://doi.org/10.3390/app112110094>
