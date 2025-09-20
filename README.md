@@ -219,6 +219,7 @@ Its role in the simulation is multi-faceted:
 
 - Chladni, Ernst Florens Friedrich. *Entdeckungen über die Theorie des Klanges*. Leipzig: Weidmanns Erben und Reich, 1787. ETH-Bibliothek Zürich,
   Rar 5284. <https://doi.org/10.3931/e-rara-4235>. Public Domain Mark.
+- Compeau, P., et al. (2024). Compladni: Efficient Computational Simulation of Chladni Patterns from Musical Input. Carnegie Mellon University. PDF
 - Herman, Russell L. *Vibrations of Rectangular Membranes*. LibreTexts.
   <https://math.libretexts.org/Bookshelves/Differential_Equations/Introduction_to_Partial_Differential_Equations_(Herman)/06%3A_Problems_in_Higher_Dimensions/6.01%3A_Vibrations_of_Rectangular_Membranes>
 - Wikipedia contributors: ["Ernst Chladni"](https://en.wikipedia.org/wiki/Chladni_pattern)
