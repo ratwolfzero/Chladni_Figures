@@ -231,6 +231,3 @@ Further Reading
   <https://doi.org/10.1038/s41598-018-29244-6>
 
 - Tseng, Yu-Chen, Yu-Hsin Hsu, Yu-Hsiang Lai, Yan-Ting Yu, Hsing-Chih Liang, Kai-Feng Huang, and Yung-Fu Chen. 2021. “Exploiting Modern Chladni Plates to Analogously Manifest the Point Interaction” Applied Sciences 11, no. 21: 10094. <https://doi.org/10.3390/app112110094>
-
-- pecial Issue: Acoustics and Vibrations in Analyses of Materials at Different Scales. Applied Sciences.  
-  <https://www.mdpi.com/journal/applsci/special_issues/Acoustics_Vibrations_Analyses_Materials_Different_Scales>
