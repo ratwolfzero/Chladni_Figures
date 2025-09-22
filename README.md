@@ -11,8 +11,8 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
 - [Chladni Figures Simulation](#chladni-figures-simulation)
   - [Table of Contents](#table-of-contents)
   - [Historical Context](#historical-context)
-  - [Physical Principles of Simulation](#physical-principles-of-simulation)
-  - [Simulation Implementation Principles](#simulation-implementation-principles)
+  - [Physical Principles of Simulation (Free Oscillation at Eigenfrequency)](#physical-principles-of-simulation-free-oscillation-at-eigenfrequency)
+  - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency and t=0)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency-and-t0)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -38,7 +38,7 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ---
 
-## Physical Principles of Simulation
+## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
 The displacement field of a **single vibrational mode** \$(m,n)\$ on a rectangular plate of size \$L\_x \times L\_y\$ is given by:
 
@@ -62,7 +62,7 @@ The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are w
 
 ---
 
-## Simulation Implementation Principles
+## Simulation Implementation Principles (Forced Oscillation at Driving Frequency and t=0)
 
 Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term (modulating the amplitude) that includes the damping factor \$\gamma\$:
 
@@ -71,6 +71,8 @@ Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f 
 $$
 
 Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute.
+
+![Chladni](Chladni_2.png) ![Chladni](membrane_slow.gif)
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
@@ -82,7 +84,6 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
    - The title shows the driving frequency and the frequency of the most dominant mode. The displayed pattern may be a single mode or a superposition of multiple modes, with the strongest contributions near resonances. At other frequencies (e.g., when manually moving the frequency slider), the plate still responds, but the patterns do not represent true Chladni figures.
 
 2. **Approximation and Model Choice:**
-
    - **Particles are not explicitly simulated**.
    - The mathematical model uses an ideal flexible **membrane** (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies proportional to \$\sqrt{m^2 + n^2}\$. This simplifies the physics of rigid **plates** with bending stiffness.
    - The membrane model was chosen for **computational efficiency**, allowing real-time interactive exploration. This approach successfully captures the qualitative behavior and visual essence of modal patterns, reproducing the kinds of figures observed when a real plate is driven by a bow.
