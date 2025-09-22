@@ -88,6 +88,26 @@ Here, the damping factor $\gamma$ controls how sharply each resonance is excited
 
 This broadening effect mimics real experiments, where imperfections, boundary conditions, or bowing techniques naturally excite a mixture of modes, giving rise to the rich variety of Chladni patterns.
 
+---
+
+The steady-state spatial response is modeled as
+
+$$
+Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N}
+\frac{\sin(m \pi x)\sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
+$$
+
+Here, the fraction
+$$\frac{1}{(f-f_{mn})^2 + \gamma^2}$$
+acts as a **resonance factor**, modulating the amplitude of each mode depending on how close the driving frequency $f$ is to the eigenfrequency $f_{mn}$.
+
+The damping factor $\gamma$ controls how sharply each resonance is excited:
+
+- with small $\gamma$, primarily a single eigenmode (or a degenerate pair) dominates,
+- with larger $\gamma$, multiple nearby modes contribute.
+
+This broadening effect mimics real experiments, where imperfections, boundary conditions, or bowing techniques naturally excite a mixture of modes, giving rise to the rich variety of Chladni patterns.
+
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
