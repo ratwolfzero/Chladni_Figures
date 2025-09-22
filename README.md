@@ -49,6 +49,7 @@ $$
 where:
 
 - $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions of the plate.
+- >In more technical language, $m$ and $n$ correspond to the number of half-wavelengths (or nodal divisions) that “fit” across the plate in the $x$ and $y$ directions.
 - $A$ is the oscillation amplitude.
 - $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
@@ -65,8 +66,6 @@ $$
 $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
-
->In more technical language, $m$ and $n$ correspond to the number of half-wavelengths (or nodal divisions) that “fit” across the plate in the $x$ and $y$ directions.
 
 ---
 
