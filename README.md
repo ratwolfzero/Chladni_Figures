@@ -12,7 +12,7 @@ This Python code simulates the nodal line patterns known as **Chladni figures** 
   - [Table of Contents](#table-of-contents)
   - [Historical Context](#historical-context)
   - [Physical Principles of Simulation (Free Oscillation at Eigenfrequency)](#physical-principles-of-simulation-free-oscillation-at-eigenfrequency)
-  - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency and t=0)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency-and-t0)
+    - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -40,45 +40,60 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-The displacement field of a **single vibrational mode** \$(m,n)\$ on a rectangular plate of size \$L\_x \times L\_y\$ is given by:
+The displacement field of a **single vibrational eigenmode** $(m,n)$ on a rectangular plate of size $L_x \times L_y$ is given by
 
 $$
-Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t)
+Z_{mn}(x,y,t) = A \,\sin\!\left(\tfrac{m \pi x}{L_x}\right)\sin\!\left(\tfrac{n \pi y}{L_y}\right)\cos(2 \pi f_{mn} t),
 $$
 
 where:
 
-- \$m, n \in \mathbb{N}\$ are the number of nodal lines along the \$x\$ and \$y\$ axes, respectively.
-- \$A\$ is the amplitude of oscillation.
-- \$f\_{mn}\$ is the eigenfrequency of the \$(m,n)\$ mode:
+- $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions of the plate.
+- $A$ is the oscillation amplitude.
+- $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
 $$
-f_{mn} = k \sqrt{\left(\frac{m}{L_x}\right)^2 + \left(\frac{n}{L_y}\right)^2}
+f_{mn} = k \sqrt{\left(\tfrac{m}{L_x}\right)^2 + \left(\tfrac{n}{L_y}\right)^2},
 $$
 
-- $k$ sets the overall frequency scale. In real plates it depends on material properties, but in this simplified simulation we take $k=1$.
+with $k$ setting the frequency scale. In real plates $k$ depends on material properties, but in this simplified simulation we take $k=1$.
 
-The **nodal lines** of this mode, defined by where \$Z\_{mn}(x,y,t) = 0\$, are where particles accumulate in real experiments to form the classic Chladni figures.
+The **nodal lines** of this mode come from the zeros of the spatial factor
+
+$$
+\sin\!\left(\tfrac{m \pi x}{L_x}\right)\sin\!\left(\tfrac{n \pi y}{L_y}\right) = 0
+$$
+
+which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
+
+>In more technical language, $m$ and $n$ correspond to the number of half-wavelengths (or nodal divisions) that “fit” across the plate in the $x$ and $y$ directions.
 
 ---
 
-## Simulation Implementation Principles (Forced Oscillation at Driving Frequency and t=0)
+### Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
-Just as a real violin bow applies a nearly single-frequency drive, the simulation uses a **single driving frequency** \$f\$, summing the response of all modes weighted by a resonance term (modulating the amplitude) that includes the damping factor \$\gamma\$:
+In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of many eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
+
+The steady-state spatial response is modeled as
 
 $$
-Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
+Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N}
+\frac{\sin(m \pi x)\sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
 $$
 
-Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute.
+Here, the damping factor $\gamma$ controls how sharply each resonance is excited:
 
-![Chladni](Chladni_2.png) 
+- with small $\gamma$, primarily a single eigenmode (or a degenerate pair) dominates,
+- with larger $\gamma$, multiple nearby modes contribute.
+
+This broadening effect mimics real experiments, where imperfections, boundary conditions, or bowing techniques naturally excite a mixture of modes, giving rise to the rich variety of Chladni patterns.
+
+![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
->Top figure: Forced oscillation steady-state (no time dependence, t=0) —
-the amplitude distribution that sand particles would experience  
-Bottom figure: Free oscillation evolving over time.
-Both showing Superposition of modes (3,5) and (5,3)
+>Top: Forced oscillation at steady state (time-independent amplitude distribution that sand particles would respond to).
+Bottom: Free oscillation evolving in time (from own Python simulation).
+Both illustrate a superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in shape.
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
