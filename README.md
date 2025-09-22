@@ -72,7 +72,8 @@ $$
 
 Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces a sharp resonance, exciting primarily a single mode, while larger \$\gamma\$ broadens the response, allowing multiple nearby modes to contribute.
 
-![Chladni](Chladni_2.png) ![Chladni](membrane_slow.gif)
+![Chladni](Chladni_2.png) 
+![Chladni](membrane_slow.gif)
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
