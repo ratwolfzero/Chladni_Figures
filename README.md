@@ -91,8 +91,8 @@ This broadening effect mimics real experiments, where imperfections, boundary co
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
->Top: Forced oscillation at steady state (time-independent amplitude distribution that sand particles would respond to).
-Bottom: Free oscillation evolving in time (from own Python simulation).
+>Top: Forced oscillation at steady state (time-independent amplitude distribution that sand particles would respond to).  
+Bottom: Free oscillation evolving in time (from own Python simulation).  
 Both illustrate a superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in shape.
 
 1. **Visualization:**
