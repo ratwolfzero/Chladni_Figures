@@ -12,7 +12,7 @@ class MembraneAnimation:
         self.modes = [(3, 5), (5, 3)]
         self.amplitudes = [1.0, 0.6, 0.4]
         self.Nx, self.Ny = 100, 100
-        self.T = 6.0  # Total animation duration in seconds
+        self.T = 10.0  # Total animation duration in seconds
 
         # Display settings
         self.display_fps = 50
@@ -139,7 +139,7 @@ class MembraneAnimation:
 if __name__ == "__main__":
     # Option 1: Save GIF with same timing as display (15 FPS)
     anim = MembraneAnimation(
-        save_gif=False, gif_filename="membrane_slow.gif", gif_fps=15)
+        save_gif=False, gif_filename="membrane_slow.gif", gif_fps=5)
     anim.animate()
 
     # Option 2: Show first, then save with custom FPS
