@@ -75,6 +75,11 @@ Here, \$\gamma\$ controls the influence of each mode: small \$\gamma\$ produces 
 ![Chladni](Chladni_2.png) 
 ![Chladni](membrane_slow.gif)
 
+>Left figure: Forced oscillation steady-state (no time dependence, t=0) —
+the amplitude distribution that sand particles would experience
+Right figure: Free oscillation evolving over time.
+Both showing Superposition of modes (3,5) and (5,3)
+
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
    Dark regions approximate nodal lines; bright regions are anti-nodes.
