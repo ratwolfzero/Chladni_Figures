@@ -7,11 +7,11 @@ class MembraneAnimation:
         # --- Parameters ---
         self.Lx, self.Ly = 1.0, 1.0
         self.c = 1.0
-        self.modes = [(3, 4), (4, 3), (1, 6),(5, 1)]
+        self.modes = [(3,5), (5,3)]
         self.amplitudes = [1.0, 0.6, 0.4]
         self.Nx, self.Ny = 80, 80
         self.T = 6.0
-        self.fps = 25
+        self.fps = 60
         self.frames_total = int(self.T * self.fps)
         
         self.setup_components()
@@ -50,7 +50,7 @@ class MembraneAnimation:
         
         # Initial surface
         Z0 = self.displacement(0)
-        self.surf = self.ax.plot_surface(self.X, self.Y, Z0, cmap="viridis", 
+        self.surf = self.ax.plot_surface(self.X, self.Y, Z0, cmap="plasma", 
                                        antialiased=True, rstride=1, cstride=1, alpha=0.8)
     
     def update(self, frame):
@@ -59,7 +59,7 @@ class MembraneAnimation:
         
         # Update the surface data
         self.surf.remove()
-        self.surf = self.ax.plot_surface(self.X, self.Y, Z, cmap="viridis",
+        self.surf = self.ax.plot_surface(self.X, self.Y, Z, cmap="plasma",
                                        antialiased=True, rstride=1, cstride=1, alpha=0.8)
         return self.surf,
     
