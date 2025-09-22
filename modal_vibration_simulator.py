@@ -49,9 +49,9 @@ class MembraneAnimation:
     def setup_figure(self):
         self.fig = plt.figure(figsize=(7, 6), dpi=100)
         self.ax = self.fig.add_subplot(111, projection="3d")
-        #self.ax.set_title(
-        #    f"Free Vibration Superposition (Modes {self.modes})", pad=10
-        #)
+        self.ax.set_title(
+            f"Free Vibration Superposition (Modes {self.modes})", pad=10
+        )
         self.ax.set_xlabel("x")
         self.ax.set_ylabel("y")
         self.ax.set_zlabel("displacement Z")
