@@ -9,7 +9,7 @@ class MembraneAnimation:
         self.Lx, self.Ly = 1.0, 1.0
         self.k = 1.0  # frequency scale from article
         self.modes = [(3, 5), (5, 3)]
-        self.amplitudes = [1.0, 1.9]
+        self.amplitudes = [1.0, 1.0]
         self.Nx, self.Ny = 100, 100
         self.T = 20.0  # Total animation duration in seconds
 
