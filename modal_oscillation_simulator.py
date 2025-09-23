@@ -53,7 +53,7 @@ class MembraneAnimation:
         self.ax.set_xlabel("x")
         self.ax.set_ylabel("y")
         self.ax.set_zlabel("displacement Z")
-        self.ax.set_zlim(-4, 4)
+        self.ax.set_zlim(-3, 3)
         self.ax.view_init(elev=30, azim=-45)
 
         Z0 = self.displacement(0)
@@ -100,7 +100,7 @@ class MembraneAnimation:
 
 if __name__ == "__main__":
     anim = MembraneAnimation(
-        save_gif=True,
+        save_gif=False,
         gif_filename="membrane_slow.gif",
         gif_fps=5
     )
