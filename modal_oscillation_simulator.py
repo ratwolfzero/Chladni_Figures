@@ -11,7 +11,7 @@ class MembraneAnimation:
         self.modes = [(3, 5), (5, 3)]
         self.amplitudes = [1.0, 1.9]
         self.Nx, self.Ny = 100, 100
-        self.T = 10.0  # Total animation duration in seconds
+        self.T = 20.0  # Total animation duration in seconds
 
         # Display settings
         self.display_fps = 70
