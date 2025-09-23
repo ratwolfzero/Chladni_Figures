@@ -9,12 +9,12 @@ class MembraneAnimation:
         self.Lx, self.Ly = 1.0, 1.0
         self.k = 1.0  # frequency scale from article
         self.modes = [(3, 5), (5, 3)]
-        self.amplitudes = [1.0, 0.6]
+        self.amplitudes = [1.0, 1.9]
         self.Nx, self.Ny = 100, 100
         self.T = 10.0  # Total animation duration in seconds
 
         # Display settings
-        self.display_fps = 50
+        self.display_fps = 70
         self.frames_total = int(self.T * self.display_fps)
 
         # GIF settings
@@ -47,13 +47,13 @@ class MembraneAnimation:
     def setup_figure(self):
         self.fig = plt.figure(figsize=(7, 6), dpi=100)
         self.ax = self.fig.add_subplot(111, projection="3d")
-        self.ax.set_title(
-            f"Free Vibration Superposition (Modes {self.modes})", pad=10
-        )
+        # self.ax.set_title(
+        #    f"Free Vibration Superposition (Modes {self.modes})", pad=10
+        # )
         self.ax.set_xlabel("x")
         self.ax.set_ylabel("y")
         self.ax.set_zlabel("displacement Z")
-        self.ax.set_zlim(-2, 2)
+        self.ax.set_zlim(-4, 4)
         self.ax.view_init(elev=30, azim=-45)
 
         Z0 = self.displacement(0)
@@ -100,7 +100,7 @@ class MembraneAnimation:
 
 if __name__ == "__main__":
     anim = MembraneAnimation(
-        save_gif=False,
+        save_gif=True,
         gif_filename="membrane_slow.gif",
         gif_fps=5
     )
