@@ -54,7 +54,7 @@ class MembraneAnimation:
         self.ax.set_ylabel("y")
         self.ax.set_zlabel("displacement Z")
         self.ax.set_zlim(-3, 3)
-        self.ax.view_init(elev=30, azim=45)
+        self.ax.view_init(elev=30, azim=-45)
 
         Z0 = self.displacement(0)
         self.surf = self.ax.plot_surface(self.X, self.Y, Z0, cmap="plasma",
@@ -65,7 +65,7 @@ class MembraneAnimation:
         time_factors = np.cos(self.omegas * t)
         return np.sum(self.spatial_components * time_factors[:, np.newaxis, np.newaxis], axis=0)
         #Z=np.sum(self.spatial_components * time_factors[:, np.newaxis, np.newaxis], axis=0)
-        #return np.abs(Z)
+        #return np.abs(Z) #full-wave-rectified
 
     def update(self, frame):
         t = frame / self.display_fps
@@ -103,7 +103,7 @@ class MembraneAnimation:
 if __name__ == "__main__":
     anim = MembraneAnimation(
         save_gif=False,
-        gif_filename="membrane_slow.gif",
+        gif_filename="membrane_slow_azim-90.gif",
         gif_fps=5
     )
     anim.animate()
