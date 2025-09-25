@@ -107,9 +107,9 @@ This broadening effect mimics real experiments, where imperfections, boundary co
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
->Top: Forced oscillation at steady state (time-independent amplitude distribution that sand particles would respond to).  
-Bottom: Free oscillation evolving in time (from own Python simulation).  
-Both illustrate a superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in shape.
+>Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
+Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
+Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
