@@ -49,7 +49,7 @@ $$
 For simplicity(see note*), we use:
 
 $$
-[Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t),]
+Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t)
 $$
 
 where:
