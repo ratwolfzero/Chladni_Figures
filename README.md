@@ -74,7 +74,7 @@ which are independent of time. These lines are where particles accumulate in exp
 
 *Note: The cosine term corresponds to the membrane starting at maximum height with no initial speed, a common choice for standing-wave visualizations. This keeps the Chladni patterns visually clear in the 3D animation, as seen in the 2D/3D comparison panel shown later. For the simulation, we use a square membrane.¹
 
-> Square geometries (Lx = Ly) exhibit degenerate modes: distinct nodal patterns that share the same frequency. For example, the (3,5) and (5,3) modes differ in shape but occur at identical frequencies. This degeneracy arises from symmetry in general, exemplified by the square, and appears both in the membrane model used here and in real vibrating symmetric plates. The cosine starting condition for the 3D animation aligns nodal lines at Z=0 and, together with the degenerate modes, enhances visual clarity.
+>¹Square geometries (Lx = Ly) exhibit degenerate modes: distinct nodal patterns that share the same frequency. For example, the (3,5) and (5,3) modes differ in shape but occur at identical frequencies. This degeneracy arises from symmetry in general, exemplified by the square, and appears both in the membrane model used here and in real vibrating symmetric plates. The cosine starting condition for the 3D animation aligns nodal lines at Z=0 and, together with the degenerate modes, enhances visual clarity.
 
 ---
 
