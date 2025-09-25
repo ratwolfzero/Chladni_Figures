@@ -40,18 +40,21 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-The displacement field of a **single vibrational eigenmode** $(m,n)$ on a rectangular plate of size $L_x \times L_y$ is given by
+The general displacement field of a vibrational eigenmode ((m,n)) on a rectangular membrane of size ( L_x \times L_y ) is:
 
 $$
-Z_{mn}(x,y,t) = A \,\sin\!\left(\tfrac{m \pi x}{L_x}\right)\sin\!\left(\tfrac{n \pi y}{L_y}\right)\cos(2 \pi f_{mn} t),
+Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
+$$
+
+For simplicity(see note*), we use:
+
+$$
+[Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t),]
 $$
 
 where:
 
 - $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions of the plate.
-
->In more technical language, $m$ and $n$ correspond to the number of half-wavelengths (or nodal divisions) that “fit” across the plate in the $x$ and $y$ directions.
-
 - $A$ is the oscillation amplitude.
 - $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
@@ -68,6 +71,10 @@ $$
 $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
+
+*Note: The cosine term corresponds to the membrane starting at maximum height with no initial speed, a common choice for standing-wave visualizations. This keeps the Chladni patterns visually clear in the 3D animation, as seen in the 2D/3D comparison panel shown later. For the simulation, we use a square plate.¹
+
+> Square geometries (Lx = Ly) exhibit degenerate modes: distinct nodal patterns that share the same frequency. For example, the (3,5) and (5,3) modes differ in shape but occur at identical frequencies. This degeneracy arises from symmetry in general, exemplified by the square, and appears both in the membrane model used here and in real vibrating symmetric plates. The cosine starting condition for the 3D animation aligns nodal lines at Z=0 and, together with the degenerate modes, enhances visual clarity.
 
 ---
 
