@@ -107,8 +107,10 @@ This broadening effect mimics real experiments, where imperfections, boundary co
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
->Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
-Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
+>Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.
+
+Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.
+
 Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
 
 1. **Visualization:**
