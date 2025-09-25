@@ -86,7 +86,7 @@ The steady-state spatial response is modeled as
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N}
-\frac{\sin(m \pi x)\sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}.
+\frac{\sin(m \pi x)\sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
 $$
 
 Here, the fraction
