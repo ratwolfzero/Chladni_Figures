@@ -40,7 +40,7 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-The general displacement field of a vibrational eigenmode ((m,n)) on a rectangular membrane of size $L_x \times L_y$ is:
+The general displacement field of a single vibrational eigenmode  ((m,n)) on a rectangular membrane of size $L_x \times L_y$ is:
 
 $$
 Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
