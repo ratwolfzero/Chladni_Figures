@@ -247,10 +247,16 @@ Its role in the simulation is multi-faceted:
 
 ## Limitations
 
-- Field-based simulation; **does not model particle dynamics**.
-- Only finite `max_mode` included.
-- Damping γ is uniform; real plates have non-uniform damping.
-- Geometry is idealized square mebrane.
+- Field-based simulation; does not model particle dynamics.
+
+>Note: This simulation visualizes the nodal patterns of a square membrane with fixed edges, governed by the wave equation, capturing the essence of Chladni figures. In real experiments, elastic plates follow complex bending physics, but the membrane model approximates their nodal patterns using simpler wave mechanics.<grok:render type="render_inline_citation">1</grok:render><grok:render type="render_inline_citation">3</grok:render><grok:render type="render_inline_citation">4</grok:render> Focusing on nodal patterns avoids the unresolved complexity of grain motion, highlighting the universal physics of resonance, independent of material properties. The simulation uses a cosine term for standing-wave visualizations, aligning nodal lines at $Z = 0$ for clarity in the 2D/3D comparison panel, and employs a square membrane ($L_x = L_y$) to capture degenerate modes, such as (3,5) and (5,3), which enhance pattern variety.<grok:render type="render_inline_citation">3</grok:render>
+
+- Only finite max_mode included.
+
+- Damping $\gamma$ is uniform; real plates have non-uniform damping.
+
+- Geometry is idealized square membrane.
+
 - Uses a membrane model for computational efficiency, which simplifies the physics of a true plate with bending stiffness.
 
 ---
