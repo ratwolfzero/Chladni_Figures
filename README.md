@@ -82,7 +82,7 @@ which are independent of time. These lines are where particles accumulate in exp
 
 ### Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
-In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of many eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
+In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
 
 The steady-state spatial response is modeled as
 
