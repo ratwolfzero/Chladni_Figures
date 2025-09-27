@@ -1,6 +1,6 @@
 # Chladni Figures Simulation
 
-This Python code simulates the nodal line patterns known as **Chladni figures** by visualizing the resonant modes of a vibrating surface. This is a computational approximation that captures the essential visual phenomenon without simulating particle dynamics.
+This Python code simulates the nodal line patterns of Chladni figures, recreating Ernst Chladni’s 1787 experiment by visualizing the resonant modes of a vibrating square membrane. It offers a computational approximation of these striking wave patterns, capturing their visual essence without modeling the complex dynamics of particle motion
 
 ![Chladni](Chladni_3.png)
 
