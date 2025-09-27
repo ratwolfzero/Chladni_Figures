@@ -40,7 +40,7 @@ Chladni figures were key in understanding **vibrational modes** and laid foundat
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-The general displacement field of a single vibrational eigenmode  ((m,n)) on a rectangular membrane of size $L_x \times L_y$ is:
+The general displacement field of a single vibrational eigenmode  ((m,n)) on a membrane of size $L_x \times L_y$ is:
 
 $$
 Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
@@ -54,7 +54,7 @@ $$
 
 where:
 
-- $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions of the plate.
+- $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions.
 - $A$ is the oscillation amplitude.
 - $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
@@ -72,9 +72,9 @@ $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
 
-*Note: The cosine term corresponds to the membrane starting at maximum height with no initial speed, a common choice for standing-wave visualizations. This keeps the Chladni patterns visually clear in the 3D animation, as seen in the 2D/3D comparison panel shown later. For the simulation, we use a square membrane.¹
+*The cosine term corresponds to the membrane starting at maximum height with no initial speed, a common choice for standing-wave visualizations. This keeps the Chladni patterns visually clear in the 3D animation, as seen in the 2D/3D comparison panel shown later. For the simulation, we use a square membrane.¹
 
->¹ Symmetric geometries such as the square membrane (Lx = Ly) exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy arises from symmetry and occurs both in the membrane model here and in real vibrating plates. Using a cosine starting condition in the 3D animation aligns nodal lines at Z = 0 and, together with the degenerate modes, enhances visual clarity.
+>¹ Symmetric geometries such as the square membrane (Lx = Ly) exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy, a hallmark of symmetric geometries, enhances pattern variety in both this membrane simulation and real Chladni experiments. Using a cosine starting condition in the 3D animation aligns nodal lines at Z = 0 and, together with the degenerate modes, enhances visual clarity.
 
 ---
 
