@@ -97,14 +97,9 @@ $$
 \frac{1}{(f-f_{mn})^2 + \gamma^2}
 $$
 
-acts as a **resonance factor**, modulating the amplitude of each mode depending on how close the driving frequency $f$ is to the eigenfrequency $f_{mn}$.
+acts as a **resonance factor**, modulating the amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
 
-The damping factor $\gamma$ controls how sharply each resonance is excited:
-
-- with small $\gamma$, primarily a single eigenmode (or a degenerate pair) dominates,
-- with larger $\gamma$, multiple nearby modes contribute.
-
-This broadening effect mimics real experiments, where imperfections, boundary conditions, or bowing techniques naturally excite a mixture of modes, giving rise to the rich variety of Chladni patterns.
+The damping factor γ controls controls how sharply or broadly modes are excited. A small γ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
