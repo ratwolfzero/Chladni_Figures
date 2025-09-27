@@ -99,7 +99,7 @@ $$
 
 acts as a **resonance factor**, modulating the amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
 
-The damping factor γ controls controls how sharply or broadly modes are excited. A small γ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
+The damping factor γ controls how sharply or broadly modes are excited. A small γ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
@@ -112,7 +112,7 @@ Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3)
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
    Dark regions approximate nodal lines; bright regions are anti-nodes.
 
-   - TThe resulting superposition (modulated by $\gamma$) captures the richness of real Chladni patterns. While the simulation assumes a nearly single-frequency drive (like a bow), $\gamma$ mimics real-world elastic plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
+   - The resulting superposition (modulated by $\gamma$) captures the richness of real Chladni patterns. While the simulation assumes a nearly single-frequency drive (like a bow), $\gamma$ mimics real-world elastic plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
 
    - The title displays the driving frequency $f$ and the eigenmode (m, n) with the closest eigenfrequency $f_{mn}$. With a small damping factor (γ = 0.01), the pattern is dominated by this mode or its degenerate pair (e.g., (m, n) and (n, m) for a square membrane), producing a clear Chladni figure resembling that mode’s nodal lines. When the driving frequency matches an eigenfrequency exactly, the pattern corresponds to a single Chladni figure. For driving frequencies between eigenfrequencies or with larger γ (e.g., >0.1), multiple modes contribute, creating blended or asymmetric patterns. In such cases, the title lists the top contributing modes based on their resonance weights, reflecting the superposition shaping the pattern.
   
@@ -132,8 +132,8 @@ Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3)
 
 | Parameter    | Description                          | Typical Effect                                                                                                                                          |
 | ------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_mode`   | Maximum mode numbers \$M\$ and \$N\$ | Higher values allow more complex patterns, slower computation                                                                                           |
-| `gamma (γ)`      | Damping factor | Controls resonance width and amplitude; small γ → sharp, symmetric patterns; medium γ → slight asymmetry; large γ → diffuse, complex patterns; also influences mode overlap and mimics imperfections |
+| `max_mode`   | Maximum mode numbers M and N | Higher values allow more complex patterns, slower computation                                                                                           |
+| `γ`      | Damping factor | Controls resonance width and amplitude; small γ → sharp, symmetric patterns; medium γ → slight asymmetry; large γ → diffuse, complex patterns; also influences mode overlap and mimics imperfections |
 | `k`          | Frequency scaling factor             | Adjusts eigenfrequency scale                                                                                                                            |
 | `resolution` | Grid resolution                      | Higher → smoother visual patterns, slower computation                                                                                                   |
 | `init_freq`  | Initial driving frequency            | Starting frequency when simulation launches                                                                                                             |
