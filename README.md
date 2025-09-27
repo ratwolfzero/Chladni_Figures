@@ -250,7 +250,7 @@ Its role in the simulation is multi-faceted:
 - Field-based simulation; **does not model particle dynamics**.
 - Only finite `max_mode` included.
 - Damping γ is uniform; real plates have non-uniform damping.
-- Geometry is idealized square plate.
+- Geometry is idealized square mebrane.
 - Uses a membrane model for computational efficiency, which simplifies the physics of a true plate with bending stiffness.
 
 ---
@@ -275,3 +275,5 @@ Phys. Rev. Research 7, L032001 — Published 1 July,2025
   <https://doi.org/10.1038/s41598-018-29244-6>
 
 - Tseng, Yu-Chen, Yu-Hsin Hsu, Yu-Hsiang Lai, Yan-Ting Yu, Hsing-Chih Liang, Kai-Feng Huang, and Yung-Fu Chen. 2021. “Exploiting Modern Chladni Plates to Analogously Manifest the Point Interaction” Applied Sciences 11, no. 21: 10094. <https://doi.org/10.3390/app112110094>
+  
+- Becker, R. (2025, September 12). Unveiling the hidden geometry of sound. Medium. <https://medium.com/@ratwolf/unveiling-the-hidden-geometry-of-sound-c3f0cf09dba5>
