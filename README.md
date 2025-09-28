@@ -48,16 +48,10 @@ $$
 Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
 $$
 
-For simplicity(see note*), we use:
-
-$$
-Z_{mn}(x,y,t) = A \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right) \cos(2 \pi f_{mn} t)
-$$
-
 where:
 
 - $m$ and $n$ describe the complexity of the pattern: they determine how many stationary nodal lines appear along the $x$- and $y$-directions.
-- $A$ is the oscillation amplitude.
+- $A$ and $B$ are amplitudes set by initial conditions (displacement and velocity)
 - $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
 $$
@@ -74,9 +68,7 @@ $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
 
-*The cosine term corresponds to the membrane starting at maximum height with no initial speed, a common choice for standing-wave visualizations. This keeps the Chladni patterns visually clear in the 3D animation, as seen in the 2D/3D comparison panel shown later. For the simulation, we use a square membrane.¹
-
->¹ Symmetric geometries such as the square membrane (Lx = Ly) exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy, a hallmark of symmetric geometries, enhances pattern variety in both this membrane simulation and real Chladni experiments. Using a cosine starting condition in the 3D animation aligns nodal lines at Z = 0 and, together with the degenerate modes, enhances visual clarity.
+>Symmetric geometries such as the square membrane (Lx = Ly) exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy, a hallmark of symmetric geometries, enhances pattern variety in both this membrane simulation and real Chladni experiments.
 
 ---
 
@@ -84,14 +76,20 @@ which are independent of time. These lines are where particles accumulate in exp
 
 In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
 
-The steady-state spatial response is modeled as
+The steady-state spatial response for a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N}
 \frac{\sin(m \pi x)\sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
 $$
 
-Here, the fraction
+with eigenfrequencies simplified to:
+
+$$
+f_{mn} = k \sqrt{m^2 + n^2}
+$$
+
+the fraction
 
 $$
 \frac{1}{(f-f_{mn})^2 + \gamma^2}
@@ -105,7 +103,10 @@ The damping factor γ controls how sharply or broadly modes are excited. A small
 ![Chladni](membrane_slow.gif)
 
 >Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
-Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case. Vibrations are amplified for visual clarity; in reality, oscillations are minimal.  
+Bottom: 3D animation of free oscillation (for comparison), showing the signed displacement Z(x,y,t).  
+Only the cosine term is used for time dependence which corresponds to the membrane starting at maximum height with no initial speed.  
+Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
+Vibrations are amplified for visual clarity; in reality, oscillations are minimal.
 Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
 
 1. **Visualization:**
