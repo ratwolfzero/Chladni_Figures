@@ -12,7 +12,7 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Table of Contents](#table-of-contents)
   - [Historical Context](#historical-context)
   - [Physical Principles of Simulation (Free Oscillation at Eigenfrequency)](#physical-principles-of-simulation-free-oscillation-at-eigenfrequency)
-    - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency)
+  - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -72,7 +72,7 @@ which are independent of time. These lines are where particles accumulate in exp
 
 ---
 
-### Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
+## Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
 In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
 
@@ -111,6 +111,8 @@ Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike 
 Vibrations are amplified for visual clarity; in reality, oscillations are minimal.  
 
 Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
+
+---
 
 1. **Visualization:**
    - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
