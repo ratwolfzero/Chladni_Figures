@@ -30,7 +30,7 @@ Ernst Chladni (1756–1827), known as the father of acoustics, pioneered the stu
 
 In his 1787 experiments:
 
-- An elastic plate was fixed at its center or edges.
+- An elastic plate (thin brass plate) was fixed at its center or edges.
 
 - It was vibrated with a violin bow at various frequencies.
 
