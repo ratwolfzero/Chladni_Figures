@@ -105,7 +105,7 @@ The damping factor γ controls how sharply or broadly modes are excited. A small
 ![Chladni](membrane_slow.gif)
 
 >Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
-Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
+Bottom: Free oscillation evolving in time, showing the signed displacement Z(x,y,t). Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case. Vibrations are amplified for visual clarity; in reality, oscillations are minimal.  
 Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
 
 1. **Visualization:**
