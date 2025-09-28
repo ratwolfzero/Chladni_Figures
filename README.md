@@ -102,7 +102,7 @@ The damping factor γ controls how sharply or broadly modes are excited. A small
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
->Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
+Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
 Bottom: 3D animation of free oscillation (for comparison), showing the signed displacement Z(x,y,t).  
 Only the cosine term is used for time dependence which corresponds to the membrane starting at maximum height with no initial speed.  
 Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
