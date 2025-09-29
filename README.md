@@ -58,7 +58,7 @@ $$
 f_{mn} = k \sqrt{\left(\tfrac{m}{L_x}\right)^2 + \left(\tfrac{n}{L_y}\right)^2},
 $$
 
-with $k$ setting the frequency scale. In real plates $k$ depends on material properties, but in this simplified simulation we take $k=1$.
+The constant $k$ sets the overall frequency scale for the membrane’s vibrational modes. In this simplified simulation, we set $k=1$ to normalize the frequencies. In real Chladni plates, the frequency scale depends on material properties (e.g., density and stiffness) and the plate’s thickness and size, which determine the actual vibration frequencies.
 
 The **nodal lines** of this mode come from the zeros of the spatial factor
 
@@ -102,15 +102,9 @@ The damping factor γ controls how sharply or broadly modes are excited. A small
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
 
-Top: Forced oscillation at steady state, showing the time-independent amplitude distribution. Only the magnitude is shown, so all values are positive and negative antinodes do not appear.  
+Top: A 2D static plot showing the time-independent amplitude of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. Since only the magnitude is shown, positive and negative antinodes appear the same, mimicking experimental Chladni patterns.
 
-Bottom: 3D animation of free oscillation (for comparison), showing the signed displacement Z(x,y,t).  
-Only the cosine term is used for time dependence which corresponds to the membrane starting at maximum height with no initial speed.  
-
-Nodal lines appear where Z=0, and negative antinodes may appear dark — unlike the purely 2D case.  
-Vibrations are amplified for visual clarity; in reality, oscillations are minimal.  
-
-Both panels illustrate the superposition of the degenerate modes (3,5) and (5,3), which share the same eigenfrequency but differ in spatial shape.
+Bottom: An animated 3D plot of free oscillation, showing the signed displacement $Z(x,y,t)$ of the degenerate modes (3,5) and (5,3), with cosine-only time dependence. The cosine term corresponds to the membrane starting at maximum height with zero initial velocity, producing stable nodal lines at $Z=0$ that align with the 2D plot. Negative antinodes appear darker unlike the 2D plot’s uniform magnitude. Vibrations are amplified for visual clarity; in reality, oscillations are minimal.
 
 ---
 
