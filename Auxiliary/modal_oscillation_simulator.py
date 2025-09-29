@@ -62,7 +62,7 @@ class MembraneAnimation:
 
     def displacement(self, t):
         # cosine-only, free oscillation as in article
-        time_factors = np.cos(self.omegas * t)+np.sin(self.omegas * t)
+        time_factors = np.cos(self.omegas * t)
         return np.sum(self.spatial_components * time_factors[:, np.newaxis, np.newaxis], axis=0)
         #Z=np.sum(self.spatial_components * time_factors[:, np.newaxis, np.newaxis], axis=0)
         #return np.abs(Z) #full-wave-rectified
