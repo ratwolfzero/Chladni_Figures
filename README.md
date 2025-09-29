@@ -74,7 +74,9 @@ which are independent of time. These lines are where particles accumulate in exp
 
 ## Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
-In experiments, plates are usually driven at a chosen **driving frequency** $f$, not at their natural eigenfrequencies alone. The resulting motion is a **superposition of eigenmodes**, each contributing according to how close the driving frequency is to that mode’s eigenfrequency and how strongly damping allows it to respond.
+In real experiments and this simulation, plates are driven at a chosen frequency f, producing vibrations through a superposition of eigenmodes, each weighted by a resonance factor that depends on the damping factor γ.
+
+>The simulation uses a 0–20 Hz range as a simplified, abstract scale to highlight nodal patterns, which depend only on mode shapes and resonance weights, not physical frequencies. Real Chladni experiments typically drive plates at 50–5000 Hz to excite their eigenfrequencies.
 
 The steady-state spatial response for a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
