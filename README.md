@@ -97,7 +97,7 @@ $$
 \frac{1}{(f-f_{mn})^2 + \gamma^2}
 $$
 
-acts as a **resonance factor**, modulating the amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
+acts as a **resonance factor**, modulating the effective (weighted) amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
 
 The damping factor γ controls how sharply or broadly modes are excited. A small γ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
