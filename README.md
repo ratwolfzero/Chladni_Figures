@@ -99,7 +99,7 @@ $$
 
 acts as a **resonance factor**, modulating the effective (weighted) amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
 
-The damping term is implemented as $γ^2$, where $γ§ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
+The damping term is implemented as $γ^2$, where $γ$ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
