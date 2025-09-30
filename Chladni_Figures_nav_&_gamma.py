@@ -1,6 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from matplotlib.animation import FuncAnimation
+from typing import TypeAlias
+
+Mode: TypeAlias = tuple[int, int, float]
+
+FREQ_RANGE = (0.0, 20.0)
+GAMMA_RANGE = (0.01, 0.1)
 
 class ChladniSimulator:
     """
@@ -18,6 +25,9 @@ class ChladniSimulator:
             gamma: Damping factor.
             k: Frequency scaling factor.
         """
+        if resolution <= 0 or max_mode <= 0 or gamma <= 0 or k <= 0:
+            raise ValueError("All parameters must be positive")
+        
         self.resolution = resolution
         self.max_mode = max_mode
         self.gamma = gamma
@@ -43,7 +53,7 @@ class ChladniSimulator:
         ]
         self.eigenfrequencies.sort(key=lambda x: x[2])
 
-    def _precompute_modes(self):
+    def _precompute_modes(self) -> None:
         """Precompute all mode shapes and store them. Called during initialization."""
         for m in range(1, self.max_mode + 1):
             for n in range(1, self.max_mode + 1):
@@ -57,7 +67,7 @@ class ChladniSimulator:
         # Convert to NumPy arrays for efficient vectorized operations
         self.mode_frequencies = np.array(self.mode_frequencies)
         # Shape: (max_mode², resolution, resolution)
-        self.mode_shapes = np.array(self.mode_shapes)
+        self.mode_shapes = np.array(self.mode_shapes, dtype=np.float32)
 
     def compute_displacement(self, f: float) -> np.ndarray:
         """
@@ -78,7 +88,7 @@ class ChladniSimulator:
                    * self.mode_shapes, axis=0)
         return Z
 
-    def find_close_modes(self, f: float, tolerance: float = 0.1) -> list[tuple[int, int, float]]:
+    def find_close_modes(self, f: float, tolerance: float = 0.1) -> list[Mode]:
         """
         Find all modes whose eigenfrequency is close to the driving frequency f.
 
@@ -97,18 +107,23 @@ class ChladniUI:
     A class to handle the matplotlib user interface for the Chladni simulator.
     """
 
-    def __init__(self, simulator: ChladniSimulator, show_axes: bool = True):
+    def __init__(self, simulator: ChladniSimulator, show_axes: bool = True, scan_speed: float = 0.05):
         """
         Initialize the UI.
 
         Args:
             simulator: An instance of ChladniSimulator.
             show_axes: If False, hide axis ticks/labels for a cleaner figure.
+            scan_speed: Frequency increment per frame for auto scan (default: 0.05).
         """
+        if scan_speed <= 0:
+            raise ValueError("Scan speed must be positive")
+        
         self.simulator = simulator
         self.show_axes = show_axes
+        self.scan_speed = scan_speed
         self.fig, self.ax = plt.subplots(figsize=(10, 8))
-        plt.subplots_adjust(left=0.1, bottom=0.35)  # Increased bottom margin for additional slider
+        plt.subplots_adjust(left=0.1, bottom=0.32)  # Adjusted for caption
 
         # Initialize plot
         self.init_freq = 5.0
@@ -126,7 +141,7 @@ class ChladniUI:
         # Force initial update
         self.update(self.init_freq)
 
-    def _setup_axes(self):
+    def _setup_axes(self) -> None:
         """Configure the plot axes."""
         if self.show_axes:
             self.ax.set_xlim(0, 1)
@@ -139,34 +154,51 @@ class ChladniUI:
             self.ax.set_xlabel('')
             self.ax.set_ylabel('')
 
-    def _setup_widgets(self):
+    def _setup_widgets(self) -> None:
         """Create and set up all interactive widgets (sliders, buttons)."""
         # Slider for frequency
         ax_freq = plt.axes([0.1, 0.25, 0.8, 0.03])
         self.freq_slider = Slider(
-            ax_freq, 'Frequency', 0.0, 20.0, valinit=self.init_freq, valstep=0.01)
+            ax_freq, 'Frequency', *FREQ_RANGE, valinit=self.init_freq, valstep=0.01)
         self.freq_slider.on_changed(self.update)
 
         # Slider for damping factor (gamma)
         ax_gamma = plt.axes([0.1, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
-            ax_gamma, 'γ', 0.01, 0.1, valinit=self.simulator.gamma, valstep=0.01)
+            ax_gamma, 'γ', *GAMMA_RANGE, valinit=self.simulator.gamma, valstep=0.01)
         self.gamma_slider.on_changed(self.update_gamma)
 
-        # Buttons for auto-scanning
-        ax_jump = plt.axes([0.1, 0.15, 0.15, 0.03])
-        self.jump_button = Button(ax_jump, 'Next Resonance')
-        self.jump_button.on_clicked(self.jump_to_next_resonance)
+        # Arrow buttons for resonance navigation (Previous and Next)
+        ax_prev = plt.axes([0.1, 0.1, 0.08, 0.04])
+        self.prev_button = Button(ax_prev, '◀')  # Unicode left arrow
+        self.prev_button.on_clicked(self.jump_to_prev_resonance)
 
-        ax_scan = plt.axes([0.27, 0.15, 0.1, 0.03])
+        ax_next = plt.axes([0.19, 0.1, 0.08, 0.04])
+        self.next_button = Button(ax_next, '▶')  # Unicode right arrow
+        self.next_button.on_clicked(self.jump_to_next_resonance)
+
+        # Add centered caption below arrow buttons
+        plt.text(
+            x=0.185,  # Correct midpoint between 0.1 and 0.27
+            y=0.06,   # Slightly higher for better visual balance
+            s="Resonance Navigation",
+            ha='center',
+            va='center',
+            fontsize=10,
+            fontweight='bold',
+            transform=self.fig.transFigure
+        )
+
+        # Buttons for auto-scanning
+        ax_scan = plt.axes([0.3, 0.1, 0.1, 0.04])
         self.scan_button = Button(ax_scan, 'Auto Scan')
         self.scan_button.on_clicked(self.start_scan)
 
-        ax_stop = plt.axes([0.39, 0.15, 0.1, 0.03])
+        ax_stop = plt.axes([0.42, 0.1, 0.1, 0.04])
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
 
-    def update(self, val: float):
+    def update(self, val: float) -> None:
         """
         Update function called when the slider is moved.
 
@@ -193,7 +225,7 @@ class ChladniUI:
 
         self.fig.canvas.draw_idle()
 
-    def update_gamma(self, val: float):
+    def update_gamma(self, val: float) -> None:
         """
         Update function called when the damping factor slider is moved.
 
@@ -203,23 +235,33 @@ class ChladniUI:
         self.simulator.gamma = val
         self.update(self.freq_slider.val)
 
-    def jump_to_next_resonance(self, event):
+    def jump_to_next_resonance(self, event) -> None:
         """Button callback: Jump to the next highest resonance frequency."""
         current_f = self.freq_slider.val
-        next_f = min([fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn > current_f],
-                     default=self.simulator.eigenfrequencies[0][2])
+        next_f = min(
+            [fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn > current_f],
+            default=self.simulator.eigenfrequencies[0][2] if self.simulator.eigenfrequencies else current_f
+        )
         self.freq_slider.set_val(next_f)
 
-    def start_scan(self, event):
+    def jump_to_prev_resonance(self, event) -> None:
+        """Button callback: Jump to the previous resonance frequency."""
+        current_f = self.freq_slider.val
+        prev_f = max(
+            [fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn < current_f],
+            default=self.simulator.eigenfrequencies[-1][2] if self.simulator.eigenfrequencies else current_f
+        )
+        self.freq_slider.set_val(prev_f)
+
+    def start_scan(self, event) -> None:
         """Button callback: Start automatic frequency scanning."""
-        from matplotlib.animation import FuncAnimation
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
 
         def update_scan(frame):
-            f = self.freq_slider.val + 0.05
-            if f > 20.0:
-                f = 0.0
+            f = self.freq_slider.val + self.scan_speed
+            if f > FREQ_RANGE[1]:
+                f = FREQ_RANGE[0]
             self.freq_slider.set_val(f)
             return self.im,
 
@@ -227,25 +269,25 @@ class ChladniUI:
             self.fig, update_scan, interval=50, blit=True, cache_frame_data=False)
         self.fig.canvas.draw_idle()
 
-    def stop_scan(self, event):
+    def stop_scan(self, event) -> None:
         """Button callback: Stop automatic frequency scanning."""
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
             self.scan_ani = None
 
-    def show(self):
+    def show(self) -> None:
         """Display the UI."""
         plt.show()
 
 
-def main():
+def main() -> None:
     """Main function to create and run the application."""
     # 1. Initialize the simulator with desired parameters
     simulator = ChladniSimulator(                                         
         resolution=200, max_mode=15, gamma=0.01, k=1.0)
 
-    # 2. Initialize the UI, passing the simulator
-    ui = ChladniUI(simulator, show_axes=False)
+    # 2. Initialize the UI, passing the simulator and scan speed
+    ui = ChladniUI(simulator, show_axes=False, scan_speed=0.03)
 
     # 3. Run the application
     ui.show()
