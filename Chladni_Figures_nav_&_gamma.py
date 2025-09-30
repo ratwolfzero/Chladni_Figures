@@ -9,6 +9,7 @@ Mode: TypeAlias = tuple[int, int, float]
 FREQ_RANGE = (0.0, 20.0)
 GAMMA_RANGE = (0.01, 0.1)
 
+
 class ChladniSimulator:
     """
     A class to simulate and visualize Chladni figures for a square membrane.
@@ -27,7 +28,7 @@ class ChladniSimulator:
         """
         if resolution <= 0 or max_mode <= 0 or gamma <= 0 or k <= 0:
             raise ValueError("All parameters must be positive")
-        
+
         self.resolution = resolution
         self.max_mode = max_mode
         self.gamma = gamma
@@ -118,7 +119,7 @@ class ChladniUI:
         """
         if scan_speed <= 0:
             raise ValueError("Scan speed must be positive")
-        
+
         self.simulator = simulator
         self.show_axes = show_axes
         self.scan_speed = scan_speed
@@ -283,7 +284,7 @@ class ChladniUI:
 def main() -> None:
     """Main function to create and run the application."""
     # 1. Initialize the simulator with desired parameters
-    simulator = ChladniSimulator(                                         
+    simulator = ChladniSimulator(
         resolution=200, max_mode=15, gamma=0.01, k=1.0)
 
     # 2. Initialize the UI, passing the simulator and scan speed
