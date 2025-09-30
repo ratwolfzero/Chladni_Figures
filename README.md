@@ -74,7 +74,7 @@ which are independent of time. These lines are where particles accumulate in exp
 
 ## Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
-In real experiments and this simulation, plates are driven at a chosen frequency f, producing vibrations through a superposition of eigenmodes, each weighted by a resonance factor that depends on the damping factor γ.
+In real experiments and this simulation, plates are driven at a chosen frequency f, producing vibrations through a superposition of eigenmodes, each weighted by a resonance factor that depends on a damping effect.
 
 >The simulation uses a 0–20 Hz range as a simplified, abstract scale to highlight nodal patterns, which depend only on mode shapes and resonance weights, not physical frequencies. Real Chladni experiments typically drive plates at 50–5000 Hz to excite their eigenfrequencies.
 
@@ -99,7 +99,7 @@ $$
 
 acts as a **resonance factor**, modulating the effective (weighted) amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
 
-The damping factor γ controls how sharply or broadly modes are excited. A small γ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
+The damping term is implemented as $γ^2$, where $γ§ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
 ![Chladni](Chladni_2.png)
 ![Chladni](membrane_slow.gif)
