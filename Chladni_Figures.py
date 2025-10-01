@@ -141,7 +141,6 @@ class ChladniUI:
             self.ax.set_xlabel('')
             self.ax.set_ylabel('')
 
-
     def _setup_widgets(self):
         """Create and set up all interactive widgets (sliders, buttons)."""
         # Slider for frequency
