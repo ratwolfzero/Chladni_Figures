@@ -2,7 +2,7 @@
 
 This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chladni figures, approximating Ernst Chladni’s 1787 experiments with vibrating plates by modeling the resonant modes of a square membrane. It captures the visual essence of these wave patterns without simulating the complex dynamics of particle motion.
 
-![Chladni](Chladni_3.png)
+![Chladni](images&Animation/Chladni_3.png)
 
 ---
 
@@ -101,8 +101,8 @@ acts as a **resonance factor**, modulating the effective (weighted) amplitude of
 
 The damping term is implemented as $γ^2$, where $γ$ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
-![Chladni](Chladni_2.png)
-![Chladni](membrane_slow.gif)
+![Chladni](images&Animation/Chladni_2.png)
+![Chladni](images&Animation/membrane_slow.gif)
 
 Top: A 2D static plot showing the time-independent amplitude of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. Since only the magnitude is shown, positive and negative antinodes appear the same, mimicking experimental Chladni patterns.
 
@@ -187,7 +187,7 @@ $$
 
 Here, **γ** is the **damping factor**. The following graph illustrates its primary function: controlling the resonance width and amplitude peak. A smaller γ results in a sharper, taller response, meaning only frequencies very close to the resonant frequency \$f\_{mn}\$ will excite that mode. A larger γ creates a broader, shorter response, allowing multiple nearby modes to contribute to the pattern simultaneously.
 
-![Chladni](Resonance_and_Damping_Factors_Graph.png)
+![Chladni](images&Animation/Resonance_and_Damping_Factors_Graph.png)
 
 Its role in the simulation is multi-faceted:
 
