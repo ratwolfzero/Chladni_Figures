@@ -6,7 +6,7 @@ from typing import TypeAlias
 
 Mode: TypeAlias = tuple[int, int, float]
 
-FREQ_RANGE = (0.0, 20.0)
+FREQ_RANGE = (1.0, 20.0)
 GAMMA_RANGE = (0.01, 0.1)
 
 

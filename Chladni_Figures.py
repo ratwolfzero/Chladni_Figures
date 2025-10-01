@@ -147,7 +147,7 @@ class ChladniUI:
         # Slider for frequency
         ax_freq = plt.axes([0.1, 0.1, 0.8, 0.03])
         self.freq_slider = Slider(
-            ax_freq, 'Frequency', 0.0, 20.0, valinit=self.init_freq, valstep=0.01)
+            ax_freq, 'Frequency', 1.0, 20.0, valinit=self.init_freq, valstep=0.01)
         self.freq_slider.on_changed(self.update)
 
         # Buttons for auto-scanning
@@ -206,7 +206,7 @@ class ChladniUI:
         def update_scan(frame):
             f = self.freq_slider.val + 0.05
             if f > 20.0:
-                f = 0.0
+                f = 1.0
             self.freq_slider.set_val(f)
             return self.im,
 
