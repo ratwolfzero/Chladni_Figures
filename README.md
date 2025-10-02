@@ -50,7 +50,7 @@ $$
 
 where:
 
-- The numbers $m$ and $n$ shape the membrane’s vibration, forming $m-1$ stationary nodal lines (where the membrane stays still) across the $x$-direction and $n-1$ across the $y$-direction. The $(1,1)$ mode has no nodal lines, creating one vibrating region
+- The numbers $m$ and $n$ shape the membrane’s vibration, forming $m-1$ stationary nodal lines (where the membrane stays still) across the $x$-direction and $n-1$ across the $y$-direction. The $(1,1)$ mode has no interior nodal lines, creating one vibrating region
 - $A$ and $B$ are amplitudes set by initial conditions (displacement and velocity)
 - $f_{mn}$ is the eigenfrequency of the $(m,n)$ mode, given by
 
