@@ -98,9 +98,9 @@ $$
 $$
 
 acts as a **resonance factor**, modulating the effective (weighted) displacement amplitude of each mode depending on how close the driving frequency $f$ is to its eigenfrequency $f_{mn}$.
->Lorentzian weighting reflects the frequency response of a damped, driven harmonic oscillator.
 
 The damping term is implemented as $γ^2$, where $γ$ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
+>Lorentzian weighting reflects the frequency response of a damped, driven harmonic oscillator.
 
 ![Chladni](images&Animation/Chladni_2.png)
 ![Chladni](images&Animation/membrane_slow.gif)
