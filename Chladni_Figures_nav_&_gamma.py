@@ -288,7 +288,7 @@ def main() -> None:
         resolution=200, max_mode=15, gamma=0.01, k=1.0)
 
     # 2. Initialize the UI, passing the simulator and scan speed
-    ui = ChladniUI(simulator, show_axes=False, scan_speed=0.03)
+    ui = ChladniUI(simulator, show_axes=True, scan_speed=0.03)
 
     # 3. Run the application
     ui.show()
