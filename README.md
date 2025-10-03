@@ -17,10 +17,10 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
     - [Combined Effect of γ on Mode Superposition and Patterns](#combined-effect-of-γ-on-mode-superposition-and-patterns)
-  - [Simulation–Experiment Match Fidelity](#simulationexperiment-match-fidelity)
   - [Usage](#usage)
   - [Controls](#controls)
   - [Limitations](#limitations)
+  - [Simulation–Experiment Match Fidelity](#simulationexperiment-match-fidelity)
   - [References](#references)
 
 ---
@@ -228,20 +228,6 @@ Its role in the simulation is multi-faceted:
 
 > **Tip:** Adjust γ in your simulation to watch the transition from symmetric idealized figures to complex, realistic Chladni patterns.
 
-## Simulation–Experiment Match Fidelity
-
-| Mode Category             | Typical Example(s)     | Match Fidelity | Notes                                                                 |
-| ------------------------- | ---------------------- | -------------- | --------------------------------------------------------------------- |
-| **Exact Symmetric Modes** | (2,2), (3,3), (4,4)   | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
-| **Degenerate Superpositions** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
-| **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3) | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
-
-> **Note:** This simulation (square geometry + symmetric driving) naturally produces only symmetric modes and degenerate superpositions.  
->
-> - Symmetric modes \((n,n)\) match perfectly (100%).  
-> - Degenerate pairs reproduce Chladni’s figures with high fidelity (~95%).  
-> - Pure asymmetric single modes \((m\neq n)\), while valid eigenmodes, do not appear in the simulated patterns.
-
 ---
 
 ## Usage
@@ -275,6 +261,20 @@ Its role in the simulation is multi-faceted:
 - Geometry is idealized square membrane.
 
 - Uses a membrane model for computational efficiency, which simplifies the physics of a true plate with bending stiffness.
+
+## Simulation–Experiment Match Fidelity
+
+| Mode Category             | Typical Example(s)     | Match Fidelity | Notes                                                                 |
+| ------------------------- | ---------------------- | -------------- | --------------------------------------------------------------------- |
+| **Exact Symmetric Modes** | (2,2), (3,3), (4,4)   | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
+| **Degenerate Superpositions** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
+| **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3) | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
+
+> **Note:** This simulation (square geometry + symmetric driving) naturally produces only symmetric modes and degenerate superpositions.  
+>
+> - Symmetric modes \((n,n)\) match perfectly (100%).  
+> - Degenerate pairs reproduce Chladni’s figures with high fidelity (~95%).  
+> - Pure asymmetric single modes \((m\neq n)\), while valid eigenmodes, do not appear in the simulated patterns.
 
 ---
 
