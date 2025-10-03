@@ -267,7 +267,7 @@ Its role in the simulation is multi-faceted:
 | Mode Category                  | Typical Example(s)       | Match Fidelity | Notes                                                                 |
 | ------------------------------ | ------------------------ | -------------- | --------------------------------------------------------------------- |
 | **Exact Symmetric Modes**      | (2,2), (3,3), (4,4)     | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
-| **Low-order Degenerate Pairs** | (1,2)+(2,1), (1,3)+(3,1) | ~50–60%        | Simulation produces one diagonal rather than the expected cross pattern |
+| **Low-order Degenerate Pairs** | (1,2)+(2,1)| ~50–60%        | Simulation produces one diagonal rather than the expected cross pattern |
 | **High-order Degenerate Pairs**| (3,5)+(5,3), (1,6)+(6,1) | ~90–95%        | Strong match; interior standing waves dominate, plate effects minimal  |
 | **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3)    | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
 
