@@ -91,7 +91,7 @@ $$
 f_{mn} = k \sqrt{m^2 + n^2}
 $$
 
-the fraction
+The fraction:
 
 $$
 \frac{1}{(f-f_{mn})^2 + \gamma^2}
