@@ -267,7 +267,7 @@ Its role in the simulation is multi-faceted:
 | Mode Category                  | Typical Example(s)       | Match Fidelity | Notes                                                                 |
 | ------------------------------ | ------------------------ | -------------- | --------------------------------------------------------------------- |
 | **Exact Symmetric Modes**      | (2,2), (3,3), (4,4)     | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
-| **Low-order Degenerate Pairs** | (1,2)+(2,1), (1,3)+(3,1) | ~50–60%        | Simulation produces one diagonal rather than the expected cross pattern |
+| **Low-order Degenerate Pairs** | (1,2)+(2,1) | ~50–60%        | Simulation produces one diagonal rather than the expected cross pattern |
 | **High-order Degenerate Pairs**| (3,5)+(5,3), (1,6)+(6,1) | ~90–95%        | Strong match; interior standing waves dominate. **Single diagonals may appear flipped** compared to historical Chladni patterns |
 | **Pure Asymmetric Single Modes** | (m ≠ n) examples like (1,2), (1,3), (2,3) | *Not represented* | These modes exist theoretically but are not generated in this simulation |
 
@@ -275,7 +275,7 @@ Its role in the simulation is multi-faceted:
 >
 > 1. Symmetric modes $(n,n)$ are exact (100%).  
 > 2. Degenerate pairs appear at all orders:  
->    - Low-order degenerate pairs (e.g., (1,2)+(2,1)) match poorly (~50%) and show only one diagonal instead of a cross.  
+>    - Low-order degenerate pairs (e.g., (1,2)+(2,1)) match poorly (~50-60%) and show only one diagonal instead of a cross.  
 >    - High-order degenerate pairs (e.g., (3,5)+(5,3)) reproduce Chladni’s figures closely (~90–95%), but **diagonal direction may be flipped** randomly in the simulation.  
 > 3. Pure asymmetric single modes $(m ≠ n)$ exist in theory but are not represented in this simulation.  
 > 4. Fidelity ratings focus on **nodal topology**; orientation and exact curvature may differ from historical plates.
