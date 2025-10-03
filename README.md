@@ -230,18 +230,17 @@ Its role in the simulation is multi-faceted:
 
 ## Simulation–Experiment Match Fidelity
 
-| Mode Category      | Typical Example(s) | Match Fidelity | Notes                                                                 |
-| ------------------ | ------------------ | -------------- | --------------------------------------------------------------------- |
-| **Exact Symmetric Modes** | (2,2), (3,3), (4,4) | **100%** | Perfect agreement; identical to the analytical membrane eigenmodes     |
-| **Simple Asymmetric Modes (low-order)** | (1,2), (1,3), (2,3) | ~50–60% | Deviations from plate bending and edge effects; only general topology  |
-| **Intermediate Non-degenerate Modes** | (2,5), (4,5) | ~75–85% | Nodal lines largely correct, minor curvature/asymmetry differences     |
-| **Degenerate Pair Combinations** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
+| Mode Category             | Typical Example(s)     | Match Fidelity | Notes                                                                 |
+| ------------------------- | ---------------------- | -------------- | --------------------------------------------------------------------- |
+| **Exact Symmetric Modes** | (2,2), (3,3), (4,4)   | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
+| **Degenerate Superpositions** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
+| **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3) | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
 
-> **Note:** Fidelity depends on symmetry and degeneracy.  
+> **Note:** This simulation (square geometry + symmetric driving) naturally produces only symmetric modes and degenerate superpositions.  
 >
-> - **Exact symmetric modes** (n,n) match perfectly (100%).  
-> - **Low-order asymmetric modes** deviate strongly (~50%).  
-> - **Higher-order modes**, especially degenerate combinations, converge to near-perfect (~95%) reproduction of Chladni’s figures.
+> - Symmetric modes \((n,n)\) match perfectly (100%).  
+> - Degenerate pairs reproduce Chladni’s figures with high fidelity (~95%).  
+> - Pure asymmetric single modes \((m\neq n)\), while valid eigenmodes, do not appear in the simulated patterns.
 
 ---
 
