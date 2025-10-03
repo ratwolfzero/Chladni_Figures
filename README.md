@@ -230,13 +230,18 @@ Its role in the simulation is multi-faceted:
 
 ## Simulation–Experiment Match Fidelity
 
-| Mode Range      | Typical Example | Match Fidelity | Notes                                                                 |
-| --------------- | --------------- | -------------- | --------------------------------------------------------------------- |
-| **Low (1–2, 2–2, 1–3)** | Simple crosses/diagonals | ~50–60% | Strong boundary/bending effects; only basic topology captured          |
-| **Intermediate (2–5, 4–4, 5–2)** | Grids, diamonds | ~75–85% | Nodal lines mostly correct, slight curvature/asymmetry differences     |
-| **High (3–5, 5–3, ≥6)** | Complex diamonds/stars | ~90–95% | Nearly exact; dominated by interior standing waves, minimal edge effect |
+| Mode Category      | Typical Example(s) | Match Fidelity | Notes                                                                 |
+| ------------------ | ------------------ | -------------- | --------------------------------------------------------------------- |
+| **Exact Symmetric Modes** | (2,2), (3,3), (4,4) | **100%** | Perfect agreement; identical to the analytical membrane eigenmodes     |
+| **Simple Asymmetric Modes (low-order)** | (1,2), (1,3), (2,3) | ~50–60% | Deviations from plate bending and edge effects; only general topology  |
+| **Intermediate Non-degenerate Modes** | (2,5), (4,5) | ~75–85% | Nodal lines largely correct, minor curvature/asymmetry differences     |
+| **Degenerate Pair Combinations** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
 
-> **Note:** Fidelity improves with mode order — low-order figures deviate (~50%), while higher-order patterns converge (~95%), closely reproducing Chladni’s historical experiments.
+> **Note:** Fidelity depends on symmetry and degeneracy.  
+>
+> - **Exact symmetric modes** (n,n) match perfectly (100%).  
+> - **Low-order asymmetric modes** deviate strongly (~50%).  
+> - **Higher-order modes**, especially degenerate combinations, converge to near-perfect (~95%) reproduction of Chladni’s figures.
 
 ---
 
