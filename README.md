@@ -264,17 +264,18 @@ Its role in the simulation is multi-faceted:
 
 ## Simulation–Experiment Match Fidelity
 
-| Mode Category             | Typical Example(s)     | Match Fidelity | Notes                                                                 |
-| ------------------------- | ---------------------- | -------------- | --------------------------------------------------------------------- |
-| **Exact Symmetric Modes** | (2,2), (3,3), (4,4)   | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
-| **Degenerate Superpositions** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95% | Nearly exact; interior standing waves dominate, plate effects minimal  |
-| **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3) | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
+| Mode Category                  | Typical Example(s)       | Match Fidelity | Notes                                                                 |
+| ------------------------------ | ------------------------ | -------------- | --------------------------------------------------------------------- |
+| **Exact Symmetric Modes**      | (2,2), (3,3), (4,4)     | **100%**       | Perfect agreement; identical to the analytical membrane eigenmodes     |
+| **Low-order Degenerate Pairs** | (1,2)+(2,1), (1,3)+(3,1) | ~50–60%        | Simulation produces one diagonal rather than the expected cross pattern |
+| **High-order Degenerate Pairs**| (3,5)+(5,3), (1,6)+(6,1) | ~90–95%        | Strong match; interior standing waves dominate, plate effects minimal  |
+| **Pure Asymmetric Single Modes** | (1,2), (1,3), (2,3)    | *Not represented* | These modes exist in theory but are not generated in this simulation setup |
 
-> **Note:** This simulation (square geometry + symmetric driving) naturally produces only symmetric modes and degenerate superpositions.  
+> **Note:**  
 >
-> - Symmetric modes \((n,n)\) match perfectly (100%).  
-> - Degenerate pairs reproduce Chladni’s figures with high fidelity (~95%).  
-> - Pure asymmetric single modes \((m\neq n)\), while valid eigenmodes, do not appear in the simulated patterns.
+> - Symmetric modes $(n,n)$ are exact (100%).  
+> - Degenerate pairs appear at all orders, but **low-order ones** (e.g. (1,2)+(2,1)) match poorly (~50%), while **higher-order pairs** reproduce Chladni’s figures closely (~95%).  
+> - Pure asymmetric single modes $(m \neq n)$ are valid eigenmodes but not represented in this simulation.
 
 ---
 
