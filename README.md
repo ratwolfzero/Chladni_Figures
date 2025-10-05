@@ -120,7 +120,8 @@ Bottom (only for comparison): An animated 3D plot of free oscillation, showing t
 
    - The resulting superposition (modulated by $\gamma$) captures the richness of real Chladni patterns. While the simulation assumes a nearly single-frequency drive (like a bow), $\gamma$ mimics real-world elastic plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
 
-   - The title displays the driving frequency $f$ and the eigenmode (m, n) with the closest eigenfrequency $f_{mn}$. With a small damping factor (γ = 0.01), the pattern is dominated by this mode or its degenerate pair (e.g., (m, n) and (n, m) for a square membrane), producing a clear Chladni figure resembling that mode’s nodal lines. When the driving frequency matches an eigenfrequency exactly, the pattern corresponds to a single Chladni figure. For driving frequencies between eigenfrequencies or with larger γ (e.g., >0.1), multiple modes contribute, creating blended or asymmetric patterns. In such cases, the title lists the top contributing modes based on their resonance weights, reflecting the superposition shaping the pattern.
+   - The plot’s title shows the driving frequency f. When the driving frequency is near a resonance, the title also highlights all degenerate modes contributing to that resonance, displaying their indices (m,n) and the corresponding eigenfrequency f_mn​.
+   The detailed table provides a complete, quantitative account of all significant contributions, reflecting the superposition of modes shaping the visible pattern. The title’s resonance note offers a quick visual cue, while the table gives the full breakdown of the contributing modes.
   
    >**Note**: At small γ, numerical precision may slightly affect which mode is listed first, especially for degenerate pairs with identical eigenfrequencies. For larger γ, the title highlights the modes most responsible for the visible pattern.
 
