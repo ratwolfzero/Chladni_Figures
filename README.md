@@ -121,7 +121,7 @@ Bottom (only for comparison): An animated 3D plot of free oscillation, showing t
    - The resulting superposition (modulated by $\gamma$) captures the richness of real Chladni patterns. While the simulation assumes a nearly single-frequency drive (like a bow), $\gamma$ mimics real-world elastic plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
 
    - The plot’s title shows the driving frequency f. When the driving frequency is near a resonance, the title also highlights all degenerate modes contributing to that resonance, displaying their indices (m,n) and the corresponding eigenfrequency f_mn​.
-   The detailed table provides a complete, quantitative account of all significant contributions, reflecting the superposition of modes shaping the visible pattern. The title’s resonance note offers a quick visual cue, while the table gives the full breakdown of the contributing modes.
+   The detailed list provides a complete, quantitative account of all significant contributions, reflecting the superposition of modes shaping the visible pattern. The title’s resonance note offers a quick visual cue, while the table gives the full breakdown of the contributing modes.
   
    >**Note**: At small γ, numerical precision may slightly affect which mode is listed first, especially for degenerate pairs with identical eigenfrequencies. For larger γ, the title highlights the modes most responsible for the visible pattern.
 
