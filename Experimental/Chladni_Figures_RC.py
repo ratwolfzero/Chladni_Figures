@@ -189,7 +189,7 @@ class ResonanceCurveWindow:
             f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
 
         self.ax.set_xlabel('Driving Frequency (f)')
-        self.ax.set_ylabel('Resonance Strength')
+        self.ax.set_ylabel('Resonance Weight')
         self.ax.legend()
         self.ax.grid(True, alpha=0.3)
         self.ax.set_xlim(f_min, f_max)
