@@ -189,7 +189,7 @@ class ResonanceCurveWindow:
             f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
 
         self.ax.set_xlabel('Driving Frequency (f)')
-        self.ax.set_ylabel('Lorentzian Weight')
+        self.ax.set_ylabel('Resonance Strength')
         self.ax.legend()
         self.ax.grid(True, alpha=0.3)
         self.ax.set_xlim(f_min, f_max)
@@ -363,7 +363,7 @@ class ChladniUI:
 
         # New Resonance Curve button
         ax_resonance = plt.axes([0.50, 0.1, 0.15, 0.04])
-        self.resonance_button = Button(ax_resonance, 'Lorentzian Curves')
+        self.resonance_button = Button(ax_resonance, 'Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
     def open_resonance_curve(self, event) -> None:
