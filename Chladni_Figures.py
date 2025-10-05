@@ -5,23 +5,49 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
-Mode: TypeAlias = tuple[int, int, float]
+# =========================================================
+# 🎛️ Simulation Configuration
+# =========================================================
 
-FREQ_RANGE = (1.0, 20.0)
-GAMMA_RANGE = (0.001, 0.15)
+
+class Config:
+    # Frequency controls
+    FREQ_RANGE = (1.0, 20.0)        # Range for frequency slider
+    FREQ_STEP = 0.01                # Step size for frequency slider
+    INIT_FREQ = 5.0                 # Initial frequency
+
+    # Damping (gamma) controls
+    GAMMA_RANGE = (0.001, 0.15)     # Range for damping slider
+    GAMMA_STEP = 0.001              # Step size for damping slider
+    INIT_GAMMA = 0.01               # Default damping
+
+    # Mode / resonance parameters
+    MAX_MODE = 15                   # m,n up to this number
+    RESONANCE_TOL = 0.02            # Tolerance for resonance tagging
+    MODE_WEIGHT_THRESHOLD = 1.1     # % threshold for list inclusion
+    MAX_DISPLAY_MODES = None        # Max number of modes shown (None = all)
+
+    # Simulation resolution & scaling
+    RESOLUTION = 200                # Grid resolution
+    K = 1.0                         # Frequency scale factor
+
+    # UI / Animation
+    SCAN_SPEED = 0.03               # Frequency increment during Auto Scan
+    SHOW_AXES = False               # Toggle axes visibility
+# =========================================================
+
+
+Mode: TypeAlias = tuple[int, int, float]
 
 
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
 
-    def __init__(self, resolution: int = 200, max_mode: int = 15, gamma: float = 0.01, k: float = 1.0):
-        if resolution <= 0 or max_mode <= 0 or gamma <= 0 or k <= 0:
-            raise ValueError("All parameters must be positive")
-
-        self.resolution = resolution
-        self.max_mode = max_mode
-        self.gamma = gamma
-        self.k = k
+    def __init__(self):
+        self.resolution = Config.RESOLUTION
+        self.max_mode = Config.MAX_MODE
+        self.gamma = Config.INIT_GAMMA
+        self.k = Config.K
 
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
@@ -36,8 +62,8 @@ class ChladniSimulator:
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
             (m, n, f_mn) for (m, n), f_mn in zip(
-                [(m, n) for m in range(1, max_mode + 1)
-                 for n in range(1, max_mode + 1)],
+                [(m, n) for m in range(1, self.max_mode + 1)
+                 for n in range(1, self.max_mode + 1)],
                 self.mode_frequencies
             )
         ]
@@ -65,10 +91,8 @@ class ChladniSimulator:
 class ChladniUI:
     """Matplotlib UI for Chladni simulator."""
 
-    def __init__(self, simulator: ChladniSimulator, show_axes: bool = True, scan_speed: float = 0.05):
+    def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
-        self.show_axes = show_axes
-        self.scan_speed = scan_speed
         self.fig = plt.figure(figsize=(12, 8))
         gs = GridSpec(1, 2, figure=self.fig, width_ratios=[3, 1])
         self.ax = self.fig.add_subplot(gs[0])
@@ -77,7 +101,7 @@ class ChladniUI:
         plt.subplots_adjust(left=0.05, right=0.95, bottom=0.32, top=0.95)
 
         # Initialize plot
-        self.init_freq = 5.0
+        self.init_freq = Config.INIT_FREQ
         Z_init = self.simulator.compute_displacement(self.init_freq)
         self.im = self.ax.imshow(
             np.abs(Z_init) ** 0.2, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
@@ -88,12 +112,11 @@ class ChladniUI:
 
         self.mode_text = self.info_ax.text(
             0, 1, '', va='top', ha='left', fontsize=12)
-
         self.scan_ani = None
         self.update(self.init_freq)
 
     def _setup_axes(self) -> None:
-        if self.show_axes:
+        if Config.SHOW_AXES:
             self.ax.set_xlim(0, 1)
             self.ax.set_ylim(0, 1)
             self.ax.set_xlabel('X')
@@ -107,12 +130,12 @@ class ChladniUI:
     def _setup_widgets(self) -> None:
         ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
         self.freq_slider = Slider(
-            ax_freq, 'f.', *FREQ_RANGE, valinit=self.init_freq, valstep=0.001)
+            ax_freq, 'f.', *Config.FREQ_RANGE, valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
         self.freq_slider.on_changed(self.update)
 
         ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
-            ax_gamma, 'γ', *GAMMA_RANGE, valinit=self.simulator.gamma, valstep=0.001)
+            ax_gamma, 'γ', *Config.GAMMA_RANGE, valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
         self.gamma_slider.on_changed(self.update_gamma)
 
         ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
@@ -145,18 +168,16 @@ class ChladniUI:
         self.cbar.update_normal(self.im)
 
         # --- Resonance / degenerate modes ---
-        resonance_tol = 0.02
         idx_closest = np.argmin(np.abs(self.simulator.mode_frequencies - f))
         f_closest = self.simulator.mode_frequencies[idx_closest]
 
-        # Collect all degenerate modes
         mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
                      for n in range(1, self.simulator.max_mode + 1)]
         degenerate_modes = [(m, n) for idx, (m, n) in enumerate(mode_list)
                             if abs(self.simulator.mode_frequencies[idx] - f_closest) < 1e-6]
 
         title = f"Chladni Figures: f = {f:.2f}"
-        if abs(f - f_closest) < resonance_tol:
+        if abs(f - f_closest) < Config.RESONANCE_TOL:
             deg_modes_str = ', '.join(
                 [f"({m},{n})" for m, n in degenerate_modes])
             title += f"  ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
@@ -174,12 +195,13 @@ class ChladniUI:
         for idx, (m, n) in enumerate(mode_list):
             fmn = self.simulator.mode_frequencies[idx]
             perc = percentages[idx]
-            if perc > 0.1:
+            if perc > Config.MODE_WEIGHT_THRESHOLD:
                 modes_info.append((m, n, fmn, perc))
 
         modes_info.sort(key=lambda x: x[3], reverse=True)
         text_str = "Contributing Modes (%):\n\n"
-        for m, n, fmn, perc in modes_info[:15]:
+        max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
+        for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m},{n}) f={fmn:.2f}: {perc:.1f}%\n"
         self.mode_text.set_text(text_str)
 
@@ -210,9 +232,9 @@ class ChladniUI:
             self.scan_ani.event_source.stop()
 
         def update_scan(frame):
-            f = self.freq_slider.val + self.scan_speed
-            if f > FREQ_RANGE[1]:
-                f = FREQ_RANGE[0]
+            f = self.freq_slider.val + Config.SCAN_SPEED
+            if f > Config.FREQ_RANGE[1]:
+                f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
             return self.im,
 
@@ -230,9 +252,8 @@ class ChladniUI:
 
 
 def main() -> None:
-    simulator = ChladniSimulator(
-        resolution=200, max_mode=15, gamma=0.01, k=1.0)
-    ui = ChladniUI(simulator, show_axes=False, scan_speed=0.03)
+    simulator = ChladniSimulator()
+    ui = ChladniUI(simulator)
     ui.show()
 
 
