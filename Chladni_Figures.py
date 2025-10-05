@@ -18,7 +18,7 @@ class ChladniSimulator:
         if resolution <= 0 or max_mode <= 0 or gamma <= 0 or k <= 0:
             raise ValueError("All parameters must be positive")
 
-        self.resolution = resolution                                  
+        self.resolution = resolution
         self.max_mode = max_mode
         self.gamma = gamma
         self.k = k
@@ -27,7 +27,7 @@ class ChladniSimulator:
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-													  
+
         # Precompute modes
         self.mode_shapes = []
         self.mode_frequencies = []
@@ -48,7 +48,8 @@ class ChladniSimulator:
             for n in range(1, self.max_mode + 1):
                 f_mn = self.k * np.sqrt(m ** 2 + n ** 2)
                 self.mode_frequencies.append(f_mn)
-                mode_shape = np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
+                mode_shape = np.sin(m * np.pi * self.X) * \
+                    np.sin(n * np.pi * self.Y)
                 self.mode_shapes.append(mode_shape)
 
         self.mode_frequencies = np.array(self.mode_frequencies)
@@ -56,7 +57,8 @@ class ChladniSimulator:
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
-        Z = np.sum(weights[:, np.newaxis, np.newaxis] * self.mode_shapes, axis=0)
+        Z = np.sum(weights[:, np.newaxis, np.newaxis]
+                   * self.mode_shapes, axis=0)
         return Z
 
 
@@ -79,11 +81,13 @@ class ChladniUI:
         Z_init = self.simulator.compute_displacement(self.init_freq)
         self.im = self.ax.imshow(
             np.abs(Z_init) ** 0.2, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
-        self.cbar = plt.colorbar(self.im, ax=self.ax, label='Displacement (|Z|^0.2)')
+        self.cbar = plt.colorbar(
+            self.im, ax=self.ax, label='Displacement (|Z|^0.2)')
         self._setup_axes()
         self._setup_widgets()
 
-        self.mode_text = self.info_ax.text(0, 1, '', va='top', ha='left', fontsize=12)
+        self.mode_text = self.info_ax.text(
+            0, 1, '', va='top', ha='left', fontsize=12)
 
         self.scan_ani = None
         self.update(self.init_freq)
@@ -102,11 +106,13 @@ class ChladniUI:
 
     def _setup_widgets(self) -> None:
         ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
-        self.freq_slider = Slider(ax_freq, 'f.', *FREQ_RANGE, valinit=self.init_freq, valstep=0.001)
+        self.freq_slider = Slider(
+            ax_freq, 'f.', *FREQ_RANGE, valinit=self.init_freq, valstep=0.001)
         self.freq_slider.on_changed(self.update)
 
         ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
-        self.gamma_slider = Slider(ax_gamma, 'γ', *GAMMA_RANGE, valinit=self.simulator.gamma, valstep=0.001)
+        self.gamma_slider = Slider(
+            ax_gamma, 'γ', *GAMMA_RANGE, valinit=self.simulator.gamma, valstep=0.001)
         self.gamma_slider.on_changed(self.update_gamma)
 
         ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
@@ -151,15 +157,18 @@ class ChladniUI:
 
         title = f"Chladni Figures: f = {f:.2f}"
         if abs(f - f_closest) < resonance_tol:
-            deg_modes_str = ', '.join([f"({m},{n})" for m, n in degenerate_modes])
+            deg_modes_str = ', '.join(
+                [f"({m},{n})" for m, n in degenerate_modes])
             title += f"  ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
 
         self.ax.set_title(title)
-									
+
         # --- Detailed mode table ---
-        weights = 1.0 / ((f - self.simulator.mode_frequencies) ** 2 + self.simulator.gamma ** 2)
+        weights = 1.0 / ((f - self.simulator.mode_frequencies)
+                         ** 2 + self.simulator.gamma ** 2)
         total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * 100 if total_weight > 0 else np.zeros_like(weights)
+        percentages = (weights / total_weight) * \
+            100 if total_weight > 0 else np.zeros_like(weights)
 
         modes_info = []
         for idx, (m, n) in enumerate(mode_list):
@@ -221,7 +230,8 @@ class ChladniUI:
 
 
 def main() -> None:
-    simulator = ChladniSimulator(resolution=200, max_mode=15, gamma=0.01, k=1.0)
+    simulator = ChladniSimulator(
+        resolution=200, max_mode=15, gamma=0.01, k=1.0)
     ui = ChladniUI(simulator, show_axes=False, scan_speed=0.03)
     ui.show()
 
