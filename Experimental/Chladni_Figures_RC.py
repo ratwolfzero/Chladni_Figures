@@ -34,7 +34,8 @@ class Config:
     # UI / Animation
     SCAN_SPEED = 0.03               # Frequency increment during Auto Scan
     SHOW_AXES = False               # Toggle axes visibility
-    RESONANCE_CURVE_RANGE = 2.0     # Frequency range around current frequency for resonance curve
+    # Frequency range around current frequency for resonance curve
+    RESONANCE_CURVE_RANGE = 2.0
 # =========================================================
 
 
@@ -96,12 +97,12 @@ class ChladniSimulator:
         """Get the closest resonance frequency and its degenerate modes."""
         idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
         f_closest = self.mode_frequencies[idx_closest]
-        
+
         mode_list = [(m, n) for m in range(1, self.max_mode + 1)
                      for n in range(1, self.max_mode + 1)]
         degenerate_modes = [(m, n) for idx, (m, n) in enumerate(mode_list)
                             if abs(self.mode_frequencies[idx] - f_closest) < 1e-6]
-        
+
         return f_closest, degenerate_modes
 
     def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
@@ -111,125 +112,135 @@ class ChladniSimulator:
 
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
-    
+
     def __init__(self, simulator: ChladniSimulator, main_ui):
         self.simulator = simulator
         self.main_ui = main_ui
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
         self.fig.canvas.manager.set_window_title('Lorentzian Resonance Curves')
-        
+
         # Track current state
         self.current_f = self.main_ui.freq_slider.val
-        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(self.current_f)
+        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
+            self.current_f)
         self.current_gamma = self.simulator.gamma
-        
+
         # Store references to markers for easy updates
         self.current_marker = None
-        
+
         # Initial setup
         self.setup_curve()
-        
+
         # Connect to main UI updates
         self.main_ui.freq_slider.on_changed(self.update_current_freq)
         self.main_ui.gamma_slider.on_changed(self.update_gamma)
-        
+
     def setup_curve(self) -> None:
         """Set up or update the Lorentzian resonance curves."""
         self.ax.clear()
-        
+
         # Get current resonance info
-        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(self.current_f)
-        
+        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
+            self.current_f)
+
         # Create frequency range around the resonance frequency
-        f_min = max(Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
-        f_max = min(Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
+        f_min = max(
+            Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
+        f_max = min(
+            Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(f_min, f_max, 500)
-        
+
         # Plot Lorentzian curves for the degenerate modes
         colors = plt.cm.Set1(np.linspace(0, 1, len(self.current_modes)))
-        
+
         for (m, n), color in zip(self.current_modes, colors):
             # All degenerate modes have the same frequency, so use current_resonance_freq
-            lorentzian = self.simulator.compute_lorentzian_weights(self.f_range, self.current_resonance_freq)
-            self.ax.plot(self.f_range, lorentzian, '-', color=color, linewidth=2, 
-                        label=f'Mode ({m},{n})')
-        
+            lorentzian = self.simulator.compute_lorentzian_weights(
+                self.f_range, self.current_resonance_freq)
+            self.ax.plot(self.f_range, lorentzian, '-', color=color, linewidth=2,
+                         label=f'Mode ({m},{n})')
+
         # Mark the resonance frequency
-        max_weight = 1.0 / (self.simulator.gamma ** 2)  # Maximum Lorentzian value at resonance
-        self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7, 
-                       label=f'Resonance: f={self.current_resonance_freq:.2f}')
-        
+        # Maximum Lorentzian value at resonance
+        max_weight = 1.0 / (self.simulator.gamma ** 2)
+        self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7,
+                        label=f'Resonance: f={self.current_resonance_freq:.2f}')
+
         # Add current frequency marker
         self.add_current_marker()
-        
+
         # Add annotations for key features
-        self.ax.text(0.02, 0.98, f'γ = {self.simulator.gamma:.3f}', 
-                    transform=self.ax.transAxes, verticalalignment='top',
-                    bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-        
+        self.ax.text(0.02, 0.98, f'γ = {self.simulator.gamma:.3f}',
+                     transform=self.ax.transAxes, verticalalignment='top',
+                     bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
         # Show FWHM (Full Width at Half Maximum)
         fwhm = 2 * self.simulator.gamma
         half_max = max_weight / 2
-        self.ax.axhline(half_max, color='gray', linestyle=':', alpha=0.5, label='Half Maximum')
-        self.ax.text(0.02, 0.88, f'FWHM = {fwhm:.3f}', 
-                    transform=self.ax.transAxes, verticalalignment='top',
-                    bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-        
+        self.ax.axhline(half_max, color='gray', linestyle=':',
+                        alpha=0.5, label='Half Maximum')
+        self.ax.text(0.02, 0.88, f'FWHM = {fwhm:.3f}',
+                     transform=self.ax.transAxes, verticalalignment='top',
+                     bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
         # Mode information in title
         modes_str = ', '.join([f"({m},{n})" for m, n in self.current_modes])
-        self.ax.set_title(f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
-        
+        self.ax.set_title(
+            f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
+
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Lorentzian Weight')
         self.ax.legend()
         self.ax.grid(True, alpha=0.3)
         self.ax.set_xlim(f_min, f_max)
         self.ax.set_ylim(0, max_weight * 1.1)
-        
+
         self.fig.canvas.draw_idle()
-        
+
     def add_current_marker(self) -> None:
         """Add the current frequency marker to the plot."""
         # Get current weight for the resonance mode
-        current_weights = self.simulator.get_mode_weight_at_frequency(self.current_f)
+        current_weights = self.simulator.get_mode_weight_at_frequency(
+            self.current_f)
         mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
-                    for n in range(1, self.simulator.max_mode + 1)]
-        
+                     for n in range(1, self.simulator.max_mode + 1)]
+
         resonance_weight = 0
         for idx, (m, n) in enumerate(mode_list):
             if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < 1e-6:
                 resonance_weight = current_weights[idx]
                 break
-        
+
         # Add current frequency marker
-        self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8, 
-                    label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
-        
+        self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8,
+                                            label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
+
     def update_current_freq(self, val: float) -> None:
         """Update when frequency changes."""
         if not plt.fignum_exists(self.fig.number):
             return
-            
+
         new_f = self.main_ui.freq_slider.val
-        new_resonance_freq, new_modes = self.simulator.get_closest_resonance_info(new_f)
-        
+        new_resonance_freq, new_modes = self.simulator.get_closest_resonance_info(
+            new_f)
+
         # Check if we've moved to a different resonance by comparing both frequency AND modes
         resonance_changed = False
-        
+
         # Check if resonance frequency changed significantly
         if abs(new_resonance_freq - self.current_resonance_freq) > 1e-6:  # More precise tolerance
             resonance_changed = True
-        
+
         # Also check if modes changed (in case of very close but different resonances)
         if set(new_modes) != set(self.current_modes):
             resonance_changed = True
-        
+
         # Check if current frequency is outside the current plot range
         if hasattr(self, 'f_range') and (new_f < self.f_range[0] or new_f > self.f_range[-1]):
             resonance_changed = True
-        
+
         self.current_f = new_f
-        
+
         if resonance_changed:
             # Different resonance - update entire curve
             self.current_resonance_freq = new_resonance_freq
@@ -238,40 +249,43 @@ class ResonanceCurveWindow:
         else:
             # Same resonance - just update marker
             self.update_current_marker()
-        
+
     def update_gamma(self, val: float) -> None:
         """Update when gamma changes."""
         if plt.fignum_exists(self.fig.number):
             # Gamma change always requires full curve update
             self.current_gamma = self.simulator.gamma
             self.setup_curve()
-        
+
     def update_current_marker(self) -> None:
         """Update just the current frequency marker."""
         if self.current_marker is not None:
             # Remove old marker
             self.current_marker.remove()
-        
+
         # Get current weight for the resonance mode
-        current_weights = self.simulator.get_mode_weight_at_frequency(self.current_f)
+        current_weights = self.simulator.get_mode_weight_at_frequency(
+            self.current_f)
         mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
-                    for n in range(1, self.simulator.max_mode + 1)]
-        
+                     for n in range(1, self.simulator.max_mode + 1)]
+
         resonance_weight = 0
         for idx, (m, n) in enumerate(mode_list):
             if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < 1e-6:
                 resonance_weight = current_weights[idx]
                 break
-        
+
         # Add new current frequency marker
-        self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8, 
-                    label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
-        
+        self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8,
+                                            label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
+
         # Update legend
         handles, labels = self.ax.get_legend_handles_labels()
-        self.ax.legend(handles, labels)
+        by_label = dict(zip(labels, handles))
+        self.ax.legend(by_label.values(), by_label.keys())
+
         self.fig.canvas.draw_idle()
-        
+
     def show(self) -> None:
         plt.show()
 
@@ -346,7 +360,7 @@ class ChladniUI:
         ax_stop = plt.axes([0.37, 0.1, 0.1, 0.04])
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
-        
+
         # New Resonance Curve button
         ax_resonance = plt.axes([0.50, 0.1, 0.15, 0.04])
         self.resonance_button = Button(ax_resonance, 'Lorentzian Curves')
@@ -369,11 +383,13 @@ class ChladniUI:
         self.cbar.update_normal(self.im)
 
         # --- Resonance / degenerate modes ---
-        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(f)
+        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
+            f)
 
         title = f"Chladni Figures: f = {f:.2f}"
         if abs(f - f_closest) < Config.RESONANCE_TOL:
-            deg_modes_str = ', '.join([f"({m},{n})" for m, n in degenerate_modes])
+            deg_modes_str = ', '.join(
+                [f"({m},{n})" for m, n in degenerate_modes])
             title += f"  ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
 
         self.ax.set_title(title)
@@ -402,7 +418,7 @@ class ChladniUI:
         self.mode_text.set_text(text_str)
 
         self.fig.canvas.draw_idle()
-				  
+
     def update_gamma(self, val: float) -> None:
         self.simulator.gamma = val
         self.update(self.freq_slider.val)
