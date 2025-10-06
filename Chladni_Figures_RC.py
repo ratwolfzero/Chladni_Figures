@@ -278,6 +278,8 @@ class ChladniUI:
 
         self.mode_text = self.info_ax.text(
             0, 1, '', va='top', ha='left', fontsize=12)
+        self.mode_text.set_fontfamily('monospace')
+
         self.scan_ani = None
         self.resonance_window = None
         self.update(self.init_freq)
@@ -375,11 +377,23 @@ class ChladniUI:
                 modes_info.append((m, n, fmn, perc))
 
         modes_info.sort(key=lambda x: x[3], reverse=True)
-        text_str = "Contributing Modes (%):\n\n"
+        # --- Mode contribution table ---
+        modes_info.sort(key=lambda x: x[3], reverse=True)
         max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
+
+        # Header
+        text_str = (
+        "Contributing Modes (%)\n\n"
+        f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n"
+        + "-" * 32 + "\n"
+)
+
+        # Table rows
         for m, n, fmn, perc in modes_info[:max_modes]:
-            text_str += f"({m},{n}) f={fmn:.2f}: {perc:.1f}%\n"
+            text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
+
         self.mode_text.set_text(text_str)
+
 
         self.fig.canvas.draw_idle()
 
