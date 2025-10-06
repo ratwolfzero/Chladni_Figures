@@ -25,7 +25,7 @@ class Config:
     # =========================================================
     MAX_MODE = 15                   # Maximum mode indices m,n to compute
     RESONANCE_TOL = 0.02            # Frequency tolerance for resonance detection
-    MODE_WEIGHT_THRESHOLD = 1.1     # Minimum % weight for mode to be listed
+    MODE_WEIGHT_THRESHOLD = 1.5     # Minimum % weight for mode to be listed
     MAX_DISPLAY_MODES = None        # Limit number of modes shown (None = all)
 
     # =========================================================
@@ -278,7 +278,7 @@ class ChladniUI:
 
         self.mode_text = self.info_ax.text(
             0, 1, '', va='top', ha='left', fontsize=12)
-        self.mode_text.set_fontfamily('monospace')
+        self.mode_text.set_fontfamily('Monospace')
 
         self.scan_ani = None
         self.resonance_window = None
