@@ -10,7 +10,7 @@ class Config:
     # 🎛️ Frequency controls
     # =========================================================
     FREQ_RANGE = (1.0, 20.0)        # Range for driving frequency slider (Hz)
-    FREQ_STEP = 0.01                # Frequency slider step size
+    FREQ_STEP = 0.001               # Frequency slider step size
     INIT_FREQ = 5.0                 # Initial driving frequency (Hz)
 
     # =========================================================
