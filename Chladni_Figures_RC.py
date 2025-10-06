@@ -8,40 +8,42 @@ from typing import TypeAlias
 # =========================================================
 # 🎛️ Simulation Configuration
 # =========================================================
-
-
 class Config:
     # Frequency controls
-    FREQ_RANGE = (1.0, 20.0)        # Range for frequency slider
-    FREQ_STEP = 0.01                # Step size for frequency slider
-    INIT_FREQ = 5.0                 # Initial frequency
+    FREQ_RANGE = (1.0, 20.0)
+    FREQ_STEP = 0.01
+    INIT_FREQ = 5.0
 
     # Damping (gamma) controls
-    GAMMA_RANGE = (0.001, 0.15)     # Range for damping slider
-    GAMMA_STEP = 0.001              # Step size for damping slider
-    INIT_GAMMA = 0.01               # Default damping
+    GAMMA_RANGE = (0.001, 0.15)
+    GAMMA_STEP = 0.001
+    INIT_GAMMA = 0.01
 
     # Mode / resonance parameters
-    MAX_MODE = 15                   # m,n up to this number
-    RESONANCE_TOL = 0.02            # Tolerance for resonance tagging
-    MODE_WEIGHT_THRESHOLD = 1.1     # % threshold for list inclusion
-    MAX_DISPLAY_MODES = None        # Max number of modes shown (None = all)
+    MAX_MODE = 15
+    RESONANCE_TOL = 0.02
+    MODE_WEIGHT_THRESHOLD = 1.1
+    MAX_DISPLAY_MODES = None
 
     # Simulation resolution & scaling
-    RESOLUTION = 200                # Grid resolution
-    K = 1.0                         # Frequency scale factor
+    RESOLUTION = 200
+    K = 1.0
 
     # UI / Animation
-    SCAN_SPEED = 0.03               # Frequency increment during Auto Scan
-    SHOW_AXES = False               # Toggle axes visibility
-    # Frequency range around current frequency for resonance curve
-    RESONANCE_CURVE_RANGE = 2.0
-# =========================================================
+    SCAN_SPEED = 0.03
+    SHOW_AXES = False
+
+    # Resonance curve plot settings
+    RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
+    RESONANCE_CURVE_SAMPLES = 10000    # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]
 
 
+# =========================================================
+# 🧮 Chladni Simulator
+# =========================================================
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
 
@@ -56,14 +58,15 @@ class ChladniSimulator:
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
 
-        # Precompute modes
+        # Precompute mode shapes and frequencies
         self.mode_shapes = []
         self.mode_frequencies = []
         self._precompute_modes()
 
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
-            (m, n, f_mn) for (m, n), f_mn in zip(
+            (m, n, f_mn)
+            for (m, n), f_mn in zip(
                 [(m, n) for m in range(1, self.max_mode + 1)
                  for n in range(1, self.max_mode + 1)],
                 self.mode_frequencies
@@ -76,8 +79,7 @@ class ChladniSimulator:
             for n in range(1, self.max_mode + 1):
                 f_mn = self.k * np.sqrt(m ** 2 + n ** 2)
                 self.mode_frequencies.append(f_mn)
-                mode_shape = np.sin(m * np.pi * self.X) * \
-                    np.sin(n * np.pi * self.Y)
+                mode_shape = np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
                 self.mode_shapes.append(mode_shape)
 
         self.mode_frequencies = np.array(self.mode_frequencies)
@@ -85,16 +87,13 @@ class ChladniSimulator:
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
-        Z = np.sum(weights[:, np.newaxis, np.newaxis]
-                   * self.mode_shapes, axis=0)
+        Z = np.sum(weights[:, np.newaxis, np.newaxis] * self.mode_shapes, axis=0)
         return Z
 
     def compute_lorentzian_weights(self, f_range: np.ndarray, target_freq: float) -> np.ndarray:
-        """Compute Lorentzian weights for a specific mode across frequency range."""
         return 1.0 / ((f_range - target_freq) ** 2 + self.gamma ** 2)
 
     def get_closest_resonance_info(self, current_f: float) -> tuple[float, list[tuple[int, int]]]:
-        """Get the closest resonance frequency and its degenerate modes."""
         idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
         f_closest = self.mode_frequencies[idx_closest]
 
@@ -106,10 +105,12 @@ class ChladniSimulator:
         return f_closest, degenerate_modes
 
     def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
-        """Get Lorentzian weights for all modes at a given frequency."""
         return 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
 
 
+# =========================================================
+# 📈 Resonance Curve Window
+# =========================================================
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
 
@@ -119,74 +120,50 @@ class ResonanceCurveWindow:
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
         self.fig.canvas.manager.set_window_title('Lorentzian Resonance Curves')
 
-        # Track current state
         self.current_f = self.main_ui.freq_slider.val
-        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
-            self.current_f)
+        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(self.current_f)
         self.current_gamma = self.simulator.gamma
-
-        # Store references to markers for easy updates
         self.current_marker = None
 
-        # Initial setup
         self.setup_curve()
 
-        # Connect to main UI updates
+        # Connect updates
         self.main_ui.freq_slider.on_changed(self.update_current_freq)
         self.main_ui.gamma_slider.on_changed(self.update_gamma)
 
     def setup_curve(self) -> None:
-        """Set up or update the Lorentzian resonance curves."""
         self.ax.clear()
 
-        # Get current resonance info
-        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
-            self.current_f)
+        self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(self.current_f)
 
-        # Create frequency range around the resonance frequency
-        f_min = max(
-            Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
-        f_max = min(
-            Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
-        self.f_range = np.linspace(f_min, f_max, 500)
+        # Frequency range and sampling
+        f_min = max(Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
+        f_max = min(Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
+        self.f_range = np.linspace(f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
 
-        # Plot Lorentzian curves for the degenerate modes
         colors = plt.cm.Set1(np.linspace(0, 1, len(self.current_modes)))
 
         for (m, n), color in zip(self.current_modes, colors):
-            # All degenerate modes have the same frequency, so use current_resonance_freq
-            lorentzian = self.simulator.compute_lorentzian_weights(
-                self.f_range, self.current_resonance_freq)
-            self.ax.plot(self.f_range, lorentzian, '-', color=color, linewidth=2,
-                         label=f'Mode ({m},{n})')
+            lorentzian = self.simulator.compute_lorentzian_weights(self.f_range, self.current_resonance_freq)
+            self.ax.plot(self.f_range, lorentzian, '-', color=color, linewidth=2, label=f'Mode ({m},{n})')
 
-        # Mark the resonance frequency
-        # Maximum Lorentzian value at resonance
+        # Add resonance frequency and marker
         max_weight = 1.0 / (self.simulator.gamma ** 2)
         self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7,
                         label=f'Resonance: f={self.current_resonance_freq:.2f}')
-
-        # Add current frequency marker
         self.add_current_marker()
 
-        # Add annotations for key features
-        self.ax.text(0.02, 0.98, f'γ = {self.simulator.gamma:.3f}',
-                     transform=self.ax.transAxes, verticalalignment='top',
-                     bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-
-        # Show FWHM (Full Width at Half Maximum)
+        # Info text and FWHM
         fwhm = 2 * self.simulator.gamma
         half_max = max_weight / 2
-        self.ax.axhline(half_max, color='gray', linestyle=':',
-                        alpha=0.5, label='Half Maximum')
-        self.ax.text(0.02, 0.88, f'FWHM = {fwhm:.3f}',
-                     transform=self.ax.transAxes, verticalalignment='top',
-                     bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        self.ax.axhline(half_max, color='gray', linestyle=':', alpha=0.5, label='Half Maximum')
+        self.ax.text(0.02, 0.98, f'γ = {self.simulator.gamma:.3f}', transform=self.ax.transAxes,
+                     va='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        self.ax.text(0.02, 0.88, f'FWHM = {fwhm:.3f}', transform=self.ax.transAxes,
+                     va='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-        # Mode information in title
         modes_str = ', '.join([f"({m},{n})" for m, n in self.current_modes])
-        self.ax.set_title(
-            f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
+        self.ax.set_title(f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
 
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Resonance Weight')
@@ -198,10 +175,7 @@ class ResonanceCurveWindow:
         self.fig.canvas.draw_idle()
 
     def add_current_marker(self) -> None:
-        """Add the current frequency marker to the plot."""
-        # Get current weight for the resonance mode
-        current_weights = self.simulator.get_mode_weight_at_frequency(
-            self.current_f)
+        current_weights = self.simulator.get_mode_weight_at_frequency(self.current_f)
         mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
                      for n in range(1, self.simulator.max_mode + 1)]
 
@@ -211,61 +185,42 @@ class ResonanceCurveWindow:
                 resonance_weight = current_weights[idx]
                 break
 
-        # Add current frequency marker
         self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8,
                                             label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
 
     def update_current_freq(self, val: float) -> None:
-        """Update when frequency changes."""
         if not plt.fignum_exists(self.fig.number):
             return
 
         new_f = self.main_ui.freq_slider.val
-        new_resonance_freq, new_modes = self.simulator.get_closest_resonance_info(
-            new_f)
+        new_resonance_freq, new_modes = self.simulator.get_closest_resonance_info(new_f)
 
-        # Check if we've moved to a different resonance by comparing both frequency AND modes
         resonance_changed = False
-
-        # Check if resonance frequency changed significantly
-        if abs(new_resonance_freq - self.current_resonance_freq) > 1e-6:  # More precise tolerance
+        if abs(new_resonance_freq - self.current_resonance_freq) > 1e-6:
             resonance_changed = True
-
-        # Also check if modes changed (in case of very close but different resonances)
         if set(new_modes) != set(self.current_modes):
             resonance_changed = True
-
-        # Check if current frequency is outside the current plot range
         if hasattr(self, 'f_range') and (new_f < self.f_range[0] or new_f > self.f_range[-1]):
             resonance_changed = True
 
         self.current_f = new_f
-
         if resonance_changed:
-            # Different resonance - update entire curve
             self.current_resonance_freq = new_resonance_freq
             self.current_modes = new_modes
             self.setup_curve()
         else:
-            # Same resonance - just update marker
             self.update_current_marker()
 
     def update_gamma(self, val: float) -> None:
-        """Update when gamma changes."""
         if plt.fignum_exists(self.fig.number):
-            # Gamma change always requires full curve update
             self.current_gamma = self.simulator.gamma
             self.setup_curve()
 
     def update_current_marker(self) -> None:
-        """Update just the current frequency marker."""
         if self.current_marker is not None:
-            # Remove old marker
             self.current_marker.remove()
 
-        # Get current weight for the resonance mode
-        current_weights = self.simulator.get_mode_weight_at_frequency(
-            self.current_f)
+        current_weights = self.simulator.get_mode_weight_at_frequency(self.current_f)
         mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
                      for n in range(1, self.simulator.max_mode + 1)]
 
@@ -275,21 +230,20 @@ class ResonanceCurveWindow:
                 resonance_weight = current_weights[idx]
                 break
 
-        # Add new current frequency marker
         self.current_marker, = self.ax.plot(self.current_f, resonance_weight, 'go', markersize=8,
                                             label=f'Current: f={self.current_f:.2f}, weight={resonance_weight:.3f}')
-
-        # Update legend
         handles, labels = self.ax.get_legend_handles_labels()
         by_label = dict(zip(labels, handles))
         self.ax.legend(by_label.values(), by_label.keys())
-
         self.fig.canvas.draw_idle()
 
     def show(self) -> None:
         plt.show()
 
 
+# =========================================================
+# 🖥️ Main Chladni UI
+# =========================================================
 class ChladniUI:
     """Matplotlib UI for Chladni simulator."""
 
@@ -463,6 +417,9 @@ class ChladniUI:
         plt.show()
 
 
+# =========================================================
+# 🚀 Main Entry
+# =========================================================
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
