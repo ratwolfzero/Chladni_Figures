@@ -17,7 +17,7 @@ class Config:
     # =========================================================
     # ⚖️ Damping (gamma) controls
     # =========================================================
-    GAMMA_RANGE = (0.001, 0.15)  # Range for damping coefficient γ
+    GAMMA_RANGE = (0.001, 0.15)     # Range for damping coefficient γ
     GAMMA_STEP = 0.001              # Damping slider step size
     INIT_GAMMA = 0.01               # Default damping value (γ)
 
@@ -28,12 +28,15 @@ class Config:
     RESONANCE_TOL = 0.02            # Frequency tolerance for resonance detection
     MODE_WEIGHT_THRESHOLD = 1.5     # Minimum % weight for mode to be listed
     MAX_DISPLAY_MODES = None        # Limit number of modes shown (None = all)
+    EPS_FREQ_COMPARE = 1e-6         # Small epsilon for frequency equality check
 
     # =========================================================
     # 🧮 Simulation grid & scaling
     # =========================================================
     RESOLUTION = 200                # Grid resolution for spatial mode shapes
     K = 1.0                         # Frequency scaling factor for eigenmodes
+    # Exponent for magnitude visualization (|Z|^exp)
+    VISUAL_EXPONENT = 0.2
 
     # =========================================================
     # 🖥️ UI & animation behavior
@@ -94,7 +97,7 @@ class ChladniSimulator:
                 self.mode_shapes.append(mode_shape)
 
         self.mode_frequencies = np.array(self.mode_frequencies)
-        self.mode_shapes = np.array(self.mode_shapes, dtype=np.float32)
+        self.mode_shapes = np.array(self.mode_shapes, dtype=np.float64)
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
@@ -112,7 +115,7 @@ class ChladniSimulator:
         mode_list = [(m, n) for m in range(1, self.max_mode + 1)
                      for n in range(1, self.max_mode + 1)]
         degenerate_modes = [(m, n) for idx, (m, n) in enumerate(mode_list)
-                            if abs(self.mode_frequencies[idx] - f_closest) < 1e-6]
+                            if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE]
 
         return f_closest, degenerate_modes
 
@@ -132,8 +135,7 @@ class ResonanceCurveWindow:
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
         self.fig.canvas.manager.set_window_title('Lorentzian Resonance Curves')
 
-        self.current_f_raw = self.main_ui.freq_slider.val  # Raw for computations
-        # Rounded for detection/display
+        self.current_f_raw = self.main_ui.freq_slider.val
         self.current_f_display = round(self.current_f_raw, 2)
         self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
             self.current_f_display)
@@ -152,7 +154,6 @@ class ResonanceCurveWindow:
         self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
             self.current_f_display)
 
-        # Frequency range and sampling
         f_min = max(
             Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
         f_max = min(
@@ -168,13 +169,11 @@ class ResonanceCurveWindow:
             self.ax.plot(self.f_range, lorentzian, '-', color=color,
                          linewidth=2, label=f'Mode ({m},{n})')
 
-        # Add resonance frequency and marker
         max_weight = 1.0 / (self.simulator.gamma ** 2)
         self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7,
                         label=f'Resonance: f={self.current_resonance_freq:.2f}')
         self.add_current_marker()
 
-        # Info text and FWHM
         fwhm = 2 * self.simulator.gamma
         half_max = max_weight / 2
         self.ax.axhline(half_max, color='gray', linestyle=':',
@@ -205,7 +204,7 @@ class ResonanceCurveWindow:
 
         resonance_weight = 0
         for idx, (m, n) in enumerate(mode_list):
-            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < 1e-6:
+            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
                 resonance_weight = current_weights[idx]
                 break
 
@@ -222,7 +221,7 @@ class ResonanceCurveWindow:
             new_f_display)
 
         resonance_changed = False
-        if abs(new_resonance_freq - self.current_resonance_freq) > 1e-6:
+        if abs(new_resonance_freq - self.current_resonance_freq) > Config.EPS_FREQ_COMPARE:
             resonance_changed = True
         if set(new_modes) != set(self.current_modes):
             resonance_changed = True
@@ -254,7 +253,7 @@ class ResonanceCurveWindow:
 
         resonance_weight = 0
         for idx, (m, n) in enumerate(mode_list):
-            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < 1e-6:
+            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
                 resonance_weight = current_weights[idx]
                 break
 
@@ -289,9 +288,9 @@ class ChladniUI:
         self.init_freq_display = round(self.init_freq_raw, 2)
         Z_init = self.simulator.compute_displacement(self.init_freq_raw)
         self.im = self.ax.imshow(
-            np.abs(Z_init) ** 0.2, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
+            np.abs(Z_init) ** Config.VISUAL_EXPONENT, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.cbar = plt.colorbar(
-            self.im, ax=self.ax, label='Displacement (|Z|^0.2)')
+            self.im, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
         self._setup_axes()
         self._setup_widgets()
 
@@ -346,31 +345,27 @@ class ChladniUI:
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
 
-        # New Resonance Curve button
         ax_resonance = plt.axes([0.50, 0.1, 0.15, 0.04])
         self.resonance_button = Button(ax_resonance, 'Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
     def open_resonance_curve(self, event) -> None:
-        """Open the resonance curve window."""
         if self.resonance_window is None or not plt.fignum_exists(self.resonance_window.fig.number):
             self.resonance_window = ResonanceCurveWindow(self.simulator, self)
         plt.figure(self.resonance_window.fig.number)
         plt.show()
 
     def update(self, val: float) -> None:
-        f_compute = val  # Raw value for precise computations
-        # Rounded for display and resonance detection
+        f_compute = val
         f_display = round(val, 2)
 
         Z = self.simulator.compute_displacement(f_compute)
-        Z_plot = np.abs(Z) ** 0.2
+        Z_plot = np.abs(Z) ** Config.VISUAL_EXPONENT
 
         self.im.set_array(Z_plot)
         self.im.set_clim(Z_plot.min(), Z_plot.max())
         self.cbar.update_normal(self.im)
 
-        # --- Resonance / degenerate modes ---
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
             f_display)
 
@@ -382,7 +377,6 @@ class ChladniUI:
 
         self.ax.set_title(title)
 
-        # --- Detailed mode table ---
         weights = 1.0 / ((f_compute - self.simulator.mode_frequencies)
                          ** 2 + self.simulator.gamma ** 2)
         total_weight = np.sum(weights)
@@ -399,23 +393,18 @@ class ChladniUI:
                 modes_info.append((m, n, fmn, perc))
 
         modes_info.sort(key=lambda x: x[3], reverse=True)
-        # --- Mode contribution table ---
-        modes_info.sort(key=lambda x: x[3], reverse=True)
         max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
 
-        # Header
         text_str = (
             "Contributing Modes (%)\n\n"
             f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n"
             + "-" * 32 + "\n"
         )
 
-        # Table rows
         for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
 
         self.mode_text.set_text(text_str)
-
         self.fig.canvas.draw_idle()
 
     def update_gamma(self, val: float) -> None:
