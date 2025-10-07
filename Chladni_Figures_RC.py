@@ -16,7 +16,7 @@ class Config:
     # =========================================================
     # ⚖️ Damping (gamma) controls
     # =========================================================
-    GAMMA_RANGE = (0.000001, 0.15)  # Range for damping coefficient γ
+    GAMMA_RANGE = (0.001, 0.15)  # Range for damping coefficient γ
     GAMMA_STEP = 0.001              # Damping slider step size
     INIT_GAMMA = 0.01               # Default damping value (γ)
 
@@ -44,7 +44,7 @@ class Config:
     # 📈 Resonance curve plot settings
     # =========================================================
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
-    RESONANCE_CURVE_SAMPLES = 10000 # Number of sampling points per Lorentzian
+    RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
 
 
 
