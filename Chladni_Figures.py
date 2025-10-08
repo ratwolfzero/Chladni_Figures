@@ -35,7 +35,8 @@ class Config:
     # =========================================================
     RESOLUTION = 200                # Grid resolution for spatial mode shapes
     K = 1.0                         # Frequency scaling factor for eigenmodes
-    VISUAL_EXPONENT = 0.2           # Exponent for magnitude visualization (|Z|^exp)
+    # Exponent for magnitude visualization (|Z|^exp)
+    VISUAL_EXPONENT = 0.2
 
     # =========================================================
     # 🖥️ UI & animation behavior
@@ -47,7 +48,7 @@ class Config:
     # 📈 Resonance curve plot settings
     # =========================================================
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
-    RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
+    RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]
@@ -184,7 +185,7 @@ class ResonanceCurveWindow:
 
         modes_str = ', '.join([f"({m},{n})" for m, n in self.current_modes])
         self.ax.set_title(
-            f'Lorentzian Resonance Curves for Mode(s): {modes_str}')
+            f'Lorentzian Resonance Curves for Mode(s): {modes_str}\n The height of the amplitude remains constant, only the width changes, with the y-axis scaled by a variable weight.')
 
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Resonance Weight')
@@ -377,7 +378,8 @@ class ChladniUI:
         else:
             plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
             cmap = 'plasma'
-            vmin, vmax = np.min(plot_data), np.max(plot_data)  # Explicit min/max for gradient
+            vmin, vmax = np.min(plot_data), np.max(
+                plot_data)  # Explicit min/max for gradient
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
 
         # Update imshow
