@@ -35,8 +35,7 @@ class Config:
     # =========================================================
     RESOLUTION = 200                # Grid resolution for spatial mode shapes
     K = 1.0                         # Frequency scaling factor for eigenmodes
-    # Exponent for magnitude visualization (|Z|^exp)
-    VISUAL_EXPONENT = 0.2
+    VISUAL_EXPONENT = 0.2           # Exponent for magnitude visualization (|Z|^exp)
 
     # =========================================================
     # 🖥️ UI & animation behavior
@@ -48,7 +47,7 @@ class Config:
     # 📈 Resonance curve plot settings
     # =========================================================
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
-    RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
+    RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]
@@ -272,23 +271,25 @@ class ResonanceCurveWindow:
 # 🖥️ Main Chladni UI
 # =========================================================
 class ChladniUI:
-    """Matplotlib UI for Chladni simulator."""
+    """Matplotlib UI for Chladni simulator with phase view toggle."""
 
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
+        self.phase_view = False  # Initialize to magnitude view
         self.fig = plt.figure(figsize=(12, 8))
         gs = GridSpec(1, 2, figure=self.fig, width_ratios=[3, 1])
         self.ax = self.fig.add_subplot(gs[0])
         self.info_ax = self.fig.add_subplot(gs[1])
         self.info_ax.axis('off')
-        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.32, top=0.95)
+        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
 
         # Initialize plot
         self.init_freq_raw = Config.INIT_FREQ
         self.init_freq_display = round(self.init_freq_raw, 2)
         Z_init = self.simulator.compute_displacement(self.init_freq_raw)
+        plot_data = np.abs(Z_init) ** Config.VISUAL_EXPONENT
         self.im = self.ax.imshow(
-            np.abs(Z_init) ** Config.VISUAL_EXPONENT, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
+            plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.cbar = plt.colorbar(
             self.im, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
         self._setup_axes()
@@ -349,6 +350,14 @@ class ChladniUI:
         self.resonance_button = Button(ax_resonance, 'Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
+        ax_toggle = plt.axes([0.67, 0.1, 0.15, 0.04])
+        self.toggle_button = Button(ax_toggle, 'Toggle Phase View')
+        self.toggle_button.on_clicked(self.toggle_phase_view)
+
+    def toggle_phase_view(self, event) -> None:
+        self.phase_view = not self.phase_view
+        self.update(self.freq_slider.val)
+
     def open_resonance_curve(self, event) -> None:
         if self.resonance_window is None or not plt.fignum_exists(self.resonance_window.fig.number):
             self.resonance_window = ResonanceCurveWindow(self.simulator, self)
@@ -360,10 +369,25 @@ class ChladniUI:
         f_display = round(val, 2)
 
         Z = self.simulator.compute_displacement(f_compute)
-        Z_plot = np.abs(Z) ** Config.VISUAL_EXPONENT
+        if self.phase_view:
+            plot_data = Z
+            cmap = 'coolwarm'
+            vmin, vmax = -np.max(np.abs(Z)), np.max(np.abs(Z))
+            label = 'Signed Displacement (Phase View)'
+        else:
+            plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
+            cmap = 'plasma'
+            vmin, vmax = np.min(plot_data), np.max(plot_data)  # Explicit min/max for gradient
+            label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
 
-        self.im.set_array(Z_plot)
-        self.im.set_clim(Z_plot.min(), Z_plot.max())
+        # Update imshow
+        self.im.set_array(plot_data)
+        self.im.set_cmap(cmap)
+        self.im.set_clim(vmin, vmax)
+
+        # Reset and update colorbar
+        self.cbar.remove()
+        self.cbar = plt.colorbar(self.im, ax=self.ax, label=label)
         self.cbar.update_normal(self.im)
 
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
