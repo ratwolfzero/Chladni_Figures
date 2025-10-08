@@ -106,9 +106,15 @@ acts as a **resonance factor**, modulating the effective (weighted) displacement
 The damping term is implemented as $γ^2$, where $γ$ is the damping factor. This parameter controls how sharply or broadly modes are excited. A small $γ$ produces narrow, isolated resonances, while a larger value blends contributions from neighboring modes.
 
 ![Chladni](images&Animation/Chladni_2.png)
+![Chladni](images&Animation/Chladni_5.png)
 ![Chladni](images&Animation/membrane_slow.gif)
 
 Top: A 2D static plot showing the time-independent displacement amplitude $Z(x,y,f)$ of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
+
+Middle:A Phase View showing the signed displacement Z(x,y,f) of the steady-state response.
+Red regions indicate positive displacement (in-phase antinodes),
+blue regions show negative displacement (out-of-phase antinodes),
+and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
 
 Bottom (only for comparison): An animated 3D plot of free oscillation, showing the time-dependent displacement field $Z(x,y,t)$ of the degenerate modes (3,5) and (5,3), with cosine-only time dependence. The cosine term corresponds to the membrane starting at maximum height with zero initial velocity, producing stable nodal lines at $Z=0$ that align with the 2D plot. Negative antinodes appear darker unlike the 2D plot’s uniform magnitude. Vibrations are amplified and slowed for visual clarity.
 
