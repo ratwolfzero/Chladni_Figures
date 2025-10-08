@@ -49,22 +49,6 @@ class Config:
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
     RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
 
-    # =========================================================
-    # 📝 View descriptions
-    # =========================================================
-    MAGNITUDE_VIEW_DESC = (
-        "Magnitude View: Shows the time-independent displacement amplitude |Z(x,y,f)|^{0.2} "
-        "of the steady-state response to driving frequency f. Dark regions indicate nodal lines "
-        "where displacement is zero; bright regions show antinodes. The magnitude makes positive "
-        "and negative antinodes indistinguishable, mimicking experimental Chladni patterns."
-    )
-    PHASE_VIEW_DESC = (
-        "Phase View: Displays the signed displacement Z(x,y,f) of the steady-state response. "
-        "Red regions indicate positive displacement (in-phase antinodes), blue regions show "
-        "negative displacement (out-of-phase antinodes), and white/gray lines mark nodal lines "
-        "where Z ≈ 0. This view highlights the wave's phase structure."
-    )
-
 
 Mode: TypeAlias = tuple[int, int, float]
 
@@ -287,7 +271,7 @@ class ResonanceCurveWindow:
 # 🖥️ Main Chladni UI
 # =========================================================
 class ChladniUI:
-    """Matplotlib UI for Chladni simulator with phase view toggle and view descriptions below buttons."""
+    """Matplotlib UI for Chladni simulator with phase view toggle."""
 
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
@@ -297,7 +281,7 @@ class ChladniUI:
         self.ax = self.fig.add_subplot(gs[0])
         self.info_ax = self.fig.add_subplot(gs[1])
         self.info_ax.axis('off')
-        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.50, top=0.95)
+        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
 
         # Initialize plot
         self.init_freq_raw = Config.INIT_FREQ
@@ -311,17 +295,9 @@ class ChladniUI:
         self._setup_axes()
         self._setup_widgets()
 
-        # Mode information text
         self.mode_text = self.info_ax.text(
             0, 1, '', va='top', ha='left', fontsize=12)
         self.mode_text.set_fontfamily('Monospace')
-
-        # View description text in new axes spanning full width
-        ax_desc = plt.axes([0.05, 0.05, 0.9, 0.05])
-        ax_desc.axis('off')
-        self.view_desc_text = ax_desc.text(
-            0, 1, Config.MAGNITUDE_VIEW_DESC, va='top', ha='left', fontsize=10,
-            wrap=True, bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
         self.scan_ani = None
         self.resonance_window = None
@@ -340,41 +316,41 @@ class ChladniUI:
             self.ax.set_ylabel('')
 
     def _setup_widgets(self) -> None:
-        ax_freq = plt.axes([0.05, 0.35, 0.8, 0.03])
+        ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
         self.freq_slider = Slider(
             ax_freq, 'f.', *Config.FREQ_RANGE, valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
         self.freq_slider.on_changed(self.update)
 
-        ax_gamma = plt.axes([0.05, 0.30, 0.8, 0.03])
+        ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
             ax_gamma, 'γ', *Config.GAMMA_RANGE, valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
         self.gamma_slider.on_changed(self.update_gamma)
 
-        ax_prev = plt.axes([0.05, 0.20, 0.08, 0.04])
+        ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
         self.prev_button = Button(ax_prev, '◀')
         self.prev_button.on_clicked(self.jump_to_prev_resonance)
 
-        ax_next = plt.axes([0.14, 0.20, 0.08, 0.04])
+        ax_next = plt.axes([0.14, 0.1, 0.08, 0.04])
         self.next_button = Button(ax_next, '▶')
         self.next_button.on_clicked(self.jump_to_next_resonance)
 
-        plt.text(x=0.135, y=0.16, s="Resonance Navigation",
+        plt.text(x=0.135, y=0.06, s="Resonance Navigation",
                  ha='center', va='center', fontsize=10, fontweight='bold',
                  transform=self.fig.transFigure)
 
-        ax_scan = plt.axes([0.25, 0.20, 0.1, 0.04])
+        ax_scan = plt.axes([0.25, 0.1, 0.1, 0.04])
         self.scan_button = Button(ax_scan, 'Auto Scan')
         self.scan_button.on_clicked(self.start_scan)
 
-        ax_stop = plt.axes([0.37, 0.20, 0.1, 0.04])
+        ax_stop = plt.axes([0.37, 0.1, 0.1, 0.04])
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
 
-        ax_resonance = plt.axes([0.50, 0.20, 0.15, 0.04])
+        ax_resonance = plt.axes([0.50, 0.1, 0.15, 0.04])
         self.resonance_button = Button(ax_resonance, 'Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
-        ax_toggle = plt.axes([0.67, 0.20, 0.15, 0.04])
+        ax_toggle = plt.axes([0.67, 0.1, 0.15, 0.04])
         self.toggle_button = Button(ax_toggle, 'Toggle Phase View')
         self.toggle_button.on_clicked(self.toggle_phase_view)
 
@@ -398,13 +374,11 @@ class ChladniUI:
             cmap = 'coolwarm'
             vmin, vmax = -np.max(np.abs(Z)), np.max(np.abs(Z))
             label = 'Signed Displacement (Phase View)'
-            self.view_desc_text.set_text(Config.PHASE_VIEW_DESC)
         else:
             plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
             cmap = 'plasma'
-            vmin, vmax = np.min(plot_data), np.max(plot_data)
+            vmin, vmax = np.min(plot_data), np.max(plot_data)  # Explicit min/max for gradient
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
-            self.view_desc_text.set_text(Config.MAGNITUDE_VIEW_DESC)
 
         # Update imshow
         self.im.set_array(plot_data)
