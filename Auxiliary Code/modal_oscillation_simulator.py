@@ -57,7 +57,7 @@ class MembraneAnimation:
         self.ax.view_init(elev=30, azim=-45)
 
         Z0 = self.displacement(0)
-        self.surf = self.ax.plot_surface(self.X, self.Y, Z0, cmap="plasma",
+        self.surf = self.ax.plot_surface(self.X, self.Y, Z0, cmap="viridis",
                                          antialiased=True, rstride=1, cstride=1, alpha=0.8)
 
     def displacement(self, t):
@@ -71,7 +71,7 @@ class MembraneAnimation:
         t = frame / self.display_fps
         Z = self.displacement(t)
         self.surf.remove()
-        self.surf = self.ax.plot_surface(self.X, self.Y, Z, cmap="plasma",
+        self.surf = self.ax.plot_surface(self.X, self.Y, Z, cmap="viridis",
                                          antialiased=True, rstride=1, cstride=1, alpha=0.8)
         return self.surf,
 
@@ -102,8 +102,8 @@ class MembraneAnimation:
 
 if __name__ == "__main__":
     anim = MembraneAnimation(
-        save_gif=False,
-        gif_filename="membrane_slow_azim-90.gif",
+        save_gif=True,
+        gif_filename="membrane_slow.gif",
         gif_fps=5
     )
     anim.animate()
