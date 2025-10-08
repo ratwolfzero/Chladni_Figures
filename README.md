@@ -44,7 +44,7 @@ Chladni figures laid foundations for acoustics, wave physics, and applications l
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-The general displacement field of a single vibrational eigenmode  ((m,n)) on a membrane of size $L_x \times L_y$ is given by:
+The displacement field of a single vibrational eigenmode  ((m,n)) on a membrane of size $L_x \times L_y$ is described  by:
 
 $$
 Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
@@ -70,14 +70,13 @@ $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
 
-In reality, the membrane’s motion can involve several eigenmodes vibrating simultaneously.
-The single-mode form above describes the simplest case, and the most general **free-oscillation field** is given by:
+The membrane’s motion during free oscillation, when it vibrates naturally without external forces, can be a superposition of multiple modes:
 
 $$
 Z(x, y, t) = \sum_{m=1}^{M} \sum_{n=1}^{N} \left[ A_{mn} \cos(2\pi f_{mn} t)+ B_{mn} \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m\pi x}{L_x}\right) \sin\left(\frac{n\pi y}{L_y}\right)
 $$
 
->Symmetric geometries such as the square membrane (Lx = Ly) exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy, a hallmark of symmetric geometries, enhances pattern variety in both this membrane simulation and real Chladni experiments.
+>Symmetric geometries such as the square membrane (Lx = Ly) can exhibit degenerate modes: distinct nodal patterns with different shapes but the same eigenfrequency — for example, the (3,5) and (5,3) modes. This degeneracy, a hallmark of symmetric geometries, enhances pattern variety in both this membrane simulation and real Chladni experiments.
 
 ![Chladni](images&Animation/membrane_slow.gif)
 >Animated 3D plot of free oscillation, showing the time-dependent displacement field $Z(x,y,t)$ of the degenerate modes (3,5) and (5,3), with cosine-only time dependence. The cosine term corresponds to the membrane starting at maximum height with zero initial velocity, producing stable nodal lines at $Z=0$. Vibrations are amplified and slowed for visual clarity.
