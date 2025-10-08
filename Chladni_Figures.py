@@ -41,7 +41,7 @@ class Config:
     # =========================================================
     # 🖥️ UI & animation behavior
     # =========================================================
-    SCAN_SPEED = 0.03               # Frequency step per frame during Auto Scan
+    SCAN_SPEED = 0.02               # Frequency step per frame during Auto Scan
     SHOW_AXES = False               # Toggle for showing coordinate axes
 
     # =========================================================
@@ -465,7 +465,7 @@ class ChladniUI:
             return self.im,
 
         self.scan_ani = FuncAnimation(
-            self.fig, update_scan, interval=50, blit=True, cache_frame_data=False)
+            self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
         self.fig.canvas.draw_idle()
 
     def stop_scan(self, event) -> None:
