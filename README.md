@@ -126,7 +126,7 @@ and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wav
 
 ---
 
-1. **Visualization:**
+**Visualization:**
 
 - The magnitude view shows the absolute displacement as a colormap of |Z|^0.2, enhancing the contrast of nodal lines.
 Dark regions correspond to nodal lines, while bright regions mark anti-nodes where the plate vibrates most strongly.
@@ -145,7 +145,7 @@ Peak heights indicate the relative excitation strength of each mode at the curre
   
    >**Note**: At small γ, numerical precision may slightly affect which mode is listed first, especially for degenerate pairs with identical eigenfrequencies. For larger γ, the title highlights the modes most responsible for the visible pattern.
 
-1. **Approximation and Model Choice:**
+**Approximation and Model Choice:**
 
 - Particles are not explicitly simulated.
 
