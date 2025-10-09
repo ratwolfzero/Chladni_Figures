@@ -267,7 +267,7 @@ Its role in the simulation is multi-faceted:
 | **▶ Next Resonance**     | Button | —                          | —       | Jumps to the next higher eigenfrequency (resonance).                                                     |   |                                      |
 | **Auto Scan**            | Button | —                          | —       | Automatically sweeps the driving frequency across the full range.                                        |   |                                      |
 | **Stop Scan**            | Button | —                          | —       | Stops the automatic frequency sweep.                                                                     |   |                                      |
-| **Toggle Phase View**    | Button | —                          | —       | Switches between **magnitude view** (                                                                    | Z | ^0.2) and **signed phase view** (Z). |
+| **Toggle Phase View**    | Button | —                          | —       | Switches between **magnitude view** (                                                                    | Z |) and **signed phase view** (Z). |
 | **Resonance Curves**     | Button | —                          | —       | Opens a separate window displaying Lorentzian resonance curves near the current frequency.               |   |                                      |
 
 ---
