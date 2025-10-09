@@ -13,8 +13,10 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Historical Context](#historical-context)
   - [Physical Principles of Simulation (Free Oscillation at Eigenfrequency)](#physical-principles-of-simulation-free-oscillation-at-eigenfrequency)
   - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency)
-  - [Visualization:](#visualization)
-  - [Approximation and Model Choice:](#approximation-and-model-choice)
+  - [Visualization](#visualization)
+    - [The Magnitude View](#the-magnitude-view)
+    - [The Phase View](#the-phase-view)
+  - [Approximation and Model Choice](#approximation-and-model-choice)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -117,7 +119,9 @@ The damping term is implemented as $γ^2$, where $γ$ is the damping factor. Thi
 
 ---
 
-## Visualization:
+## Visualization
+
+### The Magnitude View
 
 - The magnitude view shows the absolute displacement as a colormap of |Z|^0.2, enhancing the contrast of nodal lines.
 Dark regions correspond to nodal lines, while bright regions mark anti-nodes where the plate vibrates most strongly.
@@ -133,6 +137,9 @@ When f is near a resonance, the title also lists the dominant degenerate mode(s)
 
 - A detailed contribution table accompanies the plot, showing all significant modes with their indices (m, n), eigenfrequencies, and relative excitation percentages.
 This table gives a quantitative account of the modal superposition that shapes the visible pattern, allowing users to see precisely how multiple modes combine.
+
+### The Phase View
+
 - The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
 This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
 
@@ -151,7 +158,7 @@ Peak heights indicate the relative excitation strength of each mode at the curre
 
 ![Chladni](images&Animation/Chladni_4.png)
 
-## Approximation and Model Choice:
+## Approximation and Model Choice
 
 - Particles are not explicitly simulated.
 
