@@ -259,16 +259,16 @@ Its role in the simulation is multi-faceted:
 
 ## Controls
 
-| Control Name             | Type   | Range / Options            | Default | Function                                                                                                 |   |                                      |
-| :----------------------- | :----- | :------------------------- | :------ | :------------------------------------------------------------------------------------------------------- | - | ------------------------------------ |
-| **Frequency Slider**     | Slider | 1.0 – 20.0 Hz (step 0.001) | 5.0 Hz  | Adjusts the driving frequency to explore resonant modes.                                                 |   |                                      |
-| **γ (Damping) Slider**   | Slider | 0.001 – 0.15 (step 0.001)  | 0.01    | Controls damping factor γ — lower γ = sharper, symmetric patterns; higher γ = blended, complex patterns. |   |                                      |
-| **◀ Previous Resonance** | Button | —                          | —       | Jumps to the next lower eigenfrequency (resonance).                                                      |   |                                      |
-| **▶ Next Resonance**     | Button | —                          | —       | Jumps to the next higher eigenfrequency (resonance).                                                     |   |                                      |
-| **Auto Scan**            | Button | —                          | —       | Automatically sweeps the driving frequency across the full range.                                        |   |                                      |
-| **Stop Scan**            | Button | —                          | —       | Stops the automatic frequency sweep.                                                                     |   |                                      |
-| **Toggle Phase View**    | Button | —                          | —       | Switches between **magnitude view** (                                                                    | Z |) and **signed phase view** (Z). |
-| **Resonance Curves**     | Button | —                          | —       | Opens a separate window displaying Lorentzian resonance curves near the current frequency.               |   |                                      |
+| Control                  | Type   | Range / Options            | Default | Function                                                                                        |
+| :----------------------- | :----- | :------------------------- | :------ | :---------------------------------------------------------------------------------------------- |
+| **Frequency Slider**     | Slider | 1.0 – 20.0 Hz (step 0.001) | 5.0 Hz  | Adjusts the driving frequency to explore resonant modes.                                        |
+| **γ (Damping) Slider**   | Slider | 0.001 – 0.15 (step 0.001)  | 0.01    | Controls damping γ — lower γ gives sharper, symmetric modes; higher γ blends and broadens them. |
+| **◀ Previous Resonance** | Button | —                          | —       | Jumps to the next lower eigenfrequency (resonance).                                             |
+| **▶ Next Resonance**     | Button | —                          | —       | Jumps to the next higher eigenfrequency (resonance).                                            |
+| **Auto Scan**            | Button | —                          | —       | Automatically sweeps the driving frequency across the range.                                    |
+| **Stop Scan**            | Button | —                          | —       | Stops the automatic frequency sweep.                                                            |
+| **Toggle Phase View**    | Button | —                          | —       | Switches between **magnitude view** (‖Z‖^0.2) and **phase view** (Z).                           |
+| **Resonance Curves**     | Button | —                          | —       | Opens a window showing Lorentzian resonance curves near the current frequency.                  |
 
 ---
 
