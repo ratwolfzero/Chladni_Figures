@@ -16,6 +16,7 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Visualization](#visualization)
     - [The Magnitude View](#the-magnitude-view)
     - [The Phase View](#the-phase-view)
+    - [The Resonant Vurves](#the-resonant-vurves)
   - [Approximation and Model Choice](#approximation-and-model-choice)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
@@ -152,6 +153,8 @@ Bottom: A Phase View showing the signed displacement Z(x,y,f) of the steady-stat
 Red regions indicate positive displacement (in-phase antinodes),
 blue regions show negative displacement (out-of-phase antinodes),
 and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
+
+### The Resonant Vurves
 
 - The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
 Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
