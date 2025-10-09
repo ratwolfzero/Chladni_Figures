@@ -131,10 +131,10 @@ and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wav
 - The magnitude view shows the absolute displacement as a colormap of |Z|^0.2, enhancing the contrast of nodal lines.
 Dark regions correspond to nodal lines, while bright regions mark anti-nodes where the plate vibrates most strongly.
 - The resulting superposition, modulated by the damping factor γ, captures the richness of real Chladni patterns.
-Although the simulation uses a single, tunable driving frequency, real systems experience mode broadening due to:
-Bowing or driving forces — which introduce energy into multiple nearby modes.
-Physical imperfections — non-uniform plate thickness, material heterogeneity, or boundary irregularities.
-The damping factor γ effectively mimics both effects, allowing several resonances to contribute simultaneously to the observed pattern.
+Although the simulation uses a single, tunable driving frequency, real systems experience mode broadening due to:  
+  - Bowing or driving forces — which introduce energy into multiple nearby modes.
+  - Physical imperfections — non-uniform plate thickness, material heterogeneity, or boundary irregularities.
+    The damping factor γ effectively mimics both effects, allowing several resonances to contribute simultaneously to the observed pattern.
 - The plot title displays the current driving frequency f.
 When f is close to a resonance, the title also lists all degenerate modes (m, n) contributing to that resonance, along with their eigenfrequencies fₘₙ.
 This provides both a quick visual cue and a quantitative account of the modal superposition shaping the visible pattern.
