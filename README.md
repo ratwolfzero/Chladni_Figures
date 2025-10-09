@@ -196,7 +196,7 @@ the parameter **k** sets the **overall frequency scale** of the simulation.
 
 ## Damping Factor γ
 
-In the simulation, the total displacement field is computed as:
+The steady-state spatial response for a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N} \frac{\sin(m \pi x) \sin(n \pi y)}{(f - f_{mn})^2 + \gamma^2}
