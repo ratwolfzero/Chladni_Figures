@@ -136,8 +136,9 @@ Although the simulation uses a single, tunable driving frequency, real systems e
   - Physical imperfections — non-uniform plate thickness, material heterogeneity, or boundary irregularities.
     The damping factor γ effectively mimics both effects, allowing several resonances to contribute simultaneously to the observed pattern.
 - The plot title displays the current driving frequency f.
-When f is close to a resonance, the title also lists all degenerate modes (m, n) contributing to that resonance, along with their eigenfrequencies fₘₙ.
-This provides both a quick visual cue and a quantitative account of the modal superposition shaping the visible pattern.
+When f is near a resonance, the title also lists the dominant degenerate mode(s) and their eigenfrequencies fₘₙ, providing a quick visual cue of which modes are most strongly excited.
+- A detailed contribution table accompanies the plot, showing all significant modes with their indices (m, n), eigenfrequencies, and relative excitation percentages.
+This table gives a quantitative account of the modal superposition that shapes the visible pattern, allowing users to see precisely how multiple modes combine.
 - The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
 This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
 - The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
