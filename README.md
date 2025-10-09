@@ -3,7 +3,6 @@
 This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chladni figures, approximating Ernst Chladni’s 1787 experiments with vibrating plates by modeling the resonant modes of a square membrane. It captures the visual essence of these wave patterns without simulating the complex physics of elastic bending and the dynamics of particle motion.
 
 ![Chladni](images&Animation/Chladni_3.png)
-![Chladni](images&Animation/Chladni_4.png)
 
 ---
 
@@ -239,6 +238,8 @@ Its role in the simulation is multi-faceted:
    - Maximum mode contribution at resonance (\$f=f\_{mn}\$) is \$1/\gamma^2\$.
    - Smaller γ → sharper nodal lines, higher amplitude.
    - Larger γ → blended, lower-amplitude patterns.
+  
+![Chladni](images&Animation/Chladni_4.png)
 
 ---
 
