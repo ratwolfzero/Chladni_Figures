@@ -150,7 +150,7 @@ Peak heights indicate the relative excitation strength of each mode at the curre
 
 - Particles are not explicitly simulated.
 
-- The mathematical model uses an ideal flexible square membrane (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies $f_{mn} \propto \sqrt{m^2 + n^2}$ for a square membrane ($L_x = L_y$). This simplifies the physics of elastic plates with bending stiffness.
+- The mathematical model uses an ideal flexible membrane (like a drumhead) under tension, with sinusoidal eigenfunctions and eigenfrequencies $f_{mn} \propto \sqrt{m^2 + n^2}$ for a unit square membrane ($L_x = L_y$ = 1). This simplifies the physics of elastic plates with bending stiffness.
 
 - The square membrane model was chosen for computational efficiency, enabling real-time interactive exploration while capturing the nodal patterns observed in real Chladni experiments driven by a bow.
 
