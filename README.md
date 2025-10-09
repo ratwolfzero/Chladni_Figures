@@ -13,6 +13,8 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Historical Context](#historical-context)
   - [Physical Principles of Simulation (Free Oscillation at Eigenfrequency)](#physical-principles-of-simulation-free-oscillation-at-eigenfrequency)
   - [Simulation Implementation Principles (Forced Oscillation at Driving Frequency)](#simulation-implementation-principles-forced-oscillation-at-driving-frequency)
+  - [Visualization:](#visualization)
+  - [Approximation and Model Choice:](#approximation-and-model-choice)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
   - [Damping Factor γ](#damping-factor-γ)
@@ -115,7 +117,7 @@ The damping term is implemented as $γ^2$, where $γ$ is the damping factor. Thi
 
 ---
 
-**Visualization:**
+## Visualization:
 
 - The magnitude view shows the absolute displacement as a colormap of |Z|^0.2, enhancing the contrast of nodal lines.
 Dark regions correspond to nodal lines, while bright regions mark anti-nodes where the plate vibrates most strongly.
@@ -146,7 +148,7 @@ Red regions indicate positive displacement (in-phase antinodes),
 blue regions show negative displacement (out-of-phase antinodes),
 and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
 
-**Approximation and Model Choice:**
+## Approximation and Model Choice:
 
 - Particles are not explicitly simulated.
 
