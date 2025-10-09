@@ -148,6 +148,9 @@ Red regions indicate positive displacement (in-phase antinodes),
 blue regions show negative displacement (out-of-phase antinodes),
 and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
 
+![Chladni](images&Animation/Chladni_4.png)
+
+
 ## Approximation and Model Choice:
 
 - Particles are not explicitly simulated.
@@ -242,8 +245,6 @@ Its role in the simulation is multi-faceted:
    - Smaller γ → sharper nodal lines, higher amplitude.
    - Larger γ → blended, lower-amplitude patterns.
   
-![Chladni](images&Animation/Chladni_4.png)
-
 ---
 
 ### Combined Effect of γ on Mode Superposition and Patterns
