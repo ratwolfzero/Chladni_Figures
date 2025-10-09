@@ -282,7 +282,7 @@ Its role in the simulation is multi-faceted:
 
 - Damping $\gamma$ is uniform; real plates have non-uniform damping.
 
-- Geometry is idealized square membrane.
+- Geometry is idealized unit square membrane.
 
 - Uses a membrane model for computational efficiency, which simplifies the physics of a true plate with bending stiffness.
 
