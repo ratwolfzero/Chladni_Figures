@@ -247,19 +247,28 @@ Its role in the simulation is multi-faceted:
 
 ## Usage
 
-- Use the frequency slider to explore modes.
-- Experiment with damping γ to see symmetry/asymmetry effects.
+- Adjust the Frequency Slider to explore different vibrational modes.
+- Change the Damping γ Slider to observe transitions from sharp symmetric nodal lines (low γ) to more complex, overlapping patterns (high γ).
+- Click ◀ / ▶ Buttons to jump to the previous or next resonance frequency.
+- Use Auto Scan to automatically sweep the driving frequency across the range.
+- Click Stop Scan to halt automatic scanning.
+- Use Toggle Phase View to switch between magnitude (|Z|^0.2) and signed phase (Z) views.
+- Open Resonance Curves to visualize Lorentzian resonance weights for modes near the current frequency.
 
 ---
 
 ## Controls
 
-| Control               | Function                       |
-| :-------------------- | :----------------------------- |
-| Frequency Slider      | Adjust driving frequency.      |
-| Next Resonance Button | Jump to next higher resonance. |
-| Scan Button           | Sweep frequency automatically. |
-| Stop Scan Button      | Stop automatic scanning.       |
+| Control Name             | Type   | Range / Options            | Default | Function                                                                                                 |   |                                      |
+| :----------------------- | :----- | :------------------------- | :------ | :------------------------------------------------------------------------------------------------------- | - | ------------------------------------ |
+| **Frequency Slider**     | Slider | 1.0 – 20.0 Hz (step 0.001) | 5.0 Hz  | Adjusts the driving frequency to explore resonant modes.                                                 |   |                                      |
+| **γ (Damping) Slider**   | Slider | 0.001 – 0.15 (step 0.001)  | 0.01    | Controls damping factor γ — lower γ = sharper, symmetric patterns; higher γ = blended, complex patterns. |   |                                      |
+| **◀ Previous Resonance** | Button | —                          | —       | Jumps to the next lower eigenfrequency (resonance).                                                      |   |                                      |
+| **▶ Next Resonance**     | Button | —                          | —       | Jumps to the next higher eigenfrequency (resonance).                                                     |   |                                      |
+| **Auto Scan**            | Button | —                          | —       | Automatically sweeps the driving frequency across the full range.                                        |   |                                      |
+| **Stop Scan**            | Button | —                          | —       | Stops the automatic frequency sweep.                                                                     |   |                                      |
+| **Toggle Phase View**    | Button | —                          | —       | Switches between **magnitude view** (                                                                    | Z | ^0.2) and **signed phase view** (Z). |
+| **Resonance Curves**     | Button | —                          | —       | Opens a separate window displaying Lorentzian resonance curves near the current frequency.               |   |                                      |
 
 ---
 
@@ -267,7 +276,7 @@ Its role in the simulation is multi-faceted:
 
 - Field-based simulation; does not model particle dynamics.
 
->Note: This simulation visualizes the nodal patterns of a square membrane with fixed edges, governed by the wave equation, capturing the essence of Chladni figures. In real experiments, elastic plates follow complex bending physics, but the membrane model approximates their nodal patterns using simpler wave mechanics. Focusing on nodal patterns avoids the unresolved complexity of grain motion, highlighting the universal physics of resonance, independent of material properties. The simulation uses a cosine term for standing-wave visualizations, aligning nodal lines at $Z = 0$ for clarity in the 2D/3D comparison panel, and employs a square membrane ($L_x = L_y$) to capture degenerate modes, such as (3,5) and (5,3), which enhance pattern variety.
+>Note: This simulation visualizes the nodal patterns of a square membrane ($L_x = L_y$) with fixed edges, governed by the wave equation, capturing the essence of Chladni figures. In real experiments, elastic plates follow complex bending physics, but the membrane model approximates their nodal patterns using simpler wave mechanics. Focusing on nodal patterns avoids the unresolved complexity of grain motion, highlighting the universal physics of resonance, independent of material properties.
 
 - Only finite max_mode included.
 
