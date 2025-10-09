@@ -127,17 +127,25 @@ and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wav
 ---
 
 1. **Visualization:**
-   - The absolute displacement is visualized as colormap with |Z|^0.2 to enhance contrast of nodal lines.
-   Dark regions approximate nodal lines; bright regions are anti-nodes.
 
-   - The resulting superposition (modulated by $\gamma$) captures the richness of real Chladni patterns. While the simulation assumes a nearly single-frequency drive (like a bow), $\gamma$ mimics real-world elastic plate imperfections that broaden resonances, causing several nearby modes to be excited simultaneously.
-
-   - The plot’s title shows the driving frequency f. When the driving frequency is near a resonance, the title also highlights all degenerate modes contributing to that resonance, displaying their indices (m,n) and the corresponding eigenfrequency f_mn​.
-   The detailed list provides a complete, quantitative account of all significant contributions, reflecting the superposition of modes shaping the visible pattern. The title’s resonance note offers a quick visual cue, while the table gives the full breakdown of the contributing modes.
+- The magnitude view shows the absolute displacement as a colormap of |Z|^0.2, enhancing the contrast of nodal lines.
+Dark regions correspond to nodal lines, while bright regions mark anti-nodes where the plate vibrates most strongly.
+- The resulting superposition, modulated by the damping factor γ, captures the richness of real Chladni patterns.
+Although the simulation uses a single, tunable driving frequency, real systems experience mode broadening due to:
+Bowing or driving forces — which introduce energy into multiple nearby modes.
+Physical imperfections — non-uniform plate thickness, material heterogeneity, or boundary irregularities.
+The damping factor γ effectively mimics both effects, allowing several resonances to contribute simultaneously to the observed pattern.
+- The plot title displays the current driving frequency f.
+When f is close to a resonance, the title also lists all degenerate modes (m, n) contributing to that resonance, along with their eigenfrequencies fₘₙ.
+This provides both a quick visual cue and a quantitative account of the modal superposition shaping the visible pattern.
+- The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
+This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
+- The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
+Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
   
    >**Note**: At small γ, numerical precision may slightly affect which mode is listed first, especially for degenerate pairs with identical eigenfrequencies. For larger γ, the title highlights the modes most responsible for the visible pattern.
 
-2. **Approximation and Model Choice:**
+1. **Approximation and Model Choice:**
 
 - Particles are not explicitly simulated.
 
