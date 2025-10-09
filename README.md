@@ -16,7 +16,7 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Visualization](#visualization)
     - [The Magnitude View](#the-magnitude-view)
     - [The Phase View](#the-phase-view)
-    - [The Resonant Vurves](#the-resonant-vurves)
+    - [The Resonant Curves](#the-resonant-curves)
   - [Approximation and Model Choice](#approximation-and-model-choice)
   - [Key Parameters](#key-parameters)
   - [Frequency Scaling Factor *k*](#frequency-scaling-factor-k)
@@ -139,22 +139,23 @@ When f is near a resonance, the title also lists the dominant degenerate mode(s)
 - A detailed contribution table accompanies the plot, showing all significant modes with their indices (m, n), eigenfrequencies, and relative excitation percentages.
 This table gives a quantitative account of the modal superposition that shapes the visible pattern, allowing users to see precisely how multiple modes combine.
 
+![Chladni](images&Animation/Chladni_2.png)
+
+A 2D static plot showing the time-independent displacement amplitude $Z(x,y,f)$ of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
+
 ### The Phase View
 
 - The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
 This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
 
-![Chladni](images&Animation/Chladni_2.png)
 ![Chladni](images&Animation/Chladni_5.png)
 
-Top: A 2D static plot showing the time-independent displacement amplitude $Z(x,y,f)$ of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
-
-Bottom: A Phase View showing the signed displacement Z(x,y,f) of the steady-state response.
+A Phase View showing the signed displacement Z(x,y,f) of the steady-state response.
 Red regions indicate positive displacement (in-phase antinodes),
 blue regions show negative displacement (out-of-phase antinodes),
 and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
 
-### The Resonant Vurves
+### The Resonant Curves
 
 - The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
 Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
