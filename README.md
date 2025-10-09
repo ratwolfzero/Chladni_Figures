@@ -135,8 +135,6 @@ When f is near a resonance, the title also lists the dominant degenerate mode(s)
 This table gives a quantitative account of the modal superposition that shapes the visible pattern, allowing users to see precisely how multiple modes combine.
 - The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
 This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
-- The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
-Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
 
 ![Chladni](images&Animation/Chladni_2.png)
 ![Chladni](images&Animation/Chladni_5.png)
@@ -148,8 +146,10 @@ Red regions indicate positive displacement (in-phase antinodes),
 blue regions show negative displacement (out-of-phase antinodes),
 and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
 
-![Chladni](images&Animation/Chladni_4.png)
+- The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
+Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
 
+![Chladni](images&Animation/Chladni_4.png)
 
 ## Approximation and Model Choice:
 
