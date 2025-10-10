@@ -284,6 +284,10 @@ class ChladniUI:
         self.info_ax.axis('off')
         plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
 
+        # Store original axes limits
+        self.orig_xlim = (0, 1)
+        self.orig_ylim = (0, 1)
+
         # Initialize plot
         self.init_freq_raw = Config.INIT_FREQ
         self.init_freq_display = round(self.init_freq_raw, 2)
@@ -386,6 +390,10 @@ class ChladniUI:
         self.im.set_array(plot_data)
         self.im.set_cmap(cmap)
         self.im.set_clim(vmin, vmax)
+
+        # Restore original axes limits so home/back works
+        self.ax.set_xlim(self.orig_xlim)
+        self.ax.set_ylim(self.orig_ylim)
 
         # Reset and update colorbar
         self.cbar.remove()
