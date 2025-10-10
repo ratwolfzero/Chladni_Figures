@@ -301,7 +301,7 @@ Its role in the simulation is multi-faceted:
 
 - Field-based simulation; does not model particle dynamics.
 
->Note: This simulation visualizes the nodal patterns of a square membrane ($L_x = L_y=1$) with fixed edges, governed by the wave equation, capturing the essence of Chladni figures. In real experiments, elastic plates follow complex bending physics, but the membrane model approximates their nodal patterns using simpler wave mechanics. Focusing on nodal patterns avoids the unresolved complexity of grain motion, highlighting the universal physics of resonance, independent of material properties.
+>Note: This simulation visualizes the nodal patterns of a unit square membrane ($L_x = L_y=1$) with fixed edges, governed by the wave equation, capturing the essence of Chladni figures. In real experiments, elastic plates follow complex bending physics, but the membrane model approximates their nodal patterns using simpler wave mechanics. Focusing on nodal patterns avoids the unresolved complexity of grain motion, highlighting the universal physics of resonance, independent of material properties.
 
 - Only finite max_mode included.
 
