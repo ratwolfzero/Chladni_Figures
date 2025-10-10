@@ -141,7 +141,7 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ![Chladni](images&Animation/Chladni_2.png)
 
->A 2D static plot showing the time-independent displacement amplitude $Z(x,y,f)$ of the steady-state response to a driving frequency f​, matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
+>Magnitude View: A 2D static plot showing the time-independent displacement magnitude ∣Z(x,y,f)∣ of the steady-state response to a driving frequency f matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
 
 ### The Phase View
 
