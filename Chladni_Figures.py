@@ -295,7 +295,7 @@ class ChladniUI:
         plot_data = np.abs(Z_init) ** Config.VISUAL_EXPONENT
         self.im = self.ax.imshow(
             plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
-        self.cbar = plt.colorbar(
+        self.cbar = self.fig.colorbar(
             self.im, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
         self._setup_axes()
         self._setup_widgets()
@@ -397,7 +397,7 @@ class ChladniUI:
 
         # Reset and update colorbar
         self.cbar.remove()
-        self.cbar = plt.colorbar(self.im, ax=self.ax, label=label)
+        self.cbar = self.fig.colorbar(self.im, ax=self.ax, label=label)
         self.cbar.update_normal(self.im)
 
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
