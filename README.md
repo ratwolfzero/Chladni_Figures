@@ -157,8 +157,7 @@ and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wav
 
 ### The Resonant Curves
 
-- The Resonance Curves window displays Lorentzian amplitude profiles for all nearby modes, showing how the damping factor γ broadens each resonance.
-Peak heights indicate the relative excitation strength of each mode at the current driving frequency.
+- The Resonance Curves window allows you to examine how the dominant modes respond in frequency space and the impact of damping..
 
 ![Chladni](images&Animation/Chladni_4.png)
 
