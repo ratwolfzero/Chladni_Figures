@@ -185,7 +185,7 @@ class ResonanceCurveWindow:
 
         modes_str = ', '.join([f"({m},{n})" for m, n in self.current_modes])
         self.ax.set_title(
-            f'Lorentzian Resonance Curves for Mode(s): {modes_str}\n The height of the amplitude remains constant, only the width changes, with the y-axis scaled by a variable weight.')
+            f'Lorentzian Resonance Curves for dominant Mode(s): {modes_str}\n The height of the amplitude remains constant, only the width changes, with the y-axis scaled by a variable weight.')
 
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Resonance Weight')
