@@ -141,7 +141,7 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ![Chladni](images&Animation/Chladni_2.png)
 
->Magnitude View: A 2D static plot showing the time-independent displacement magnitude ∣Z(x,y,f)∣ of the steady-state response to a driving frequency f matching the eigenfrequency of the degenerate modes (3,5) and (5,3). A small damping factor (γ=0.01) causes these modes to dominate, with minimal contributions from other modes. The plot visualizes the magnitude to highlight nodal lines where displacement is zero. The magnitude makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
+>Magnitude View: A 2D static plot showing the time-independent displacement magnitude ∣Z(x,y,f)∣ of the steady-state response at a driving frequency f matching the degenerate modes (3,5) and (5,3). A small damping factor (γ = 0.01) ensures these modes dominate. The magnitude highlights nodal lines and makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
 
 ### The Phase View
 
@@ -150,10 +150,7 @@ This view emphasizes modal symmetry and interference structures that are less ap
 
 ![Chladni](images&Animation/Chladni_5.png)
 
->A Phase View showing the signed displacement Z(x,y,f) of the steady-state response.
-Red regions indicate positive displacement (in-phase antinodes),
-blue regions show negative displacement (out-of-phase antinodes),
-and white/gray lines mark nodal lineswhere Z ≈ 0. This view highlights the wave's phase structure.
+>Similar as above, but showing the time-independent signed displacement Z(x,y,f) of the steady-state response. Red regions indicate positive displacement (in-phase antinodes), blue regions show negative displacement (out-of-phase antinodes), and white/gray lines mark nodal lines where Z ≈ 0. This highlights the phase distribution of the steady-state response.
 
 ### The Resonant Curves
 
