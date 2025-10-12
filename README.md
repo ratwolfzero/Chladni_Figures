@@ -316,7 +316,7 @@ Its role in the simulation is multi-faceted:
 >
 > 1. Symmetric modes $(m,m)$ are exact (100%) and visually identical to experiments.  
 > 2. Asymmetric modes $(m ≠ n)$ always form degenerate pairs in this square model, blending into symmetric patterns—both contribute fully e.g., (1,2) and (2,1) dominate together. No isolated "single" asymmetric modes appear due to symmetry.  
-> 3. Low-order pairs can look less crisp; high-order excel at reproducing rich, experimental-like topology. Larger $(\gamma\)$ adds asymmetry from nearby modes, enhancing realism.  
+> 3. Low-order pairs can look less crisp; high-order excel at reproducing rich, experimental-like topology, including accidental degeneracies where symmetric modes blend with pairs (e.g., (10,10) + (2,14)/(14,2)). Larger $(\gamma\)$ adds asymmetry from nearby modes, enhancing realism.  
 > 4. Ratings prioritize **nodal patterns** (positions and shapes); the sim's blending captures the visual spirit of Chladni figures effectively, even if idealized.
 
 ---
