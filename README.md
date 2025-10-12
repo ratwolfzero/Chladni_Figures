@@ -144,9 +144,7 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ### The Phase View
 
-- The phase view reveals the signed displacement Z, highlighting phase reversals between regions oscillating in opposite directions.
-This view emphasizes modal symmetry and interference structures that are less apparent in the magnitude plot.
-
+- The optional phase view shows the signed displacement Z of the steady-state response, highlighting regions with opposite signs (phase reversals). This view emphasizes modal symmetry and interference patterns that are less apparent in the magnitude plot.
 ![Chladni](images&Animation/Chladni_5.png)
 
 >Similar as above, but showing the time-independent signed displacement Z(x,y,f) of the steady-state response. Red regions indicate positive displacement (in-phase antinodes), blue regions show negative displacement (out-of-phase antinodes), and white/gray lines mark nodal lines where Z ≈ 0. This highlights the phase distribution of the steady-state response.
