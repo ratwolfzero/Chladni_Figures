@@ -372,7 +372,6 @@ class ChladniUI:
     def update(self, val: float) -> None:
         f_compute = val
         f_display = round(val, 2)
-
         Z = self.simulator.compute_displacement(f_compute)
         if self.phase_view:
             plot_data = Z
