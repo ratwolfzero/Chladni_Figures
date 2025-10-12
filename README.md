@@ -132,13 +132,12 @@ Although the simulation uses a single, tunable driving frequency, real systems e
   - Physical imperfections — non-uniform plate thickness, material heterogeneity, or boundary irregularities.
     The damping factor γ effectively mimics both effects, allowing several resonances to contribute simultaneously to the observed pattern.
 - The plot title displays the current driving frequency f.
-When f is near a resonance, the title also lists the dominant degenerate mode(s) and their eigenfrequencies fₘₙ, providing a quick visual cue of which modes are most strongly excited.
+When f is near a resonance, the title also lists the dominant mode(s) and their eigenfrequencies fₘₙ, providing a quick visual cue of which modes are most strongly excited.
 
 >**Note**: At small γ, numerical precision may slightly affect which mode is listed first, especially for degenerate pairs with identical eigenfrequencies. For larger γ, the title highlights the modes most responsible for the visible pattern.
 
-- A detailed contribution table accompanies the plot, showing all significant modes with their indices (m, n), eigenfrequencies, and relative excitation percentages.
+- A detailed contribution table accompanies the plot, showing all significant modes (above significance threshold) with their indices (m, n), eigenfrequencies, and relative excitation percentages.
 This table gives a quantitative account of the modal superposition that shapes the visible pattern, allowing users to see precisely how multiple modes combine.
-
 ![Chladni](images&Animation/Chladni_2.png)
 
 >Magnitude View: A 2D static plot showing the time-independent displacement magnitude ∣Z(x,y,f)∣ of the steady-state response at a driving frequency f matching the degenerate modes (3,5) and (5,3). A small damping factor (γ = 0.01) ensures these modes dominate. The magnitude highlights nodal lines and makes positive and negative antinodes indistinguishable, mimicking experimental Chladni patterns.
