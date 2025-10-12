@@ -154,7 +154,7 @@ This view emphasizes modal symmetry and interference structures that are less ap
 
 ### The Resonant Curves
 
-- The Resonance Curves window allows you to examine how the dominant modes respond in frequency space and the impact of damping..
+- The Resonance Curves window allows you to examine how the dominant modes respond in frequency space and the impact of damping.
 
 ![Chladni](images&Animation/Chladni_4.png)
 
