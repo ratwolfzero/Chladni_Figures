@@ -103,6 +103,8 @@ class ChladniSimulator:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
         Z = np.sum(weights[:, np.newaxis, np.newaxis]
                    * self.mode_shapes, axis=0)
+        #Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
+
         return Z
 
     def compute_lorentzian_weights(self, f_range: np.ndarray, target_freq: float) -> np.ndarray:
