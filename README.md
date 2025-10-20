@@ -93,7 +93,7 @@ In real experiments and this simulation, the system is driven at a chosen freque
 
 >The simulation uses a 0–20 Hz range as a simplified, abstract scale to highlight nodal patterns, which depend only on mode shapes and resonance weights, not physical frequencies. Real Chladni experiments typically drive plates at 50–5000 Hz to excite their eigenfrequencies.
 
-The steady-state spatial response for a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
+The steady-state spatial response of a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
 $$
 Z(x,y; f) = \sum_{m=1}^{M} \sum_{n=1}^{N}
