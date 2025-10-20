@@ -89,9 +89,10 @@ $$
 
 ## Simulation Implementation Principles (Forced Oscillation at Driving Frequency)
 
-In real experiments and this simulation, the system is driven at a chosen frequency f, producing vibrations through a superposition of eigenmodes, each weighted by a resonance factor that depends on a damping effect.
+In real experiments and in this simulation, the system is driven at a chosen frequency f, producing vibrations as a superposition of eigenmodes, each weighted by a resonance factor that depends on damping.
 
->The simulation uses a 0–20 Hz range as a simplified, abstract scale to highlight nodal patterns, which depend only on mode shapes and resonance weights, not physical frequencies. Real Chladni experiments typically drive plates at 50–5000 Hz to excite their eigenfrequencies.
+>The simulation uses a 0–20 Hz range as an abstract scale to model forced oscillations, generating nodal patterns analogous to those causing particle migration in real Chladni experiments (driven at 50–5000 Hz).
+Nodal patterns arise from mode shapes, with the driving frequency f selecting dominant modes by amplifying those nearest their eigenfrequency fₘₙ.
 
 The steady-state spatial response of a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
