@@ -91,8 +91,8 @@ $$
 
 In real experiments and in this simulation, the system is driven at a chosen frequency f, producing vibrations as a superposition of eigenmodes, each weighted by a resonance factor that depends on damping.
 
->The simulation uses a 0–20 Hz range as an abstract scale to model forced oscillations, generating nodal patterns analogous to those causing particle migration in real Chladni experiments (driven at 50–5000 Hz).
-Nodal patterns arise from mode shapes, with the driving frequency f selecting dominant modes by amplifying those nearest their eigenfrequency fₘₙ.
+>The simulation uses a 1–20 Hz range as an abstract scale to model forced oscillations, generating nodal patterns analogous to those causing particle migration in real Chladni experiments (driven at 50–5000 Hz).
+Nodal patterns arise from mode shapes, with the driving frequency f selecting dominant modes by amplifying those nearest their eigenfrequency fₘₙ
 
 The steady-state spatial response of a square membrane Lx = Ly = 1 at driving frequency f is modeled as:
 
