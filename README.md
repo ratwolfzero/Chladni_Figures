@@ -48,7 +48,7 @@ Chladni figures laid foundations for acoustics, wave physics, and applications l
 
 ## Physical Principles of Simulation (Free Oscillation at Eigenfrequency)
 
-In the simulation, we use the analytical solution of the membrane wave equation, which describes the displacement field of a single vibrational eigenmode (m,n) on a rectangular membrane of size Lx × Ly as:
+The simulation is based on the analytical solution of the membrane wave equation, which describes the displacement field of a single vibrational eigenmode (m,n) on a rectangular membrane of size Lx × Ly as:
 
 $$
 Z_{mn}(x,y,t) = \left[ A \cos(2\pi f_{mn} t) + B \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m \pi x}{L_x}\right) \sin\left(\frac{n \pi y}{L_y}\right)
