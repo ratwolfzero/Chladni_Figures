@@ -74,7 +74,7 @@ $$
 
 which are independent of time. These lines are where particles accumulate in experiments, forming the classic Chladni figures.
 
-The membrane’s motion during free oscillation, when it vibrates naturally without external forces, may be a superposition of multiple modes:
+The membrane’s motion during free oscillation, when it vibrates naturally without external forces, is a superposition of multiple modes.
 
 $$
 Z(x, y, t) = \sum_{m=1}^{M} \sum_{n=1}^{N} \left[ A_{mn} \cos(2\pi f_{mn} t)+ B_{mn} \sin(2\pi f_{mn} t) \right] \sin\left(\frac{m\pi x}{L_x}\right) \sin\left(\frac{n\pi y}{L_y}\right)
