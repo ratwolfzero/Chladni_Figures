@@ -260,7 +260,7 @@ Its role in the simulation is multi-faceted:
 | **≈0.05–0.1**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
 | **>0.1**       | Many overlapping modes contribute significantly                                  | Diffuse, asymmetric, complex patterns; nodal lines blur, simulating strong damping/imperfections |
 
-> **Tip:** Adjust γ in your simulation to watch the transition from symmetric idealized figures to complex, realistic Chladni patterns.
+> **Tip:** Adjust γ in your simulation to watch the transition from symmetric idealized figures to realistic Chladni patterns or even unusual complex patterns.
 
 ---
 
