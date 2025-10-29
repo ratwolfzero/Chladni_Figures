@@ -17,7 +17,7 @@ class Config:
     # =========================================================
     # ⚖️ Damping (gamma) controls
     # =========================================================
-    GAMMA_RANGE = (0.001, 0.15)     # Range for damping coefficient γ
+    GAMMA_RANGE = (0.001, 0.1)      # Range for damping coefficient γ
     GAMMA_STEP = 0.001              # Damping slider step size
     INIT_GAMMA = 0.01               # Default damping value (γ)
 
