@@ -17,7 +17,7 @@ class Config:
     # =========================================================
     # ⚖️ Damping (gamma) controls
     # =========================================================
-    GAMMA_RANGE = (0.001, 0.1)      # Range for damping coefficient γ
+    GAMMA_RANGE = (0.001, 0.05)      # Range for damping coefficient γ
     GAMMA_STEP = 0.001              # Damping slider step size
     INIT_GAMMA = 0.01               # Default damping value (γ)
 
@@ -26,7 +26,7 @@ class Config:
     # =========================================================
     MAX_MODE = 15                   # Maximum mode indices m,n to compute
     RESONANCE_TOL = 0.02            # Frequency tolerance for resonance detection
-    MODE_WEIGHT_THRESHOLD = 1.5     # Minimum % weight for mode to be listed
+    MODE_WEIGHT_THRESHOLD = 1.0     # Minimum % weight for mode to be listed
     MAX_DISPLAY_MODES = None        # Limit number of modes shown (None = all)
     EPS_FREQ_COMPARE = 1e-6         # Small epsilon for frequency equality check
 

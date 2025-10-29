@@ -257,8 +257,8 @@ Its role in the simulation is multi-faceted:
 | γ Range        | Mode Excitation                                                               | Resulting Pattern Description                                                                    |
 | -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | **≈0.001–0.01** | Single dominant mode or nearly degenerate pair dominates                         | Sharp, symmetric nodal patterns — idealized plate behavior                                       |
-| **≈0.01–0.05**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
-| **>0.05**       | Many overlapping modes contribute significantly                                  | Diffuse, asymmetric, complex patterns; nodal lines blur, simulating strong damping/imperfections |
+| **≈0.01–0.03**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
+| **>0.03**       | Many overlapping modes contribute significantly                                  | Diffuse, asymmetric, complex patterns; nodal lines blur, simulating strong damping/imperfections |
 
 > **Tip:** Adjust γ in your simulation to watch the transition from symmetric idealized figures to realistic Chladni patterns or even unusual complex patterns.
 
