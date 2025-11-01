@@ -8,7 +8,7 @@ f = np.linspace(0, 20, 1000)  # Frequency range
 # Define damping factors (gamma)
 gammas = [0.5, 1.0, 2.0]  # Small, medium, large gamma
 colors = ['blue', 'green', 'red'] # Colors for the lines
-labels = ['Small γ', 'Medium γ', 'Large γ']
+labels = ['Low γ', 'Moderate γ', 'High γ']
 
 plt.figure(figsize=(10, 6))
 
