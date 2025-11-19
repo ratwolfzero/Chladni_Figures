@@ -101,9 +101,9 @@ class ChladniSimulator:
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
-        Z = np.sum(weights[:, np.newaxis, np.newaxis]
-                   * self.mode_shapes, axis=0)
-        #Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
+        #Z = np.sum(weights[:, np.newaxis, np.newaxis]
+                   #* self.mode_shapes, axis=0)
+        Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
 
         return Z
 
