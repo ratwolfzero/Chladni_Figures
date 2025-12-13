@@ -411,7 +411,7 @@ class ChladniUI:
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
             f_display)
 
-        title = f"Chladni Figures: f = {f_display:.2f}"
+        title = f"f = {f_display:.2f}"
         if abs(f_display - f_closest) < Config.RESONANCE_TOL:
             deg_modes_str = ', '.join(
                 [f"({m},{n})" for m, n in degenerate_modes])
