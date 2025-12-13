@@ -101,8 +101,8 @@ class ChladniSimulator:
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
-        #Z = np.sum(weights[:, np.newaxis, np.newaxis]
-                   #* self.mode_shapes, axis=0)
+        # Z = np.sum(weights[:, np.newaxis, np.newaxis]
+        # * self.mode_shapes, axis=0)
         Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
 
         return Z
@@ -386,6 +386,13 @@ class ChladniUI:
             vmin, vmax = np.min(plot_data), np.max(
                 plot_data)  # Explicit min/max for gradient
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
+
+        if self.phase_view:
+            self.fig.canvas.manager.set_window_title(
+                f'Chladni Simulator — Phase View')
+        else:
+            self.fig.canvas.manager.set_window_title(
+                f'Chladni Simulator — Magnitude View')
 
         # Update imshow
         self.im.set_array(plot_data)
