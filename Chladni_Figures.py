@@ -358,11 +358,18 @@ class ChladniUI:
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
         ax_toggle = plt.axes([0.67, 0.1, 0.15, 0.04])
-        self.toggle_button = Button(ax_toggle, 'Toggle Phase View')
+        self.toggle_button = Button(ax_toggle, 'Toggle to Phase View')
+
         self.toggle_button.on_clicked(self.toggle_phase_view)
 
     def toggle_phase_view(self, event) -> None:
         self.phase_view = not self.phase_view
+
+        if self.phase_view:
+            self.toggle_button.label.set_text('Toggle to Magnitude View')
+        else:
+            self.toggle_button.label.set_text('Toggle to Phase View')
+
         self.update(self.freq_slider.val)
 
     def open_resonance_curve(self, event) -> None:
