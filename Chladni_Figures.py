@@ -353,11 +353,11 @@ class ChladniUI:
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
 
-        ax_resonance = plt.axes([0.50, 0.1, 0.15, 0.04])
-        self.resonance_button = Button(ax_resonance, 'Resonance Curves')
+        ax_resonance = plt.axes([0.69, 0.1, 0.15, 0.04])
+        self.resonance_button = Button(ax_resonance, 'Show Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
 
-        ax_toggle = plt.axes([0.67, 0.1, 0.16, 0.04])
+        ax_toggle = plt.axes([0.50, 0.1, 0.16, 0.04])
         self.toggle_button = Button(ax_toggle, 'Toggle to Phase View')
 
         self.toggle_button.on_clicked(self.toggle_phase_view)
