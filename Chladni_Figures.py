@@ -11,13 +11,13 @@ class Config:
     # 🎛️ Frequency controls
     # =========================================================
     FREQ_RANGE = (1.0, 20.0)        # Range for driving frequency slider (Hz)
-    FREQ_STEP = 0.01               # Frequency slider step size
+    FREQ_STEP = 0.01                # Frequency slider step size
     INIT_FREQ = 5.0                 # Initial driving frequency (Hz)
 
     # =========================================================
     # ⚖️ Damping (gamma) controls
     # =========================================================
-    GAMMA_RANGE = (0.001, 0.05)      # Range for damping coefficient γ
+    GAMMA_RANGE = (0.001, 0.05)     # Range for damping coefficient γ
     GAMMA_STEP = 0.001              # Damping slider step size
     INIT_GAMMA = 0.01               # Default damping value (γ)
 
@@ -48,7 +48,7 @@ class Config:
     # 📈 Resonance curve plot settings
     # =========================================================
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
-    RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
+    RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]
