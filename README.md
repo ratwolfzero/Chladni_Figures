@@ -145,7 +145,7 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ### The Phase View
 
-- The optional phase view shows the signed displacement Z of the steady-state response, highlighting regions with opposite signs (phase reversals). This view emphasizes modal symmetry and interference patterns that are less apparent in the magnitude plot.
+- The optional phase view displays the signed spatial amplitude of the steady-state response at a given frequency
 ![Chladni](images&Animation/Chladni_5.png)
 
 >This view displays the signed spatial amplitude of the steady-state response at a given frequency. The sign indicates whether a region oscillates in phase or π out of phase with a reference. Nodal lines appear where the amplitude vanishes. The membrane motion remains oscillatory in time; this view represents the spatial structure and phase relationships of that motion.
