@@ -168,13 +168,13 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ## Key Parameters
 
-| Parameter    | Description                          | Typical Effect                                                                                                                                          |
-| ------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_mode`   | Maximum mode numbers M and N | Higher values allow more complex patterns, slower computation                                                                                           |
-| `γ`      | Damping factor | Controls resonance width and amplitude; small γ → sharp, symmetric patterns; medium γ → slight asymmetry; large γ → diffuse, complex patterns; also influences mode overlap and mimics imperfections |
-| `k`          | Frequency scaling factor             | Adjusts eigenfrequency scale                                                                                                                            |
-| `resolution` | Grid resolution                      | Higher → smoother visual patterns, slower computation                                                                                                   |
-| `init_freq`  | Initial driving frequency            | Starting frequency when simulation launches                                                                                                             |
+| Parameter    | Description                  | Typical Effect                                                                                                                                                                                       |
+| ------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_mode`   | Maximum mode numbers M and N | Higher values allow more complex patterns, slower computation                                                                                                                                        |
+| `γ`          | Damping factor               | Controls resonance width and amplitude; small γ → sharp, symmetric patterns; medium γ → slight asymmetry; large γ → diffuse, complex patterns; also influences mode overlap and mimics imperfections |
+| `k`          | Frequency scaling factor     | Adjusts eigenfrequency scale                                                                                                                                                                         |
+| `resolution` | Grid resolution              | Higher → smoother visual patterns, slower computation                                                                                                                                                |
+| `init_freq`  | Initial driving frequency    | Starting frequency when simulation launches                                                                                                                                                          |
 
 ---
 
@@ -254,8 +254,8 @@ Its role in the simulation is multi-faceted:
 
 ### Combined Effect of γ on Mode Superposition and Patterns
 
-| γ Range        | Mode Excitation                                                               | Resulting Pattern Description                                                                    |
-| -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| γ Range         | Mode Excitation                                                                  | Resulting Pattern Description                                                                    |
+| --------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | **≈0.001–0.01** | Single dominant mode or nearly degenerate pair dominates                         | Sharp, symmetric nodal patterns — idealized plate behavior                                       |
 | **≈0.01–0.03**  | Degenerate/near-degenerate modes blend; nearby non-degenerate modes start mixing | Slight asymmetry appears; nodal lines subtly distorted, simulating minor imperfections           |
 | **>0.03**       | Many overlapping modes contribute significantly                                  | Diffuse, asymmetric, complex patterns; nodal lines blur, simulating strong damping/imperfections |
@@ -307,11 +307,11 @@ Its role in the simulation is multi-faceted:
 
 ## Simulation–Experiment Match Fidelity
 
-| Mode Category              | Typical Example(s)      | Match Fidelity | Notes                                                                 |
-| -------------------------- | ----------------------- | -------------- | --------------------------------------------------------------------- |
-| **Exact Symmetric Modes**  | (2,2), (3,3), (4,4)    | **100%**       | Perfect match: Clean axial nodal lines align exactly with experiments. |
-| **Low-order Degenerate Pairs** | (1,2)+(2,1), (1,3)+(3,1) | ~50–60%     | Partial match: Shows tilted/blended nodals instead of sharp crosses seen in some low-order plate patterns. |
-| **High-order Degenerate Pairs** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95%    | Excellent match: Complex, interior nodals closely mimic historical figures; diagonals may flip orientation. |
+| Mode Category                   | Typical Example(s)       | Match Fidelity | Notes                                                                                                       |
+| ------------------------------- | ------------------------ | -------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Exact Symmetric Modes**       | (2,2), (3,3), (4,4)      | **100%**       | Perfect match: Clean axial nodal lines align exactly with experiments.                                      |
+| **Low-order Degenerate Pairs**  | (1,2)+(2,1), (1,3)+(3,1) | ~50–60%        | Partial match: Shows tilted/blended nodals instead of sharp crosses seen in some low-order plate patterns.  |
+| **High-order Degenerate Pairs** | (3,5)+(5,3), (1,6)+(6,1) | ~90–95%        | Excellent match: Complex, interior nodals closely mimic historical figures; diagonals may flip orientation. |
 
 > **Notes:**  
 >
