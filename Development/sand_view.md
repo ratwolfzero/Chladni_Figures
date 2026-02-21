@@ -8,9 +8,10 @@
 
 ## Statistical Model
 
-Let ( Z(x,y;f) ) be the steady-state displacement field. The sand distribution is generated using a probability density of the form:
+Let $Z(x,y;f)$ be the steady-state displacement field. The sand distribution is generated using a probability density of the form:
 
 $$
+\Large
 p(x,y) \propto \exp!\left(-\frac{|Z(x,y;f)|}{Z_{\max} \cdot s}\right)
 $$
 
