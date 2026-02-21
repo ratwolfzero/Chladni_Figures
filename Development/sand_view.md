@@ -2,7 +2,7 @@
 
 * The **Sand View** provides a particle-based visualization that approximates how sand accumulates along nodal lines in physical Chladni experiments.
 
-* Instead of displaying the displacement field directly, this mode generates a large number of simulated “grains” whose spatial distribution is derived from the steady-state amplitude field ( Z(x,y;f) ).
+* Instead of displaying the displacement field directly, this mode generates a large number of simulated “grains” whose spatial distribution is derived from the steady-state amplitude field $ Z(x,y;f) $.
 
 * Regions of **low vibration amplitude** (near nodal lines) receive a **higher probability density**, while strongly vibrating regions are statistically suppressed. The result is a granular pattern that visually resembles experimental Chladni figures formed by migrating particles.
 
@@ -10,14 +10,14 @@
 
 Let ( Z(x,y;f) ) be the steady-state displacement field. The sand distribution is generated using a probability density of the form:
 
-[
+$$
 p(x,y) \propto \exp!\left(-\frac{|Z(x,y;f)|}{Z_{\max} \cdot s}\right)
-]
+$$
 
 where:
 
-* ( Z_{\max} ) is the maximum absolute displacement for normalization,
-* ( s ) is a scaling parameter controlling sharpness (`SAND_EXP_SCALE`).
+* $ Z_{\max} $ is the maximum absolute displacement for normalization,
+* $ s $ is a scaling parameter controlling sharpness (`SAND_EXP_SCALE`).
 
 This exponential weighting suppresses high-amplitude regions and favors near-zero displacement regions. After normalization, grain positions are sampled using a Monte Carlo method.
 
