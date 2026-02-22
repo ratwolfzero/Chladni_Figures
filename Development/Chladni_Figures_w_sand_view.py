@@ -266,6 +266,7 @@ class ResonanceCurveWindow:
 
 class ChladniUI:
     """Matplotlib UI for Chladni simulator with phase view and sand view toggle."""
+
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.view_mode = 'magnitude'  # 'magnitude', 'phase', 'sand'
@@ -438,16 +439,21 @@ class ChladniUI:
         self.ax.set_ylim(self.orig_ylim)
 
         # Resonance title & mode info (unchanged)
-        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(f_display)
+        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
+            f_display)
         title = f"f = {f_display:.2f}"
         if abs(f_display - f_closest) < Config.RESONANCE_TOL:
-            deg_modes_str = ', '.join([f"({m},{n})" for m, n in degenerate_modes])
+            deg_modes_str = ', '.join(
+                [f"({m},{n})" for m, n in degenerate_modes])
             title += f" ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
 
-        weights = 1.0 / ((f_compute - self.simulator.mode_frequencies)**2 + self.simulator.gamma**2)
+        weights = 1.0 / \
+            ((f_compute - self.simulator.mode_frequencies)
+             ** 2 + self.simulator.gamma**2)
         total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * 100 if total_weight > 0 else np.zeros_like(weights)
+        percentages = (weights / total_weight) * \
+            100 if total_weight > 0 else np.zeros_like(weights)
 
         modes_info = []
         for idx, (m, n) in enumerate(self.simulator.modes):
