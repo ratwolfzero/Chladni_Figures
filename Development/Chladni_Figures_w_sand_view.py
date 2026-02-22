@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
+
 class Config:
     # =========================================================
     # 🎛️ Frequency controls
@@ -52,11 +53,14 @@ class Config:
     SAND_SIZE = 0.1  # Size of sand grains in scatter plot
     SAND_COLOR = 'black'  # Color of sand grains
 
+
 Mode: TypeAlias = tuple[int, int, float]
 
 # =========================================================
 # 🧮 Chladni Simulator
 # =========================================================
+
+
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
     def __init__(self):
@@ -64,18 +68,23 @@ class ChladniSimulator:
         self.max_mode = Config.MAX_MODE
         self.gamma = Config.INIT_GAMMA
         self.k = Config.K
+        
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-        # Precompute mode shapes and frequencies vectorized
+        
+        # Optimization: Precompute modes and frequencies vectorized instead of looping with appends
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1), np.arange(1, self.max_mode + 1))
-        self.modes = list(zip(ms.ravel(), ns.ravel()))  # Reusable modes list
-        self.mode_frequencies = self.k * np.sqrt(ms.ravel()**2 + ns.ravel()**2)
+        self.modes = list(zip(ms.ravel(), ns.ravel()))  # Store modes list for reuse across methods
+        self.mode_frequencies = self.k * np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
+        
+        # Precompute mode shapes as a 3D array directly
         self.mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self.modes
         ], dtype=np.float64)
+        
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
             (m, n, f_mn)
@@ -94,12 +103,15 @@ class ChladniSimulator:
     def get_closest_resonance_info(self, current_f: float) -> tuple[float, list[tuple[int, int]]]:
         idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
         f_closest = self.mode_frequencies[idx_closest]
-        degenerate_modes = [mode for idx, mode in enumerate(self.modes)
-                            if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE]
+        degenerate_modes = [
+            mode for idx, mode in enumerate(self.modes)
+            if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE
+        ]
         return f_closest, degenerate_modes
 
     def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
         return 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
+
 
     # 🏖 Sand generator
     def get_sand_coordinates(self, f):
@@ -124,6 +136,8 @@ class ChladniSimulator:
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
+
+
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
     def __init__(self, simulator: ChladniSimulator, main_ui):
@@ -148,7 +162,7 @@ class ResonanceCurveWindow:
             self.current_f_display)
         f_min = max(
             Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
-        f_max = min(
+        f_max = min(                                                                                         
             Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(
             f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
@@ -243,8 +257,11 @@ class ResonanceCurveWindow:
 # =========================================================
 # 🖥️ Main Chladni UI
 # =========================================================
+
+
 class ChladniUI:
-    """Matplotlib UI for Chladni simulator with phase view toggle."""
+    """Matplotlib UI for Chladni simulator with phase view and sand view toggle."""
+
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.view_mode = 'magnitude'  # 'magnitude', 'phase', 'sand'
@@ -372,7 +389,8 @@ class ChladniUI:
             self.imshow_artist.set_cmap(cmap)
             self.imshow_artist.set_clim(vmin=vmin, vmax=vmax)
             if not hasattr(self, 'cbar'):
-                self.cbar = self.fig.colorbar(self.imshow_artist, ax=self.ax, label=label)
+                self.cbar = self.fig.colorbar(
+                    self.imshow_artist, ax=self.ax, label=label)
             else:
                 self.cbar.set_label(label)
         # Set window title
@@ -381,7 +399,8 @@ class ChladniUI:
             'phase': 'Phase View',
             'sand': 'Sand Simulation'
         }[self.view_mode]
-        self.fig.canvas.manager.set_window_title(f'Chladni Simulator — {title_prefix}')
+        self.fig.canvas.manager.set_window_title(
+            f'Chladni Simulator — {title_prefix}')
         # Restore original axes limits
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
@@ -397,7 +416,7 @@ class ChladniUI:
                          ** 2 + self.simulator.gamma ** 2)
         total_weight = np.sum(weights)
         percentages = (weights / total_weight) * \
-                      100 if total_weight > 0 else np.zeros_like(weights)
+            100 if total_weight > 0 else np.zeros_like(weights)
         modes_info = []
         for idx, (m, n) in enumerate(self.simulator.modes):
             fmn = self.simulator.mode_frequencies[idx]
@@ -439,6 +458,7 @@ class ChladniUI:
     def start_scan(self, event) -> None:
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
+
         def update_scan(frame):
             f = self.freq_slider.val + Config.SCAN_SPEED
             if f > Config.FREQ_RANGE[1]:
@@ -460,10 +480,13 @@ class ChladniUI:
 # =========================================================
 # 🚀 Main Entry
 # =========================================================
+
+
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
     ui.show()
+
 
 if __name__ == "__main__":
     main()
