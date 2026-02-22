@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
+
 class Config:
     # =========================================================
     # 🎛️ Frequency controls
@@ -44,35 +45,42 @@ class Config:
     RESONANCE_CURVE_RANGE = 1  # Frequency range around resonance (Hz)
     RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
 
+
 Mode: TypeAlias = tuple[int, int, float]
 
 # =========================================================
 # 🧮 Chladni Simulator
 # =========================================================
+
+
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
+
     def __init__(self):
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
         self.gamma = Config.INIT_GAMMA
         self.k = Config.K
-        
+
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-        
+
         # Optimization: Precompute modes and frequencies vectorized instead of looping with appends
-        ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1), np.arange(1, self.max_mode + 1))
-        self.modes = list(zip(ms.ravel(), ns.ravel()))  # Store modes list for reuse across methods
-        self.mode_frequencies = self.k * np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
-        
+        ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
+                             np.arange(1, self.max_mode + 1))
+        # Store modes list for reuse across methods
+        self.modes = list(zip(ms.ravel(), ns.ravel()))
+        self.mode_frequencies = self.k * \
+            np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
+
         # Precompute mode shapes as a 3D array directly
         self.mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self.modes
         ], dtype=np.float64)
-        
+
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
             (m, n, f_mn)
@@ -103,8 +111,11 @@ class ChladniSimulator:
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
+
+
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
+
     def __init__(self, simulator: ChladniSimulator, main_ui):
         self.simulator = simulator
         self.main_ui = main_ui
@@ -127,7 +138,7 @@ class ResonanceCurveWindow:
             self.current_f_display)
         f_min = max(
             Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
-        f_max = min(                                                                                         
+        f_max = min(
             Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(
             f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
@@ -222,8 +233,11 @@ class ResonanceCurveWindow:
 # =========================================================
 # 🖥️ Main Chladni UI
 # =========================================================
+
+
 class ChladniUI:
     """Matplotlib UI for Chladni simulator."""
+
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.view_mode = 'magnitude'  # 'magnitude' or 'phase'
@@ -233,11 +247,11 @@ class ChladniUI:
         self.info_ax = self.fig.add_subplot(gs[1])
         self.info_ax.axis('off')
         plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
-        
+
         # Store original axes limits
         self.orig_xlim = (0, 1)
         self.orig_ylim = (0, 1)
-        
+
         # Optimization: Create plot_artist and cbar once here, update in place later
         self.init_freq_raw = Config.INIT_FREQ
         Z_init = self.simulator.compute_displacement(self.init_freq_raw)
@@ -246,7 +260,7 @@ class ChladniUI:
             plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.cbar = self.fig.colorbar(
             self.plot_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
-        
+
         self._setup_axes()
         self._setup_widgets()
         self.mode_text = self.info_ax.text(
@@ -320,7 +334,7 @@ class ChladniUI:
         f_compute = val
         f_display = round(val, 2)
         Z = self.simulator.compute_displacement(f_compute)
-        
+
         # Optimization: Update existing plot_artist in place instead of removing/recreating
         if self.view_mode == 'phase':
             plot_data = Z
@@ -333,28 +347,34 @@ class ChladniUI:
             cmap = 'plasma'
             vmin, vmax = 0, np.max(plot_data)
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
-        
+
         self.plot_artist.set_data(plot_data)
         self.plot_artist.set_cmap(cmap)
         self.plot_artist.set_clim(vmin=vmin, vmax=vmax)
         self.cbar.set_label(label)  # Update label in place
-        
+
         title_prefix = 'Phase View' if self.view_mode == 'phase' else 'Magnitude View'
-        self.fig.canvas.manager.set_window_title(f'Chladni Simulator — {title_prefix}')
+        self.fig.canvas.manager.set_window_title(
+            f'Chladni Simulator — {title_prefix}')
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
-        
-        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(f_display)
+
+        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
+            f_display)
         title = f"f = {f_display:.2f}"
         if abs(f_display - f_closest) < Config.RESONANCE_TOL:
-            deg_modes_str = ', '.join([f"({m},{n})" for m, n in degenerate_modes])
+            deg_modes_str = ', '.join(
+                [f"({m},{n})" for m, n in degenerate_modes])
             title += f" ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
-        
-        weights = 1.0 / ((f_compute - self.simulator.mode_frequencies)**2 + self.simulator.gamma**2)
+
+        weights = 1.0 / \
+            ((f_compute - self.simulator.mode_frequencies)
+             ** 2 + self.simulator.gamma**2)
         total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * 100 if total_weight > 0 else np.zeros_like(weights)
-        
+        percentages = (weights / total_weight) * \
+            100 if total_weight > 0 else np.zeros_like(weights)
+
         modes_info = []
         for idx, (m, n) in enumerate(self.simulator.modes):  # Reuse self.modes
             fmn = self.simulator.mode_frequencies[idx]
@@ -362,14 +382,14 @@ class ChladniUI:
             if perc > Config.MODE_WEIGHT_THRESHOLD:
                 modes_info.append((m, n, fmn, perc))
         modes_info.sort(key=lambda x: x[3], reverse=True)
-        
+
         max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
         text_str = ("Contributing Modes (%)\n\n"
                     f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n" + "-" * 32 + "\n")
         for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
         self.mode_text.set_text(text_str)
-        
+
         self.fig.canvas.draw_idle()
 
     def update_gamma(self, val: float) -> None:
@@ -391,13 +411,15 @@ class ChladniUI:
     def start_scan(self, event) -> None:
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
+
         def update_scan(frame):
             f = self.freq_slider.val + Config.SCAN_SPEED
             if f > Config.FREQ_RANGE[1]:
                 f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
             return self.plot_artist,
-        self.scan_ani = FuncAnimation(self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
+        self.scan_ani = FuncAnimation(
+            self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
         self.fig.canvas.draw_idle()
 
     def stop_scan(self, event) -> None:
@@ -408,10 +430,12 @@ class ChladniUI:
     def show(self) -> None:
         plt.show()
 
+
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
     ui.show()
+
 
 if __name__ == "__main__":
     main()

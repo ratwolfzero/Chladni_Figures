@@ -48,7 +48,7 @@ class Config:
     # 📈 Resonance curve plot settings
     # =========================================================
     RESONANCE_CURVE_RANGE = 1       # Frequency range around resonance (Hz)
-    RESONANCE_CURVE_SAMPLES = 20000 # Number of sampling points per Lorentzian
+    RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]

@@ -63,28 +63,32 @@ Mode: TypeAlias = tuple[int, int, float]
 
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
+
     def __init__(self):
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
         self.gamma = Config.INIT_GAMMA
         self.k = Config.K
-        
+
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-        
+
         # Optimization: Precompute modes and frequencies vectorized instead of looping with appends
-        ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1), np.arange(1, self.max_mode + 1))
-        self.modes = list(zip(ms.ravel(), ns.ravel()))  # Store modes list for reuse across methods
-        self.mode_frequencies = self.k * np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
-        
+        ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
+                             np.arange(1, self.max_mode + 1))
+        # Store modes list for reuse across methods
+        self.modes = list(zip(ms.ravel(), ns.ravel()))
+        self.mode_frequencies = self.k * \
+            np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
+
         # Precompute mode shapes as a 3D array directly
         self.mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self.modes
         ], dtype=np.float64)
-        
+
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
             (m, n, f_mn)
@@ -112,8 +116,8 @@ class ChladniSimulator:
     def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
         return 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
 
-
     # 🏖 Sand generator
+
     def get_sand_coordinates(self, f):
         Z = self.compute_displacement(f)
         max_z = np.max(np.abs(Z))
@@ -140,6 +144,7 @@ class ChladniSimulator:
 
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
+
     def __init__(self, simulator: ChladniSimulator, main_ui):
         self.simulator = simulator
         self.main_ui = main_ui
@@ -162,7 +167,7 @@ class ResonanceCurveWindow:
             self.current_f_display)
         f_min = max(
             Config.FREQ_RANGE[0], self.current_resonance_freq - Config.RESONANCE_CURVE_RANGE)
-        f_max = min(                                                                                         
+        f_max = min(
             Config.FREQ_RANGE[1], self.current_resonance_freq + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(
             f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
