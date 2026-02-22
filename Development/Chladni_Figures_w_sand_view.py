@@ -266,7 +266,6 @@ class ResonanceCurveWindow:
 
 class ChladniUI:
     """Matplotlib UI for Chladni simulator with phase view and sand view toggle."""
-
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.view_mode = 'magnitude'  # 'magnitude', 'phase', 'sand'
@@ -276,10 +275,12 @@ class ChladniUI:
         self.info_ax = self.fig.add_subplot(gs[1])
         self.info_ax.axis('off')
         plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
+
         # Store original axes limits
         self.orig_xlim = (0, 1)
         self.orig_ylim = (0, 1)
-        # Initialize plots (create both imshow and scatter, hide one)
+
+        # Initialize plots (create both imshow and scatter, hide one initially)
         Z_init = self.simulator.compute_displacement(Config.INIT_FREQ)
         plot_data = np.abs(Z_init) ** Config.VISUAL_EXPONENT
         self.imshow_artist = self.ax.imshow(
@@ -287,15 +288,21 @@ class ChladniUI:
         self.scatter_artist = self.ax.scatter(
             [], [], s=Config.SAND_SIZE, c=Config.SAND_COLOR, marker='.')
         self.scatter_artist.set_visible(False)  # Initially hide scatter
+
+        # Create colorbar once (we'll hide/show it later)
         self.cbar = self.fig.colorbar(
             self.imshow_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
+
         self._setup_axes()
         self._setup_widgets()
+
         self.mode_text = self.info_ax.text(
             0, 1, '', va='top', ha='left', fontsize=12)
         self.mode_text.set_fontfamily('Monospace')
+
         self.scan_ani = None
         self.resonance_window = None
+
         self.update(Config.INIT_FREQ)
 
     def _setup_axes(self) -> None:
@@ -316,28 +323,36 @@ class ChladniUI:
         self.freq_slider = Slider(
             ax_freq, 'f.', *Config.FREQ_RANGE, valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
         self.freq_slider.on_changed(self.update)
+
         ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
             ax_gamma, 'γ', *Config.GAMMA_RANGE, valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
         self.gamma_slider.on_changed(self.update_gamma)
+
         ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
         self.prev_button = Button(ax_prev, '◀')
         self.prev_button.on_clicked(self.jump_to_prev_resonance)
+
         ax_next = plt.axes([0.14, 0.1, 0.08, 0.04])
         self.next_button = Button(ax_next, '▶')
         self.next_button.on_clicked(self.jump_to_next_resonance)
+
         plt.text(x=0.135, y=0.06, s="Resonance Navigation",
                  ha='center', va='center', fontsize=10, fontweight='bold',
                  transform=self.fig.transFigure)
+
         ax_scan = plt.axes([0.25, 0.1, 0.1, 0.04])
         self.scan_button = Button(ax_scan, 'Auto Scan')
         self.scan_button.on_clicked(self.start_scan)
+
         ax_stop = plt.axes([0.37, 0.1, 0.1, 0.04])
         self.stop_button = Button(ax_stop, 'Stop Scan')
         self.stop_button.on_clicked(self.stop_scan)
+
         ax_resonance = plt.axes([0.69, 0.1, 0.15, 0.04])
         self.resonance_button = Button(ax_resonance, 'Show Resonance Curves')
         self.resonance_button.on_clicked(self.open_resonance_curve)
+
         ax_toggle = plt.axes([0.50, 0.1, 0.16, 0.04])
         self.toggle_button = Button(ax_toggle, 'Toggle to Phase View')
         self.toggle_button.on_clicked(self.toggle_view)
@@ -363,20 +378,25 @@ class ChladniUI:
         f_display = round(val, 2)
         Z = self.simulator.compute_displacement(f_compute)
         label = ''
+
         if self.view_mode == 'sand':
             self.imshow_artist.set_visible(False)
             self.scatter_artist.set_visible(True)
+
+            # Hide colorbar (do not remove it)
             if hasattr(self, 'cbar'):
-                self.cbar.remove()
-                delattr(self, 'cbar')
+                self.cbar.ax.set_visible(False)
+
             x, y = self.simulator.get_sand_coordinates(f_compute)
             x_plot = x / (self.simulator.resolution - 1)
             y_plot = y / (self.simulator.resolution - 1)
             offsets = np.column_stack((x_plot, y_plot))
             self.scatter_artist.set_offsets(offsets)
+
         else:
             self.scatter_artist.set_visible(False)
             self.imshow_artist.set_visible(True)
+
             if self.view_mode == 'phase':
                 plot_data = Z
                 cmap = 'coolwarm'
@@ -390,15 +410,21 @@ class ChladniUI:
                 vmin = 0
                 vmax = np.max(plot_data)
                 label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
+
             self.imshow_artist.set_data(plot_data)
             self.imshow_artist.set_cmap(cmap)
             self.imshow_artist.set_clim(vmin=vmin, vmax=vmax)
-            if not hasattr(self, 'cbar'):
+
+            # Show & update colorbar
+            if hasattr(self, 'cbar'):
+                self.cbar.ax.set_visible(True)
+                self.cbar.set_label(label)
+            # Safety branch (should rarely/never be needed after init)
+            else:
                 self.cbar = self.fig.colorbar(
                     self.imshow_artist, ax=self.ax, label=label)
-            else:
-                self.cbar.set_label(label)
-        # Set window title
+
+        # Window title
         title_prefix = {
             'magnitude': 'Magnitude View',
             'phase': 'Phase View',
@@ -406,30 +432,33 @@ class ChladniUI:
         }[self.view_mode]
         self.fig.canvas.manager.set_window_title(
             f'Chladni Simulator — {title_prefix}')
-        # Restore original axes limits
+
+        # Restore limits
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
-        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
-            f_display)
+
+        # Resonance title & mode info (unchanged)
+        f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(f_display)
         title = f"f = {f_display:.2f}"
         if abs(f_display - f_closest) < Config.RESONANCE_TOL:
-            deg_modes_str = ', '.join(
-                [f"({m},{n})" for m, n in degenerate_modes])
+            deg_modes_str = ', '.join([f"({m},{n})" for m, n in degenerate_modes])
             title += f" ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
-        weights = 1.0 / ((f_compute - self.simulator.mode_frequencies)
-                         ** 2 + self.simulator.gamma ** 2)
+
+        weights = 1.0 / ((f_compute - self.simulator.mode_frequencies)**2 + self.simulator.gamma**2)
         total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * \
-            100 if total_weight > 0 else np.zeros_like(weights)
+        percentages = (weights / total_weight) * 100 if total_weight > 0 else np.zeros_like(weights)
+
         modes_info = []
         for idx, (m, n) in enumerate(self.simulator.modes):
             fmn = self.simulator.mode_frequencies[idx]
             perc = percentages[idx]
             if perc > Config.MODE_WEIGHT_THRESHOLD:
                 modes_info.append((m, n, fmn, perc))
+
         modes_info.sort(key=lambda x: x[3], reverse=True)
         max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
+
         text_str = (
             "Contributing Modes (%)\n\n"
             f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n"
@@ -437,6 +466,7 @@ class ChladniUI:
         )
         for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
+
         self.mode_text.set_text(text_str)
         self.fig.canvas.draw_idle()
 
@@ -470,6 +500,7 @@ class ChladniUI:
                 f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
             return (self.imshow_artist, self.scatter_artist)
+
         self.scan_ani = FuncAnimation(
             self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
         self.fig.canvas.draw_idle()
