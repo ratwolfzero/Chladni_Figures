@@ -68,31 +68,20 @@ class ChladniSimulator:
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-        # Precompute mode shapes and frequencies
-        self.mode_shapes = []
-        self.mode_frequencies = []
-        self._precompute_modes()
+        # Precompute mode shapes and frequencies vectorized
+        ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1), np.arange(1, self.max_mode + 1))
+        self.modes = list(zip(ms.ravel(), ns.ravel()))  # Reusable modes list
+        self.mode_frequencies = self.k * np.sqrt(ms.ravel()**2 + ns.ravel()**2)
+        self.mode_shapes = np.array([
+            np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
+            for m, n in self.modes
+        ], dtype=np.float64)
         # Sorted eigenfrequencies
         self.eigenfrequencies = [
             (m, n, f_mn)
-            for (m, n), f_mn in zip(
-                [(m, n) for m in range(1, self.max_mode + 1)
-                 for n in range(1, self.max_mode + 1)],
-                self.mode_frequencies
-            )
+            for (m, n), f_mn in zip(self.modes, self.mode_frequencies)
         ]
         self.eigenfrequencies.sort(key=lambda x: x[2])
-
-    def _precompute_modes(self) -> None:
-        for m in range(1, self.max_mode + 1):
-            for n in range(1, self.max_mode + 1):
-                f_mn = self.k * np.sqrt(m ** 2 + n ** 2)
-                self.mode_frequencies.append(f_mn)
-                mode_shape = np.sin(m * np.pi * self.X) * \
-                             np.sin(n * np.pi * self.Y)
-                self.mode_shapes.append(mode_shape)
-        self.mode_frequencies = np.array(self.mode_frequencies)
-        self.mode_shapes = np.array(self.mode_shapes, dtype=np.float64)
 
     def compute_displacement(self, f: float) -> np.ndarray:
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
@@ -105,9 +94,7 @@ class ChladniSimulator:
     def get_closest_resonance_info(self, current_f: float) -> tuple[float, list[tuple[int, int]]]:
         idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
         f_closest = self.mode_frequencies[idx_closest]
-        mode_list = [(m, n) for m in range(1, self.max_mode + 1)
-                     for n in range(1, self.max_mode + 1)]
-        degenerate_modes = [(m, n) for idx, (m, n) in enumerate(mode_list)
+        degenerate_modes = [mode for idx, mode in enumerate(self.modes)
                             if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE]
         return f_closest, degenerate_modes
 
@@ -193,21 +180,19 @@ class ResonanceCurveWindow:
         self.ax.set_xlim(f_min, f_max)
         self.ax.set_ylim(0, max_weight * 1.1)
         self.fig.canvas.draw_idle()
-																				  
+
     def add_current_marker(self) -> None:
         current_weights = self.simulator.get_mode_weight_at_frequency(
             self.current_f_raw)
-        mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
-                     for n in range(1, self.simulator.max_mode + 1)]
         resonance_weight = 0
-        for idx, (m, n) in enumerate(mode_list):
+        for idx, (m, n) in enumerate(self.simulator.modes):
             if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
                 resonance_weight = current_weights[idx]
                 break
         self.current_marker, = self.ax.plot(self.current_f_raw, resonance_weight, 'go', markersize=8,
                                             label=f'Current: f={self.current_f_display:.2f}, weight={resonance_weight:.3f}')
 
-    def update_current_freq(self, val: float) -> None:                            
+    def update_current_freq(self, val: float) -> None:
         if not plt.fignum_exists(self.fig.number):
             return
         new_f_raw = self.main_ui.freq_slider.val
@@ -240,10 +225,8 @@ class ResonanceCurveWindow:
             self.current_marker.remove()
         current_weights = self.simulator.get_mode_weight_at_frequency(
             self.current_f_raw)
-        mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
-                     for n in range(1, self.simulator.max_mode + 1)]
         resonance_weight = 0
-        for idx, (m, n) in enumerate(mode_list):
+        for idx, (m, n) in enumerate(self.simulator.modes):
             if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
                 resonance_weight = current_weights[idx]
                 break
@@ -274,15 +257,16 @@ class ChladniUI:
         # Store original axes limits
         self.orig_xlim = (0, 1)
         self.orig_ylim = (0, 1)
-        # Initialize plot
-        self.init_freq_raw = Config.INIT_FREQ
-        self.init_freq_display = round(self.init_freq_raw, 2)
-        Z_init = self.simulator.compute_displacement(self.init_freq_raw)
+        # Initialize plots (create both imshow and scatter, hide one)
+        Z_init = self.simulator.compute_displacement(Config.INIT_FREQ)
         plot_data = np.abs(Z_init) ** Config.VISUAL_EXPONENT
-        self.plot_artist = self.ax.imshow(
+        self.imshow_artist = self.ax.imshow(
             plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
+        self.scatter_artist = self.ax.scatter(
+            [], [], s=Config.SAND_SIZE, c=Config.SAND_COLOR, marker='.')
+        self.scatter_artist.set_visible(False)  # Initially hide scatter
         self.cbar = self.fig.colorbar(
-            self.plot_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
+            self.imshow_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
         self._setup_axes()
         self._setup_widgets()
         self.mode_text = self.info_ax.text(
@@ -290,7 +274,7 @@ class ChladniUI:
         self.mode_text.set_fontfamily('Monospace')
         self.scan_ani = None
         self.resonance_window = None
-        self.update(self.init_freq_raw)
+        self.update(Config.INIT_FREQ)
 
     def _setup_axes(self) -> None:
         self.ax.set_facecolor('white')
@@ -303,7 +287,7 @@ class ChladniUI:
             self.ax.set_xticks([])
             self.ax.set_yticks([])
             self.ax.set_xlabel('')
-            self.ax.set_ylabel('')                             
+            self.ax.set_ylabel('')
 
     def _setup_widgets(self) -> None:
         ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
@@ -356,21 +340,21 @@ class ChladniUI:
         f_compute = val
         f_display = round(val, 2)
         Z = self.simulator.compute_displacement(f_compute)
-        # Remove existing colorbar if it exists
-        if hasattr(self, 'cbar'):
-            self.cbar.remove()
-            delattr(self, 'cbar')
-        # Remove existing plot artist if it exists
-        if hasattr(self, 'plot_artist') and self.plot_artist is not None:
-            self.plot_artist.remove()
-            self.plot_artist = None
         label = ''
         if self.view_mode == 'sand':
+            self.imshow_artist.set_visible(False)
+            self.scatter_artist.set_visible(True)
+            if hasattr(self, 'cbar'):
+                self.cbar.remove()
+                delattr(self, 'cbar')
             x, y = self.simulator.get_sand_coordinates(f_compute)
             x_plot = x / (self.simulator.resolution - 1)
             y_plot = y / (self.simulator.resolution - 1)
-            self.plot_artist = self.ax.scatter(x_plot, y_plot, s=Config.SAND_SIZE, c=Config.SAND_COLOR, marker='.')
+            offsets = np.column_stack((x_plot, y_plot))
+            self.scatter_artist.set_offsets(offsets)
         else:
+            self.scatter_artist.set_visible(False)
+            self.imshow_artist.set_visible(True)
             if self.view_mode == 'phase':
                 plot_data = Z
                 cmap = 'coolwarm'
@@ -384,9 +368,13 @@ class ChladniUI:
                 vmin = 0
                 vmax = np.max(plot_data)
                 label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
-            self.plot_artist = self.ax.imshow(
-                plot_data, cmap=cmap, origin='lower', extent=[0, 1, 0, 1], vmin=vmin, vmax=vmax)
-            self.cbar = self.fig.colorbar(self.plot_artist, ax=self.ax, label=label)
+            self.imshow_artist.set_data(plot_data)
+            self.imshow_artist.set_cmap(cmap)
+            self.imshow_artist.set_clim(vmin=vmin, vmax=vmax)
+            if not hasattr(self, 'cbar'):
+                self.cbar = self.fig.colorbar(self.imshow_artist, ax=self.ax, label=label)
+            else:
+                self.cbar.set_label(label)
         # Set window title
         title_prefix = {
             'magnitude': 'Magnitude View',
@@ -410,10 +398,8 @@ class ChladniUI:
         total_weight = np.sum(weights)
         percentages = (weights / total_weight) * \
                       100 if total_weight > 0 else np.zeros_like(weights)
-        mode_list = [(m, n) for m in range(1, self.simulator.max_mode + 1)
-                     for n in range(1, self.simulator.max_mode + 1)]
         modes_info = []
-        for idx, (m, n) in enumerate(mode_list):
+        for idx, (m, n) in enumerate(self.simulator.modes):
             fmn = self.simulator.mode_frequencies[idx]
             perc = percentages[idx]
             if perc > Config.MODE_WEIGHT_THRESHOLD:
@@ -439,7 +425,7 @@ class ChladniUI:
         next_f = min(
             [fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn > current_f],
             default=self.simulator.eigenfrequencies[0][2] if self.simulator.eigenfrequencies else current_f
-        )                                                      
+        )
         self.freq_slider.set_val(next_f)
 
     def jump_to_prev_resonance(self, event) -> None:
@@ -453,14 +439,12 @@ class ChladniUI:
     def start_scan(self, event) -> None:
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
-
         def update_scan(frame):
             f = self.freq_slider.val + Config.SCAN_SPEED
             if f > Config.FREQ_RANGE[1]:
                 f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
-            return self.plot_artist,
-
+            return (self.imshow_artist, self.scatter_artist)
         self.scan_ani = FuncAnimation(
             self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
         self.fig.canvas.draw_idle()
