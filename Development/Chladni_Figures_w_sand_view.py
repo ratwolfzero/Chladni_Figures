@@ -75,21 +75,21 @@ class ChladniSimulator:
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
 
-        # Optimization: Precompute modes and frequencies vectorized instead of looping with appends
+        # Precompute mode indices and frequencies vectorized
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
-        # Store modes list for reuse across methods
         self.modes = list(zip(ms.ravel(), ns.ravel()))
+
         self.mode_frequencies = self.k * \
             np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
 
-        # Precompute mode shapes as a 3D array directly
+        # Precompute all mode shapes as 3D array (modes × res × res)
         self.mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self.modes
         ], dtype=np.float64)
 
-        # Sorted eigenfrequencies
+        # Sorted list of (m, n, frequency)
         self.eigenfrequencies = [
             (m, n, f_mn)
             for (m, n), f_mn in zip(self.modes, self.mode_frequencies)
@@ -97,6 +97,7 @@ class ChladniSimulator:
         self.eigenfrequencies.sort(key=lambda x: x[2])
 
     def compute_displacement(self, f: float) -> np.ndarray:
+        """Compute total displacement field as weighted sum of mode shapes."""
         weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
         Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
         return Z
@@ -105,8 +106,10 @@ class ChladniSimulator:
         return 1.0 / ((f_range - target_freq) ** 2 + self.gamma ** 2)
 
     def get_closest_resonance_info(self, current_f: float) -> tuple[float, list[tuple[int, int]]]:
+        """Find nearest eigenfrequency and all degenerate modes at that frequency."""
         idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
         f_closest = self.mode_frequencies[idx_closest]
+
         degenerate_modes = [
             mode for idx, mode in enumerate(self.modes)
             if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE
@@ -116,27 +119,38 @@ class ChladniSimulator:
     def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
         return 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
 
-    # 🏖 Sand generator
-
-    def get_sand_coordinates(self, f):
-        Z = self.compute_displacement(f)
+    def get_sand_coordinates_from_Z(self, Z: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Generate sand grain positions using importance sampling based on |Z|."""
         max_z = np.max(np.abs(Z))
         if max_z == 0:
             max_z = 1e-12
+
+        # Probability ~ exp(-|displacement| / scale)
         p = np.exp(-np.abs(Z) / (max_z * Config.SAND_EXP_SCALE))
-        p /= p.sum()
+
+        p_flat = p.ravel()
+        total = p_flat.sum()
+        if total > 0:
+            p_flat /= total
+        else:
+            # Rare fallback — uniform
+            p_flat.fill(1.0 / p_flat.size)
+
         indices = np.random.choice(
-            self.resolution**2,
+            p_flat.size,
             size=Config.NUM_GRAINS,
-            p=p.flatten()
+            p=p_flat
         )
+
         y_idx, x_idx = np.unravel_index(
             indices, (self.resolution, self.resolution)
         )
+
+        # Add small Gaussian noise for more natural distribution
         x = x_idx + np.random.normal(0, Config.SAND_NOISE_STD, size=len(x_idx))
         y = y_idx + np.random.normal(0, Config.SAND_NOISE_STD, size=len(y_idx))
-        return x, y
 
+        return x, y
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
@@ -281,18 +295,21 @@ class ChladniUI:
         self.orig_xlim = (0, 1)
         self.orig_ylim = (0, 1)
 
-        # Initialize plots (create both imshow and scatter, hide one initially)
+        # Initialize plots
         Z_init = self.simulator.compute_displacement(Config.INIT_FREQ)
         plot_data = np.abs(Z_init) ** Config.VISUAL_EXPONENT
         self.imshow_artist = self.ax.imshow(
             plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.scatter_artist = self.ax.scatter(
             [], [], s=Config.SAND_SIZE, c=Config.SAND_COLOR, marker='.')
-        self.scatter_artist.set_visible(False)  # Initially hide scatter
+        self.scatter_artist.set_visible(False)
 
-        # Create colorbar once (we'll hide/show it later)
+        # Colorbar created once
         self.cbar = self.fig.colorbar(
-            self.imshow_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
+            self.imshow_artist,
+            ax=self.ax,
+            label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
+        )
 
         self._setup_axes()
         self._setup_widgets()
@@ -322,12 +339,14 @@ class ChladniUI:
     def _setup_widgets(self) -> None:
         ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
         self.freq_slider = Slider(
-            ax_freq, 'f.', *Config.FREQ_RANGE, valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
+            ax_freq, 'f.', *Config.FREQ_RANGE,
+            valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
         self.freq_slider.on_changed(self.update)
 
         ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
-            ax_gamma, 'γ', *Config.GAMMA_RANGE, valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
+            ax_gamma, 'γ', *Config.GAMMA_RANGE,
+            valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
         self.gamma_slider.on_changed(self.update_gamma)
 
         ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
@@ -338,7 +357,7 @@ class ChladniUI:
         self.next_button = Button(ax_next, '▶')
         self.next_button.on_clicked(self.jump_to_next_resonance)
 
-        plt.text(x=0.135, y=0.06, s="Resonance Navigation",
+        plt.text(0.135, 0.06, "Resonance Navigation",
                  ha='center', va='center', fontsize=10, fontweight='bold',
                  transform=self.fig.transFigure)
 
@@ -377,18 +396,22 @@ class ChladniUI:
     def update(self, val: float) -> None:
         f_compute = val
         f_display = round(val, 2)
+
+        # ─── Single expensive computation ───────────────────────────────
         Z = self.simulator.compute_displacement(f_compute)
+        # ────────────────────────────────────────────────────────────────
+
         label = ''
 
         if self.view_mode == 'sand':
             self.imshow_artist.set_visible(False)
             self.scatter_artist.set_visible(True)
 
-            # Hide colorbar (do not remove it)
             if hasattr(self, 'cbar'):
                 self.cbar.ax.set_visible(False)
 
-            x, y = self.simulator.get_sand_coordinates(f_compute)
+            x, y = self.simulator.get_sand_coordinates_from_Z(Z)
+
             x_plot = x / (self.simulator.resolution - 1)
             y_plot = y / (self.simulator.resolution - 1)
             offsets = np.column_stack((x_plot, y_plot))
@@ -416,11 +439,9 @@ class ChladniUI:
             self.imshow_artist.set_cmap(cmap)
             self.imshow_artist.set_clim(vmin=vmin, vmax=vmax)
 
-            # Show & update colorbar
             if hasattr(self, 'cbar'):
                 self.cbar.ax.set_visible(True)
                 self.cbar.set_label(label)
-            # Safety branch (should rarely/never be needed after init)
             else:
                 self.cbar = self.fig.colorbar(
                     self.imshow_artist, ax=self.ax, label=label)
@@ -434,11 +455,9 @@ class ChladniUI:
         self.fig.canvas.manager.set_window_title(
             f'Chladni Simulator — {title_prefix}')
 
-        # Restore limits
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
 
-        # Resonance title & mode info (unchanged)
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
             f_display)
         title = f"f = {f_display:.2f}"
@@ -448,12 +467,13 @@ class ChladniUI:
             title += f" ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
 
+        # Mode contribution text
         weights = 1.0 / \
             ((f_compute - self.simulator.mode_frequencies)
              ** 2 + self.simulator.gamma**2)
         total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * \
-            100 if total_weight > 0 else np.zeros_like(weights)
+        percentages = (weights / total_weight *
+                       100) if total_weight > 0 else np.zeros_like(weights)
 
         modes_info = []
         for idx, (m, n) in enumerate(self.simulator.modes):
