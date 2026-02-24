@@ -59,54 +59,83 @@ class ChladniSimulator:
     def __init__(self):
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
-        self.gamma = Config.INIT_GAMMA
+        self._gamma = Config.INIT_GAMMA
         self.k = Config.K
-
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-
         # Optimization: Precompute modes and frequencies vectorized instead of looping with appends
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
         # Store modes list for reuse across methods
-        self.modes = list(zip(ms.ravel(), ns.ravel()))
-        self.mode_frequencies = self.k * \
-            np.sqrt(np.array([m**2 + n**2 for m, n in self.modes]))
-
+        self._modes = list(zip(ms.ravel(), ns.ravel()))
+        self._mode_frequencies = self.k * \
+            np.sqrt(np.array([m**2 + n**2 for m, n in self._modes]))
         # Precompute mode shapes as a 3D array directly
-        self.mode_shapes = np.array([
+        self._mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
-            for m, n in self.modes
+            for m, n in self._modes
         ], dtype=np.float64)
-
         # Sorted eigenfrequencies
-        self.eigenfrequencies = [
+        self._eigenfrequencies = [
             (m, n, f_mn)
-            for (m, n), f_mn in zip(self.modes, self.mode_frequencies)
+            for (m, n), f_mn in zip(self._modes, self._mode_frequencies)
         ]
-        self.eigenfrequencies.sort(key=lambda x: x[2])
+        self._eigenfrequencies.sort(key=lambda x: x[2])
+
+    @property
+    def gamma(self) -> float:
+        return self._gamma
+
+    def set_gamma(self, gamma: float) -> None:
+        self._gamma = gamma
 
     def compute_displacement(self, f: float) -> np.ndarray:
-        weights = 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
-        Z = np.tensordot(weights, self.mode_shapes, axes=(0, 0))
+        weights = self.get_mode_weights_at_frequency(f)
+        Z = np.tensordot(weights, self._mode_shapes, axes=(0, 0))
         return Z
 
     def compute_lorentzian_weights(self, f_range: np.ndarray, target_freq: float) -> np.ndarray:
         return 1.0 / ((f_range - target_freq) ** 2 + self.gamma ** 2)
 
     def get_closest_resonance_info(self, current_f: float) -> tuple[float, list[tuple[int, int]]]:
-        idx_closest = np.argmin(np.abs(self.mode_frequencies - current_f))
-        f_closest = self.mode_frequencies[idx_closest]
+        idx_closest = np.argmin(np.abs(self._mode_frequencies - current_f))
+        f_closest = self._mode_frequencies[idx_closest]
         degenerate_modes = [
-            mode for idx, mode in enumerate(self.modes)
-            if abs(self.mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE
+            mode for idx, mode in enumerate(self._modes)
+            if abs(self._mode_frequencies[idx] - f_closest) < Config.EPS_FREQ_COMPARE
         ]
         return f_closest, degenerate_modes
 
-    def get_mode_weight_at_frequency(self, f: float) -> np.ndarray:
-        return 1.0 / ((f - self.mode_frequencies) ** 2 + self.gamma ** 2)
+    def get_mode_weights_at_frequency(self, f: float) -> np.ndarray:
+        return 1.0 / ((f - self._mode_frequencies) ** 2 + self.gamma ** 2)
+
+    def get_contributing_modes(self, f: float, threshold: float = Config.MODE_WEIGHT_THRESHOLD) -> list[tuple[int, int, float, float]]:
+        weights = self.get_mode_weights_at_frequency(f)
+        total_weight = np.sum(weights)
+        if total_weight == 0:
+            return []
+        percentages = (weights / total_weight) * 100
+        modes_info = [
+            (m, n, self._mode_frequencies[i], percentages[i])
+            for i, (m, n) in enumerate(self._modes)
+            if percentages[i] > threshold
+        ]
+        modes_info.sort(key=lambda x: x[3], reverse=True)
+        return modes_info
+
+    def get_next_resonance_frequency(self, current_f: float) -> float:
+        freqs = [fmn for _, _, fmn in self._eigenfrequencies if fmn > current_f]
+        if not freqs:
+            return self._eigenfrequencies[0][2] if self._eigenfrequencies else current_f
+        return min(freqs)
+
+    def get_previous_resonance_frequency(self, current_f: float) -> float:
+        freqs = [fmn for _, _, fmn in self._eigenfrequencies if fmn < current_f]
+        if not freqs:
+            return self._eigenfrequencies[-1][2] if self._eigenfrequencies else current_f
+        return max(freqs)
 
 # =========================================================
 # 📈 Resonance Curve Window
@@ -148,7 +177,8 @@ class ResonanceCurveWindow:
                 self.f_range, self.current_resonance_freq)
             self.ax.plot(self.f_range, lorentzian, '-', color=color,
                          linewidth=2, label=f'Mode ({m},{n})')
-        max_weight = 1.0 / (self.simulator.gamma ** 2)
+        max_weight = self.simulator.compute_lorentzian_weights(
+            np.array([self.current_resonance_freq]), self.current_resonance_freq)[0]
         self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7,
                         label=f'Resonance: f={self.current_resonance_freq:.2f}')
         self.add_current_marker()
@@ -172,13 +202,8 @@ class ResonanceCurveWindow:
         self.fig.canvas.draw_idle()
 
     def add_current_marker(self) -> None:
-        current_weights = self.simulator.get_mode_weight_at_frequency(
-            self.current_f_raw)
-        resonance_weight = 0
-        for idx, (m, n) in enumerate(self.simulator.modes):
-            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
-                resonance_weight = current_weights[idx]
-                break
+        resonance_weight = self.simulator.compute_lorentzian_weights(
+            np.array([self.current_f_raw]), self.current_resonance_freq)[0]
         self.current_marker, = self.ax.plot(self.current_f_raw, resonance_weight, 'go', markersize=8,
                                             label=f'Current: f={self.current_f_display:.2f}, weight={resonance_weight:.3f}')
 
@@ -213,13 +238,8 @@ class ResonanceCurveWindow:
     def update_current_marker(self) -> None:
         if self.current_marker is not None:
             self.current_marker.remove()
-        current_weights = self.simulator.get_mode_weight_at_frequency(
-            self.current_f_raw)
-        resonance_weight = 0
-        for idx, (m, n) in enumerate(self.simulator.modes):
-            if abs(self.simulator.mode_frequencies[idx] - self.current_resonance_freq) < Config.EPS_FREQ_COMPARE:
-                resonance_weight = current_weights[idx]
-                break
+        resonance_weight = self.simulator.compute_lorentzian_weights(
+            np.array([self.current_f_raw]), self.current_resonance_freq)[0]
         self.current_marker, = self.ax.plot(self.current_f_raw, resonance_weight, 'go', markersize=8,
                                             label=f'Current: f={self.current_f_display:.2f}, weight={resonance_weight:.3f}')
         handles, labels = self.ax.get_legend_handles_labels()
@@ -247,11 +267,9 @@ class ChladniUI:
         self.info_ax = self.fig.add_subplot(gs[1])
         self.info_ax.axis('off')
         plt.subplots_adjust(left=0.05, right=0.95, bottom=0.35, top=0.95)
-
         # Store original axes limits
         self.orig_xlim = (0, 1)
         self.orig_ylim = (0, 1)
-
         # Optimization: Create plot_artist and cbar once here, update in place later
         self.init_freq_raw = Config.INIT_FREQ
         Z_init = self.simulator.compute_displacement(self.init_freq_raw)
@@ -260,7 +278,6 @@ class ChladniUI:
             plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.cbar = self.fig.colorbar(
             self.plot_artist, ax=self.ax, label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
-
         self._setup_axes()
         self._setup_widgets()
         self.mode_text = self.info_ax.text(
@@ -334,7 +351,6 @@ class ChladniUI:
         f_compute = val
         f_display = round(val, 2)
         Z = self.simulator.compute_displacement(f_compute)
-
         # Optimization: Update existing plot_artist in place instead of removing/recreating
         if self.view_mode == 'phase':
             plot_data = Z
@@ -347,18 +363,15 @@ class ChladniUI:
             cmap = 'plasma'
             vmin, vmax = 0, np.max(plot_data)
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
-
         self.plot_artist.set_data(plot_data)
         self.plot_artist.set_cmap(cmap)
         self.plot_artist.set_clim(vmin=vmin, vmax=vmax)
         self.cbar.set_label(label)  # Update label in place
-
         title_prefix = 'Phase View' if self.view_mode == 'phase' else 'Magnitude View'
         self.fig.canvas.manager.set_window_title(
             f'Chladni Simulator — {title_prefix}')
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
-
         f_closest, degenerate_modes = self.simulator.get_closest_resonance_info(
             f_display)
         title = f"f = {f_display:.2f}"
@@ -367,45 +380,27 @@ class ChladniUI:
                 [f"({m},{n})" for m, n in degenerate_modes])
             title += f" ← Resonance: {deg_modes_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
-
-        weights = 1.0 / \
-            ((f_compute - self.simulator.mode_frequencies)
-             ** 2 + self.simulator.gamma**2)
-        total_weight = np.sum(weights)
-        percentages = (weights / total_weight) * \
-            100 if total_weight > 0 else np.zeros_like(weights)
-
-        modes_info = []
-        for idx, (m, n) in enumerate(self.simulator.modes):  # Reuse self.modes
-            fmn = self.simulator.mode_frequencies[idx]
-            perc = percentages[idx]
-            if perc > Config.MODE_WEIGHT_THRESHOLD:
-                modes_info.append((m, n, fmn, perc))
-        modes_info.sort(key=lambda x: x[3], reverse=True)
-
+        modes_info = self.simulator.get_contributing_modes(f_compute)
         max_modes = Config.MAX_DISPLAY_MODES or len(modes_info)
         text_str = ("Contributing Modes (%)\n\n"
                     f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n" + "-" * 32 + "\n")
         for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
         self.mode_text.set_text(text_str)
-
         self.fig.canvas.draw_idle()
 
     def update_gamma(self, val: float) -> None:
-        self.simulator.gamma = val
+        self.simulator.set_gamma(val)
         self.update(self.freq_slider.val)
 
     def jump_to_next_resonance(self, event) -> None:
         current_f = self.freq_slider.val
-        next_f = min([fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn > current_f],
-                     default=self.simulator.eigenfrequencies[0][2] if self.simulator.eigenfrequencies else current_f)
+        next_f = self.simulator.get_next_resonance_frequency(current_f)
         self.freq_slider.set_val(next_f)
 
     def jump_to_prev_resonance(self, event) -> None:
         current_f = self.freq_slider.val
-        prev_f = max([fmn for _, _, fmn in self.simulator.eigenfrequencies if fmn < current_f],
-                     default=self.simulator.eigenfrequencies[-1][2] if self.simulator.eigenfrequencies else current_f)
+        prev_f = self.simulator.get_previous_resonance_frequency(current_f)
         self.freq_slider.set_val(prev_f)
 
     def start_scan(self, event) -> None:
@@ -418,6 +413,7 @@ class ChladniUI:
                 f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
             return self.plot_artist,
+
         self.scan_ani = FuncAnimation(
             self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
         self.fig.canvas.draw_idle()
