@@ -5,40 +5,45 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
-import matplotlib
-print("Matplotlib version:", matplotlib.__version__)
-
 
 class Config:
-    # Frequency controls
-    FREQ_RANGE = (1.0, 20.0)
-    FREQ_STEP = 0.01
-    INIT_FREQ = 5.0
-
-    # Damping controls
-    GAMMA_RANGE = (0.001, 0.05)
-    GAMMA_STEP = 0.001
-    INIT_GAMMA = 0.01
-
-    # Mode / resonance parameters
-    MAX_MODE = 15
-    RESONANCE_TOL = 0.02
-    MODE_WEIGHT_THRESHOLD = 1.0
-    MAX_DISPLAY_MODES = None
-    EPS_FREQ_COMPARE = 1e-6
-
-    # Simulation grid & scaling
-    RESOLUTION = 200
-    K = 1.0
+    # =========================================================
+    # 🎛️ Frequency controls
+    # =========================================================
+    FREQ_RANGE = (1.0, 20.0)  # Range for driving frequency slider (Hz)
+    FREQ_STEP = 0.01  # Frequency slider step size
+    INIT_FREQ = 5.0  # Initial driving frequency (Hz)
+    # =========================================================
+    # ⚖️ Damping (gamma) controls
+    # =========================================================
+    GAMMA_RANGE = (0.001, 0.05)  # Range for damping coefficient γ
+    GAMMA_STEP = 0.001  # Damping slider step size
+    INIT_GAMMA = 0.01  # Default damping value (γ)
+    # =========================================================
+    # 🔢 Mode / resonance parameters
+    # =========================================================
+    MAX_MODE = 15  # Maximum mode indices m,n to compute
+    RESONANCE_TOL = 0.02  # Frequency tolerance for resonance detection
+    MODE_WEIGHT_THRESHOLD = 1.0  # Minimum % weight for mode to be listed
+    MAX_DISPLAY_MODES = None  # Limit number of modes shown (None = all)
+    EPS_FREQ_COMPARE = 1e-6  # Small epsilon for frequency equality check
+    # =========================================================
+    # 🧮 Simulation grid & scaling
+    # =========================================================
+    RESOLUTION = 200  # Grid resolution for spatial mode shapes
+    K = 1.0  # Frequency scaling factor for eigenmodes
+    # Exponent for magnitude visualization (|Z|^exp)
     VISUAL_EXPONENT = 0.2
-
-    # UI & animation behavior
-    SCAN_SPEED = 0.02
-    SHOW_AXES = False
-
-    # Resonance curve settings
-    RESONANCE_CURVE_RANGE = 1
-    RESONANCE_CURVE_SAMPLES = 20000
+    # =========================================================
+    # 🖥️ UI & animation behavior
+    # =========================================================
+    SCAN_SPEED = 0.02  # Frequency step per frame during Auto Scan
+    SHOW_AXES = False  # Toggle for showing coordinate axes
+    # =========================================================
+    # 📈 Resonance curve plot settings
+    # =========================================================
+    RESONANCE_CURVE_RANGE = 1  # Frequency range around resonance (Hz)
+    RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
 
 
 Mode: TypeAlias = tuple[int, int, float]
