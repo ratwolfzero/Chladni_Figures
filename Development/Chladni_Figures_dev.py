@@ -429,8 +429,11 @@ class ChladniUI:
     def toggle_view(self, event) -> None:
         current_view = self._views[self.view_mode]
         next_key = current_view['next_key']
-        next_view = self._views[next_key]
         self.view_mode = next_key
+        # Now update label to the NEXT after the new mode
+        current_view = self._views[self.view_mode]  # Reload after change
+        next_key = current_view['next_key']
+        next_view = self._views[next_key]
         self.toggle_button.label.set_text(f"Toggle to {next_view['title']}")
         self.update(self.freq_slider.val)
 
@@ -449,7 +452,7 @@ class ChladniUI:
 
         f_closest, deg_modes = self.simulator.current_closest_resonance
         title = f"f = {f_display:.2f}"
-        if abs(f_display - f_closest) < Config.RESONANCE_TOL:
+        if abs(f_compute - f_closest) < Config.RESONANCE_TOL:
             deg_str = ', '.join(f"({m},{n})" for m, n in deg_modes)
             title += f" ← Resonance: {deg_str} f_mn={f_closest:.2f}"
         self.ax.set_title(title)
