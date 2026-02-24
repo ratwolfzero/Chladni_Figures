@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
+
 class Config:
     # =========================================================
     # 🎛️ Frequency controls
@@ -44,11 +45,14 @@ class Config:
     RESONANCE_CURVE_RANGE = 1  # Frequency range around resonance (Hz)
     RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
 
+
 Mode: TypeAlias = tuple[int, int, float]
 
 # =========================================================
 # 🧮 Chladni Simulator
 # =========================================================
+
+
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
 
@@ -136,6 +140,8 @@ class ChladniSimulator:
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
+
+
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
 
@@ -247,6 +253,8 @@ class ResonanceCurveWindow:
 # =========================================================
 # 🖥️ Main Chladni UI
 # =========================================================
+
+
 class ChladniUI:
     """Matplotlib UI for Chladni simulator."""
 
@@ -418,10 +426,12 @@ class ChladniUI:
     def show(self) -> None:
         plt.show()
 
+
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
     ui.show()
+
 
 if __name__ == "__main__":
     main()

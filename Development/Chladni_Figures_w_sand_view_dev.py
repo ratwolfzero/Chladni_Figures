@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
+
 class Config:
     # =========================================================
     # 🎛️ Frequency controls
@@ -52,11 +53,14 @@ class Config:
     SAND_SIZE = 0.1  # Size of sand grains in scatter plot
     SAND_COLOR = 'black'  # Color of sand grains
 
+
 Mode: TypeAlias = tuple[int, int, float]
 
 # =========================================================
 # 🧮 Chladni Simulator
 # =========================================================
+
+
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
 
@@ -175,6 +179,8 @@ class ChladniSimulator:
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
+
+
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
 
@@ -210,7 +216,8 @@ class ResonanceCurveWindow:
                 self.f_range, self.current_resonance_freq)
             self.ax.plot(self.f_range, lorentzian, '-', color=color,
                          linewidth=2, label=f'Mode ({m},{n})')
-        max_weight = self.simulator.get_lorentzian_weight_at_freq(self.current_resonance_freq, self.current_resonance_freq)
+        max_weight = self.simulator.get_lorentzian_weight_at_freq(
+            self.current_resonance_freq, self.current_resonance_freq)
         self.ax.axvline(self.current_resonance_freq, color='red', linestyle='--', alpha=0.7,
                         label=f'Resonance: f={self.current_resonance_freq:.2f}')
         self.add_current_marker()
@@ -285,6 +292,8 @@ class ResonanceCurveWindow:
 # =========================================================
 # 🖥️ Main Chladni UI
 # =========================================================
+
+
 class ChladniUI:
     """Matplotlib UI for Chladni simulator with phase view and sand view toggle."""
 
@@ -498,10 +507,13 @@ class ChladniUI:
 # =========================================================
 # 🚀 Main Entry
 # =========================================================
+
+
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
     ui.show()
+
 
 if __name__ == "__main__":
     main()
