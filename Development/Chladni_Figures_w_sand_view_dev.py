@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
 from typing import TypeAlias
 
+
 class Config:
     # =========================================================
     # 🎛️ Frequency controls
@@ -52,13 +53,17 @@ class Config:
     SAND_SIZE = 0.1  # Size of sand grains in scatter plot
     SAND_COLOR = 'black'  # Color of sand grains
 
+
 Mode: TypeAlias = tuple[int, int, float]
 
 # =========================================================
 # 🧮 Chladni Simulator
 # =========================================================
+
+
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
+
     def __init__(self):
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
@@ -100,7 +105,7 @@ class ChladniSimulator:
 
     def set_current_frequency(self, f: float) -> None:
         self._current_frequency = f
-																														   
+
     def compute_displacement(self, f: float) -> np.ndarray:
         """Compute total displacement field as weighted sum of mode shapes."""
         weights = self.get_mode_weights_at_frequency(f)
@@ -182,8 +187,11 @@ class ChladniSimulator:
 # =========================================================
 # 📈 Resonance Curve Window
 # =========================================================
+
+
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
+
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
@@ -288,8 +296,11 @@ class ResonanceCurveWindow:
 # =========================================================
 # 🖥️ Main Chladni UI
 # =========================================================
+
+
 class ChladniUI:
     """Matplotlib UI for Chladni simulator with phase view and sand view toggle."""
+
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
         self.simulator.set_gamma(Config.INIT_GAMMA)
@@ -469,13 +480,13 @@ class ChladniUI:
             f"{'Mode (m,n)':<10} {'f_mn':>5} {'Weight %':>12}\n"
             + "-" * 32 + "\n"
         )
-        for m, n, fmn, perc in modes_info[:max_modes]:                
+        for m, n, fmn, perc in modes_info[:max_modes]:
             text_str += f"({m:>2},{n:<2}) {fmn:>8.2f} {perc:>10.1f}\n"
         self.mode_text.set_text(text_str)
         self.fig.canvas.draw_idle()
 
     def jump_to_next_resonance(self, event) -> None:
-        current_f = self.freq_slider.val                              
+        current_f = self.freq_slider.val
         next_f = self.simulator.get_next_resonance_frequency(current_f)
         self.simulator.set_current_frequency(next_f)
         self.freq_slider.set_val(next_f)
@@ -512,10 +523,13 @@ class ChladniUI:
 # =========================================================
 # 🚀 Main Entry
 # =========================================================
+
+
 def main() -> None:
     simulator = ChladniSimulator()
     ui = ChladniUI(simulator)
     ui.show()
+
 
 if __name__ == "__main__":
     main()

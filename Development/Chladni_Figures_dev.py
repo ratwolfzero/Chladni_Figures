@@ -49,6 +49,7 @@ Mode: TypeAlias = tuple[int, int, float]
 # ────────────────────────────────────────────────────────────────
 class ChladniSimulator:
     """Simulate Chladni figures for a square membrane."""
+
     def __init__(self):
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
@@ -65,7 +66,8 @@ class ChladniSimulator:
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
         self._modes = list(zip(ms.ravel(), ns.ravel()))
-        self._mode_frequencies = self.k * np.sqrt(np.array([m**2 + n**2 for m, n in self._modes]))
+        self._mode_frequencies = self.k * \
+            np.sqrt(np.array([m**2 + n**2 for m, n in self._modes]))
 
         # Precompute mode shapes (modes × res × res)
         self._mode_shapes = np.array([
@@ -163,11 +165,13 @@ class ResonanceCurveWindow:
         f_res = self.current_resonance_freq
         f_min = max(Config.FREQ_RANGE[0], f_res - Config.RESONANCE_CURVE_RANGE)
         f_max = min(Config.FREQ_RANGE[1], f_res + Config.RESONANCE_CURVE_RANGE)
-        self.f_range = np.linspace(f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
+        self.f_range = np.linspace(
+            f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
 
         colors = plt.cm.Set1(np.linspace(0, 1, len(self.current_modes)))
         for (m, n), color in zip(self.current_modes, colors):
-            lor = self.simulator.compute_lorentzian_weights(self.f_range, f_res)
+            lor = self.simulator.compute_lorentzian_weights(
+                self.f_range, f_res)
             self.ax.plot(self.f_range, lor, '-', color=color, lw=2,
                          label=f'Mode ({m},{n})')
 
@@ -220,7 +224,7 @@ class ResonanceCurveWindow:
 
         if (abs(self.current_resonance_freq - old_res) > Config.EPS_FREQ_COMPARE or
             set(self.current_modes) != old_modes_set or
-            self.current_f_raw < self.f_range[0] or self.current_f_raw > self.f_range[-1]):
+                self.current_f_raw < self.f_range[0] or self.current_f_raw > self.f_range[-1]):
             self.setup_curve()
         else:
             self.update_current_marker()
@@ -268,7 +272,7 @@ class ChladniUI:
         Z = self.simulator.compute_displacement(Config.INIT_FREQ)
         plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
         self.plot_artist = self.ax.imshow(
-            plot_data, cmap='plasma', origin='lower', extent=[0,1,0,1])
+            plot_data, cmap='plasma', origin='lower', extent=[0, 1, 0, 1])
         self.cbar = self.fig.colorbar(
             self.plot_artist, ax=self.ax,
             label=f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
@@ -293,8 +297,8 @@ class ChladniUI:
             self.ax.set_xlabel('')
             self.ax.set_ylabel('')
         else:
-            self.ax.set_xlim(0,1)
-            self.ax.set_ylim(0,1)
+            self.ax.set_xlim(0, 1)
+            self.ax.set_ylim(0, 1)
 
     def _setup_widgets(self):
         axf = plt.axes([0.05, 0.25, 0.8, 0.03])
@@ -318,11 +322,11 @@ class ChladniUI:
         plt.text(0.135, 0.06, "Resonance Navigation", ha='center', va='center',
                  fontsize=10, fontweight='bold', transform=self.fig.transFigure)
 
-        ax_scan  = plt.axes([0.25, 0.10, 0.10, 0.04])
+        ax_scan = plt.axes([0.25, 0.10, 0.10, 0.04])
         self.scan_btn = Button(ax_scan, 'Auto Scan')
         self.scan_btn.on_clicked(self.start_scan)
 
-        ax_stop  = plt.axes([0.37, 0.10, 0.10, 0.04])
+        ax_stop = plt.axes([0.37, 0.10, 0.10, 0.04])
         self.stop_btn = Button(ax_stop, 'Stop Scan')
         self.stop_btn.on_clicked(self.stop_scan)
 
@@ -373,7 +377,7 @@ class ChladniUI:
             label = 'Signed Displacement (Phase View)'
         else:
             data = np.abs(Z) ** Config.VISUAL_EXPONENT
-            cmap = 'plasma'                               
+            cmap = 'plasma'
             vmin, vmax = 0, np.max(data)
             label = f'Displacement (|Z|^{Config.VISUAL_EXPONENT})'
 
@@ -383,7 +387,8 @@ class ChladniUI:
         self.cbar.set_label(label)
 
         title_prefix = 'Phase View' if self.view_mode == 'phase' else 'Magnitude View'
-        self.fig.canvas.manager.set_window_title(f'Chladni Simulator – {title_prefix}')
+        self.fig.canvas.manager.set_window_title(
+            f'Chladni Simulator – {title_prefix}')
 
         self.ax.set_xlim(self.orig_xlim)
         self.ax.set_ylim(self.orig_ylim)
@@ -391,7 +396,8 @@ class ChladniUI:
         f_close, deg_modes = self.simulator.get_closest_resonance_info(f_disp)
         title = f"f = {f_disp:.2f}"
         if abs(f_disp - f_close) < Config.RESONANCE_TOL:
-            title += f"  ← Resonance: {', '.join(f'({m},{n})' for m,n in deg_modes)}  f={f_close:.2f}"
+            title += f"  ← Resonance: {', '.join(f'({m},{n})' for m, n in deg_modes)}  f={
+                f_close:.2f}"
         self.ax.set_title(title)
 
         modes_info = self.simulator.get_contributing_modes(f)
@@ -409,9 +415,10 @@ class ChladniUI:
         self.freq_slider.set_val(nxt)
 
     def jump_prev(self, _):
-        prev = self.simulator.get_previous_resonance_frequency(self.freq_slider.val)
+        prev = self.simulator.get_previous_resonance_frequency(
+            self.freq_slider.val)
         self.freq_slider.set_val(prev)
-														   
+
     def start_scan(self, _):
         if self.scan_ani is not None:
             self.scan_ani.event_source.stop()
