@@ -428,7 +428,7 @@ class ChladniUI:
             if f > Config.FREQ_RANGE[1]:
                 f = Config.FREQ_RANGE[0]
             self.freq_slider.set_val(f)
-            return (self.plot_artist, None)
+            return (self.plot_artist)
 
         self.scan_ani = FuncAnimation(
             self.fig, update_scan, interval=50, blit=False, cache_frame_data=False)
