@@ -68,6 +68,7 @@ class ChladniSimulator:
         self.resolution = Config.RESOLUTION
         self.max_mode = Config.MAX_MODE
         self._gamma = Config.INIT_GAMMA
+        self._current_frequency = Config.INIT_FREQ  # New: store current f here
         self.k = Config.K
         # Spatial grid
         x = np.linspace(0, 1, self.resolution)
@@ -95,8 +96,15 @@ class ChladniSimulator:
     def gamma(self) -> float:
         return self._gamma
 
+    @property
+    def current_frequency(self) -> float:
+        return self._current_frequency
+
     def set_gamma(self, gamma: float) -> None:
         self._gamma = gamma
+
+    def set_current_frequency(self, f: float) -> None:
+        self._current_frequency = f
 
     def compute_displacement(self, f: float) -> np.ndarray:
         """Compute total displacement field as weighted sum of mode shapes."""
@@ -184,21 +192,17 @@ class ChladniSimulator:
 class ResonanceCurveWindow:
     """Separate window for displaying Lorentzian resonance curves."""
 
-    def __init__(self, simulator: ChladniSimulator, main_ui):
+    def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
-        self.main_ui = main_ui
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
         self.fig.canvas.manager.set_window_title('Lorentzian Resonance Curves')
-        self.current_f_raw = self.main_ui.freq_slider.val
+        self.current_f_raw = self.simulator.current_frequency
         self.current_f_display = round(self.current_f_raw, 2)
         self.current_resonance_freq, self.current_modes = self.simulator.get_closest_resonance_info(
             self.current_f_display)
         self.current_gamma = self.simulator.gamma
         self.current_marker = None
         self.setup_curve()
-        # Connect updates
-        self.main_ui.freq_slider.on_changed(self.update_current_freq)
-        self.main_ui.gamma_slider.on_changed(self.update_gamma)
 
     def setup_curve(self) -> None:
         self.ax.clear()
@@ -249,7 +253,7 @@ class ResonanceCurveWindow:
     def update_current_freq(self, val: float) -> None:
         if not plt.fignum_exists(self.fig.number):
             return
-        new_f_raw = self.main_ui.freq_slider.val
+        new_f_raw = self.simulator.current_frequency
         new_f_display = round(new_f_raw, 2)
         new_resonance_freq, new_modes = self.simulator.get_closest_resonance_info(
             new_f_display)
@@ -299,6 +303,8 @@ class ChladniUI:
 
     def __init__(self, simulator: ChladniSimulator):
         self.simulator = simulator
+        self.simulator.set_gamma(Config.INIT_GAMMA)
+        self.simulator.set_current_frequency(Config.INIT_FREQ)
         self.view_mode = 'magnitude'  # 'magnitude', 'phase', 'sand'
         self.fig = plt.figure(figsize=(12, 8))
         gs = GridSpec(1, 2, figure=self.fig, width_ratios=[3, 1])
@@ -350,12 +356,12 @@ class ChladniUI:
         self.freq_slider = Slider(
             ax_freq, 'f.', *Config.FREQ_RANGE,
             valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
-        self.freq_slider.on_changed(self.update)
+        self.freq_slider.on_changed(self.update_freq_slider)
         ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
         self.gamma_slider = Slider(
             ax_gamma, 'γ', *Config.GAMMA_RANGE,
             valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
-        self.gamma_slider.on_changed(self.update_gamma)
+        self.gamma_slider.on_changed(self.update_gamma_slider)
         ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
         self.prev_button = Button(ax_prev, '◀')
         self.prev_button.on_clicked(self.jump_to_prev_resonance)
@@ -390,13 +396,25 @@ class ChladniUI:
 
     def open_resonance_curve(self, event) -> None:
         if self.resonance_window is None or not plt.fignum_exists(self.resonance_window.fig.number):
-            self.resonance_window = ResonanceCurveWindow(self.simulator, self)
+            self.resonance_window = ResonanceCurveWindow(self.simulator)
         plt.figure(self.resonance_window.fig.number)
         plt.show()
 
+    def update_freq_slider(self, val: float) -> None:
+        self.simulator.set_current_frequency(val)
+        self.update(val)
+        if self.resonance_window and plt.fignum_exists(self.resonance_window.fig.number):
+            self.resonance_window.update_current_freq(None)
+
+    def update_gamma_slider(self, val: float) -> None:
+        self.simulator.set_gamma(val)
+        self.update(self.freq_slider.val)
+        if self.resonance_window and plt.fignum_exists(self.resonance_window.fig.number):
+            self.resonance_window.update_gamma(None)
+
     def update(self, val: float) -> None:
-        f_compute = val
-        f_display = round(val, 2)
+        f_compute = self.simulator.current_frequency
+        f_display = round(f_compute, 2)
         # ─── Single expensive computation ───────────────────────────────
         Z = self.simulator.compute_displacement(f_compute)
         # ────────────────────────────────────────────────────────────────
@@ -467,18 +485,16 @@ class ChladniUI:
         self.mode_text.set_text(text_str)
         self.fig.canvas.draw_idle()
 
-    def update_gamma(self, val: float) -> None:
-        self.simulator.set_gamma(val)
-        self.update(self.freq_slider.val)
-
     def jump_to_next_resonance(self, event) -> None:
         current_f = self.freq_slider.val
         next_f = self.simulator.get_next_resonance_frequency(current_f)
+        self.simulator.set_current_frequency(next_f)
         self.freq_slider.set_val(next_f)
 
     def jump_to_prev_resonance(self, event) -> None:
         current_f = self.freq_slider.val
         prev_f = self.simulator.get_previous_resonance_frequency(current_f)
+        self.simulator.set_current_frequency(prev_f)
         self.freq_slider.set_val(prev_f)
 
     def start_scan(self, event) -> None:
