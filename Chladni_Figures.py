@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
+from typing import Callable, List, Tuple
 
 
 class Config:
