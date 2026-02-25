@@ -1,5 +1,7 @@
 # The Sand View (Experimental / Development Feature)
 
+[Chladni](images&Animation/Chladni_7.png)
+
 * The **Sand View** provides a particle-based visualization that approximates how sand accumulates along nodal lines in physical Chladni experiments.
 
 * Instead of displaying the displacement field directly, this mode generates a large number of simulated “grains” whose spatial distribution is derived from the steady-state amplitude field $Z(x,y;f)$.
