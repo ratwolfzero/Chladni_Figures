@@ -1,6 +1,6 @@
 # The Sand View (Experimental / Development Feature)
 
-[Chladni](images&Animation/Chladni_7.png)
+[Chladni](/Users/ralf/Projects/Python/Chladni_Figures/images&Animation/Chladni_7.png)
 
 * The **Sand View** provides a particle-based visualization that approximates how sand accumulates along nodal lines in physical Chladni experiments.
 
