@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
-from typing import TypeAlias, Callable, List, Tuple
 
 
 class Config:
@@ -36,9 +35,6 @@ class Config:
     SAND_NOISE_STD = 0.5  # Standard deviation for noise in sand positions
     SAND_SIZE = 0.1  # Size of sand grains in scatter plot
     SAND_COLOR = 'black'  # Color of sand grains
-
-
-Mode: TypeAlias = tuple[int, int, float]
 
 
 class ChladniSimulator:
@@ -165,7 +161,7 @@ class ChladniSimulator:
     def get_previous_resonance_frequency(self, current_f: float) -> float:
         freqs = [f for _, _, f in self._eigenfrequencies if f < current_f]
         return max(freqs) if freqs else (self._eigenfrequencies[-1][2] if self._eigenfrequencies else current_f)
-    
+
     def remove_frequency_listener(self, callback: Callable[[float], None]):
         if callback in self._freq_listeners:
             self._freq_listeners.remove(callback)
