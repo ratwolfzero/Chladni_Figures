@@ -1,11 +1,11 @@
+from typing import Callable, List, Tuple
+from matplotlib.gridspec import GridSpec
+from matplotlib.animation import FuncAnimation
+from matplotlib.widgets import Slider, Button
+import matplotlib.pyplot as plt
+import numpy as np
 import matplotlib
 matplotlib.use("TkAgg")
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button
-from matplotlib.animation import FuncAnimation
-from matplotlib.gridspec import GridSpec
-from typing import Callable, List, Tuple
 
 
 class Config:
@@ -283,9 +283,6 @@ class ResonanceCurveWindow:
         self.ax.legend(by_label.values(), by_label.keys())
         self.fig.canvas.draw_idle()
 
-    def show(self) -> None:
-        plt.show()
-
 
 class ChladniUI:
 
@@ -515,7 +512,7 @@ class ChladniUI:
             self.resonance_window.fig.show()
         else:
             self.resonance_window.fig.canvas.manager.window.lift()
-            
+
     def show(self) -> None:
         plt.show()
 
