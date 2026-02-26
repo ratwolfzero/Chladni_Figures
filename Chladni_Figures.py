@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("TkAgg")
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
@@ -510,8 +512,11 @@ class ChladniUI:
     def open_resonance_curve(self, event) -> None:
         if self.resonance_window is None or not plt.fignum_exists(self.resonance_window.fig.number):
             self.resonance_window = ResonanceCurveWindow(self.simulator)
-        plt.figure(self.resonance_window.fig.number)
-        plt.show()
+            plt.figure(self.resonance_window.fig.number)
+            self.resonance_window.fig.show()
+        else:
+            self.resonance_window.fig.canvas.manager.window.lift()
+            self.resonance_window.fig.canvas.draw_idle()
 
     def show(self) -> None:
         plt.show()
