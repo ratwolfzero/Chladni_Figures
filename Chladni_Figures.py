@@ -515,8 +515,7 @@ class ChladniUI:
             self.resonance_window.fig.show()
         else:
             self.resonance_window.fig.canvas.manager.window.lift()
-            self.resonance_window.fig.canvas.draw_idle()
-
+            
     def show(self) -> None:
         plt.show()
 
