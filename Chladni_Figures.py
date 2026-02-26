@@ -512,7 +512,6 @@ class ChladniUI:
     def open_resonance_curve(self, event) -> None:
         if self.resonance_window is None or not plt.fignum_exists(self.resonance_window.fig.number):
             self.resonance_window = ResonanceCurveWindow(self.simulator)
-            plt.figure(self.resonance_window.fig.number)
             self.resonance_window.fig.show()
         else:
             self.resonance_window.fig.canvas.manager.window.lift()
