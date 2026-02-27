@@ -552,7 +552,7 @@ class ChladniUI:
         self.fig.canvas.draw_idle()
 
     def stop_scan(self, event) -> None:
-        if self.scan_ani is not None:
+        if self.scan_ani is not None:                                                       
             self.scan_ani.event_source.stop()
             self.scan_ani = None
 
