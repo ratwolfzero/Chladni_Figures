@@ -173,6 +173,14 @@ class ChladniSimulator:
         if callback in self._gamma_listeners:
             self._gamma_listeners.remove(callback)
 
+    def get_mode_frequency(self, m: int, n: int) -> float:
+        """Get the frequency of a specific mode (m, n)."""
+        try:
+            idx = self._modes.index((m, n))
+            return self._mode_frequencies[idx]
+        except ValueError:
+            return 0.0
+
 
 class ResonanceCurveWindow:
     def __init__(self, simulator: ChladniSimulator):
@@ -222,7 +230,8 @@ class ResonanceCurveWindow:
 
         colors = plt.cm.Set1(np.linspace(0, 1, len(modes)))
         for (m, n), c in zip(modes, colors):
-            w = self.simulator.compute_lorentzian_weights(self.f_range, f_res)
+            f_mn = self.simulator.get_mode_frequency(m, n)
+            w = self.simulator.compute_lorentzian_weights(self.f_range, f_mn)
             self.ax.plot(self.f_range, w, '-', color=c,
                          lw=2, label=f'Mode ({m},{n})')
 
