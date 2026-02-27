@@ -261,7 +261,7 @@ class ResonanceCurveWindow:
                      bbox=dict(boxstyle='round', fc='white', alpha=0.8))
         modes_str = ', '.join(f"({m},{n})" for m, n in modes)
         self.ax.set_title(f'Lorentzian Resonance Curves – {modes_str}\n'
-                          '(height constant, width varies with γ)')
+                          'Normalized Lorentzian; peak rescaled, width ∝ γ)')
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Resonance Weight')
         self.ax.legend()
