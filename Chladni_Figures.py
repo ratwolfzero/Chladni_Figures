@@ -4,8 +4,8 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider, Button
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib
-matplotlib.use("TkAgg")
+#import matplotlib
+#matplotlib.use("TkAgg")
 
 
 class Config:
@@ -42,67 +42,80 @@ class Config:
 
 class ChladniSimulator:
     def __init__(self):
-        self.resolution = Config.RESOLUTION
-        self.max_mode = Config.MAX_MODE
-        self._gamma = Config.INIT_GAMMA
-        self._current_frequency = Config.INIT_FREQ
-        self.k = Config.K
+        # ----------------------------
+        # Simulation parameters
+        # ----------------------------
+        self.resolution = Config.RESOLUTION   # Grid resolution for mode shapes
+        self.max_mode = Config.MAX_MODE       # Maximum (m,n) mode indices
+        self._gamma = Config.INIT_GAMMA       # Damping coefficient γ
+        self._current_frequency = Config.INIT_FREQ  # Driving frequency f
+        self.k = Config.K                     # Frequency scaling factor
 
+        # ----------------------------
+        # Spatial grid for mode shapes
+        # ----------------------------
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-										 
+
+        # ----------------------------
+        # Define all (m,n) modes
+        # ----------------------------
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
-        self._modes = list(zip(ms.ravel(), ns.ravel()))
-        self._mode_frequencies = self.k * \
-            np.sqrt(np.array([m**2 + n**2 for m, n in self._modes]))
+        self._modes = list(zip(ms.ravel(), ns.ravel()))  # flattened mode list
 
+        # ----------------------------
+        # Precompute eigenfrequencies
+        # ----------------------------
+        # Dictionary: (m,n) -> f_mn
+        # This ensures O(1) lookup for UI / plotting without recalculation
+        self._eigenfrequencies = {}
+        for m, n in self._modes:
+            f = self.k * np.sqrt(m**2 + n**2)
+            self._eigenfrequencies[(m, n)] = f
+
+        # Sorted list of modes for resonance navigation
+        # [(m,n,f), ...], sorted by frequency
+        self._sorted_eigenfrequencies = sorted(
+            [(m, n, f) for (m, n), f in self._eigenfrequencies.items()],
+            key=lambda x: x[2]
+        )
+
+        # ----------------------------
+        # Precompute spatial mode shapes
+        # ----------------------------
+        # Shape: (num_modes, resolution, resolution)
         self._mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self._modes
         ], dtype=np.float64)
 
-        self._eigenfrequencies = [
-            (m, n, f_mn) for (m, n), f_mn in zip(self._modes, self._mode_frequencies)
-        ]                                                                                                                        
-        self._eigenfrequencies.sort(key=lambda x: x[2])
-        
-        # Fast lookup: mode (m,n) → frequency
-        self._mode_to_freq = {(m, n): f for m, n, f in self._eigenfrequencies}
-
-        # Observer lists                                                                  
+        # ----------------------------
+        # Observer callbacks for UI
+        # ----------------------------
         self._freq_listeners: List[Callable[[float], None]] = []
         self._gamma_listeners: List[Callable[[float], None]] = []
-        
+
+    # ----------------------------
+    # Frequency / Mode Interface
+    # ----------------------------
     def get_eigenfrequency(self, m: int, n: int) -> float:
-        """
-        Return the eigenfrequency for mode (m, n) using precomputed values.
-        
-        Args:
-            m: Mode index in x-direction
-            n: Mode index in y-direction
-            
-        Returns:
-            The eigenfrequency f_mn = k * sqrt(m² + n²)
-            
-        Raises:
-            ValueError: If the mode is outside the computed range
-        """                                  
+        """Return precomputed eigenfrequency for mode (m,n)."""
         try:
-            return self._mode_to_freq[(m, n)]
+            return self._eigenfrequencies[(m, n)]
         except KeyError:
-            raise ValueError(                    
-                f"Mode ({m}, {n}) not in precomputed modes "
-                f"(max_mode = {self.max_mode})"
+            raise ValueError(
+                f"Mode ({m}, {n}) not in precomputed modes (max_mode = {self.max_mode})"
             )
 
-    def add_frequency_listener(self, callback: Callable[[float], None]):
-        self._freq_listeners.append(callback)
+    def get_sorted_eigenfrequencies(self) -> List[Tuple[int, int, float]]:
+        """Return sorted list of modes for resonance navigation."""
+        return self._sorted_eigenfrequencies
 
-    def add_gamma_listener(self, callback: Callable[[float], None]):
-        self._gamma_listeners.append(callback)
-
+    # ----------------------------
+    # Gamma / Frequency Properties
+    # ----------------------------
     @property
     def gamma(self) -> float:
         return self._gamma
@@ -112,6 +125,7 @@ class ChladniSimulator:
         return self._current_frequency
 
     def set_gamma(self, gamma: float) -> None:
+        """Set damping coefficient and notify listeners if changed."""
         if abs(gamma - self._gamma) < 1e-9:
             return
         self._gamma = gamma
@@ -119,53 +133,106 @@ class ChladniSimulator:
             cb(gamma)
 
     def set_current_frequency(self, f: float) -> None:
+        """Set driving frequency and notify listeners if changed."""
         if abs(f - self._current_frequency) < 1e-9:
             return
         self._current_frequency = f
         for cb in self._freq_listeners:
             cb(f)
 
+    # ----------------------------
+    # Observer registration
+    # ----------------------------
+    def add_frequency_listener(self, callback: Callable[[float], None]):
+        self._freq_listeners.append(callback)
+
+    def add_gamma_listener(self, callback: Callable[[float], None]):
+        self._gamma_listeners.append(callback)
+
+    def remove_frequency_listener(self, callback: Callable[[float], None]):
+        if callback in self._freq_listeners:
+            self._freq_listeners.remove(callback)
+
+    def remove_gamma_listener(self, callback: Callable[[float], None]):
+        if callback in self._gamma_listeners:
+            self._gamma_listeners.remove(callback)
+
+    # ----------------------------
+    # Physics Computations
+    # ----------------------------
     def compute_displacement(self, f: float) -> np.ndarray:
+        """Compute total displacement Z at frequency f as weighted sum of mode shapes."""
         weights = self.get_mode_weights_at_frequency(f)
         return np.tensordot(weights, self._mode_shapes, axes=(0, 0))
 
     def compute_lorentzian_weights(self, f_range: np.ndarray, target_freq: float) -> np.ndarray:
+        """Compute Lorentzian weight over a frequency range for a single mode."""
         return 1.0 / ((f_range - target_freq) ** 2 + self.gamma ** 2)
 
     def get_lorentzian_weight_at_freq(self, f: float, target_freq: float) -> float:
+        """Compute Lorentzian weight for a single frequency point."""
         return 1.0 / ((f - target_freq) ** 2 + self.gamma ** 2)
 
-    def get_closest_resonance_info(self, current_f: float) -> Tuple[float, List[Tuple[int, int]]]:
-        idx = np.argmin(np.abs(self._mode_frequencies - current_f))
-        f_closest = self._mode_frequencies[idx]
-        degenerate = [
-            self._modes[i] for i in range(len(self._modes))
-            if abs(self._mode_frequencies[i] - f_closest) < Config.EPS_FREQ_COMPARE
-        ]
-        return f_closest, degenerate
-
-    @property
-    def current_closest_resonance(self) -> Tuple[float, List[Tuple[int, int]]]:
-        return self.get_closest_resonance_info(self.current_frequency)
-
     def get_mode_weights_at_frequency(self, f: float) -> np.ndarray:
-        return 1.0 / ((f - self._mode_frequencies) ** 2 + self.gamma ** 2)
+        """Compute all mode weights at frequency f (vectorized)."""
+        freqs = np.array([freq for _, _, freq in self._sorted_eigenfrequencies])
+        return 1.0 / ((f - freqs) ** 2 + self.gamma ** 2)
 
     def get_contributing_modes(self, f: float, threshold: float = Config.MODE_WEIGHT_THRESHOLD
                                ) -> List[Tuple[int, int, float, float]]:
+        """Return list of modes with weights above threshold (%) at frequency f."""
         weights = self.get_mode_weights_at_frequency(f)
         total = np.sum(weights)
         if total == 0:
             return []
         percentages = (weights / total) * 100
         info = [
-            (m, n, self._mode_frequencies[i], percentages[i])
+            (m, n, self._eigenfrequencies[(m, n)], percentages[i])
             for i, (m, n) in enumerate(self._modes) if percentages[i] > threshold
         ]
         info.sort(key=lambda x: x[3], reverse=True)
         return info
 
+    # ----------------------------
+    # Resonance Navigation
+    # ----------------------------
+    def get_closest_resonance_info(self, current_f: float) -> Tuple[float, List[Tuple[int, int]]]:
+        """
+        Find the eigenfrequency closest to current_f and all degenerate modes.
+        Uses exact equality on sorted eigenfrequencies to capture degeneracies.
+        """
+        freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
+        idx = np.argmin(np.abs(freqs - current_f))
+        f_closest = freqs[idx]
+        mask = freqs == f_closest
+        degenerate = [(m, n) for (m, n, f), b in zip(self._sorted_eigenfrequencies, mask) if b]
+        return f_closest, degenerate
+
+    @property
+    def current_closest_resonance(self) -> Tuple[float, List[Tuple[int, int]]]:
+        """Current resonance info for UI display."""
+        return self.get_closest_resonance_info(self.current_frequency)
+
+    def get_next_resonance_frequency(self, current_f: float) -> float:
+        """Return next eigenfrequency above current_f; wrap to lowest if at top."""
+        freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
+        mask = freqs > current_f
+        return freqs[mask][0] if np.any(mask) else freqs[0]
+
+    def get_previous_resonance_frequency(self, current_f: float) -> float:
+        """Return previous eigenfrequency below current_f; wrap to highest if at bottom."""
+        freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
+        mask = freqs < current_f
+        return freqs[mask][-1] if np.any(mask) else freqs[-1]
+
+    # ----------------------------
+    # Sand Simulation
+    # ----------------------------
     def get_sand_coordinates_from_Z(self, Z: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Sample sand grain positions based on |Z| distribution.
+        Uses exponential decay probability to accumulate grains at nodes.
+        """
         max_z = np.max(np.abs(Z)) or 1e-12
         p = np.exp(-np.abs(Z) / (max_z * Config.SAND_EXP_SCALE))
         p_flat = p.ravel()
@@ -181,22 +248,6 @@ class ChladniSimulator:
         x = x_idx + np.random.normal(0, Config.SAND_NOISE_STD, len(x_idx))
         y = y_idx + np.random.normal(0, Config.SAND_NOISE_STD, len(y_idx))
         return x, y
-
-    def get_next_resonance_frequency(self, current_f: float) -> float:
-        freqs = [f for _, _, f in self._eigenfrequencies if f > current_f]
-        return min(freqs) if freqs else (self._eigenfrequencies[0][2] if self._eigenfrequencies else current_f)
-
-    def get_previous_resonance_frequency(self, current_f: float) -> float:
-        freqs = [f for _, _, f in self._eigenfrequencies if f < current_f]
-        return max(freqs) if freqs else (self._eigenfrequencies[-1][2] if self._eigenfrequencies else current_f)
-
-    def remove_frequency_listener(self, callback: Callable[[float], None]):
-        if callback in self._freq_listeners:
-            self._freq_listeners.remove(callback)
-
-    def remove_gamma_listener(self, callback: Callable[[float], None]):
-        if callback in self._gamma_listeners:
-            self._gamma_listeners.remove(callback)
 
 
 class ResonanceCurveWindow:
