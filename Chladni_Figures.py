@@ -4,8 +4,8 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider, Button
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib
-matplotlib.use("TkAgg")
+#import matplotlib
+#matplotlib.use("TkAgg")
 
 
 class Config:
