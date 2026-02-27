@@ -40,60 +40,45 @@ class Config:
     SAND_COLOR = 'black'  # Color of sand grains
 
 
+
+
 class ChladniSimulator:
     def __init__(self):
-        # ----------------------------
-        # Simulation parameters
-        # ----------------------------
-        self.resolution = Config.RESOLUTION   # Grid resolution for mode shapes
-        self.max_mode = Config.MAX_MODE       # Maximum (m,n) mode indices
-        self._gamma = Config.INIT_GAMMA       # Damping coefficient γ
-        self._current_frequency = Config.INIT_FREQ  # Driving frequency f
-        self.k = Config.K                     # Frequency scaling factor
+        self.resolution = Config.RESOLUTION
+        self.max_mode = Config.MAX_MODE
+        self._gamma = Config.INIT_GAMMA
+        self._current_frequency = Config.INIT_FREQ
+        self.k = Config.K
 
-        # ----------------------------
-        # Spatial grid for mode shapes
-        # ----------------------------
+        # Spatial grid
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
 
-        # ----------------------------
-        # Define all (m,n) modes
-        # ----------------------------
+        # All modes (m,n)
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
-        self._modes = list(zip(ms.ravel(), ns.ravel()))  # flattened mode list
+        self._modes = list(zip(ms.ravel(), ns.ravel()))
 
-        # ----------------------------
         # Precompute eigenfrequencies
-        # ----------------------------
-        # Dictionary: (m,n) -> f_mn
-        # This ensures O(1) lookup for UI / plotting without recalculation
         self._eigenfrequencies = {}
         for m, n in self._modes:
             f = self.k * np.sqrt(m**2 + n**2)
             self._eigenfrequencies[(m, n)] = f
 
-        # Sorted list of modes for resonance navigation
-        # [(m,n,f), ...], sorted by frequency
+        # Sorted list for resonance navigation
         self._sorted_eigenfrequencies = sorted(
             [(m, n, f) for (m, n), f in self._eigenfrequencies.items()],
             key=lambda x: x[2]
         )
 
-        # ----------------------------
-        # Precompute spatial mode shapes
-        # ----------------------------
-        # Shape: (num_modes, resolution, resolution)
+        # Precompute mode shapes
         self._mode_shapes = np.array([
             np.sin(m * np.pi * self.X) * np.sin(n * np.pi * self.Y)
             for m, n in self._modes
         ], dtype=np.float64)
 
-        # ----------------------------
-        # Observer callbacks for UI
-        # ----------------------------
+        # Observer lists
         self._freq_listeners: List[Callable[[float], None]] = []
         self._gamma_listeners: List[Callable[[float], None]] = []
 
@@ -101,7 +86,6 @@ class ChladniSimulator:
     # Frequency / Mode Interface
     # ----------------------------
     def get_eigenfrequency(self, m: int, n: int) -> float:
-        """Return precomputed eigenfrequency for mode (m,n)."""
         try:
             return self._eigenfrequencies[(m, n)]
         except KeyError:
@@ -110,7 +94,6 @@ class ChladniSimulator:
             )
 
     def get_sorted_eigenfrequencies(self) -> List[Tuple[int, int, float]]:
-        """Return sorted list of modes for resonance navigation."""
         return self._sorted_eigenfrequencies
 
     # ----------------------------
@@ -125,7 +108,6 @@ class ChladniSimulator:
         return self._current_frequency
 
     def set_gamma(self, gamma: float) -> None:
-        """Set damping coefficient and notify listeners if changed."""
         if abs(gamma - self._gamma) < 1e-9:
             return
         self._gamma = gamma
@@ -133,16 +115,12 @@ class ChladniSimulator:
             cb(gamma)
 
     def set_current_frequency(self, f: float) -> None:
-        """Set driving frequency and notify listeners if changed."""
         if abs(f - self._current_frequency) < 1e-9:
             return
         self._current_frequency = f
         for cb in self._freq_listeners:
             cb(f)
 
-    # ----------------------------
-    # Observer registration
-    # ----------------------------
     def add_frequency_listener(self, callback: Callable[[float], None]):
         self._freq_listeners.append(callback)
 
@@ -161,26 +139,21 @@ class ChladniSimulator:
     # Physics Computations
     # ----------------------------
     def compute_displacement(self, f: float) -> np.ndarray:
-        """Compute total displacement Z at frequency f as weighted sum of mode shapes."""
         weights = self.get_mode_weights_at_frequency(f)
         return np.tensordot(weights, self._mode_shapes, axes=(0, 0))
 
     def compute_lorentzian_weights(self, f_range: np.ndarray, target_freq: float) -> np.ndarray:
-        """Compute Lorentzian weight over a frequency range for a single mode."""
         return 1.0 / ((f_range - target_freq) ** 2 + self.gamma ** 2)
 
     def get_lorentzian_weight_at_freq(self, f: float, target_freq: float) -> float:
-        """Compute Lorentzian weight for a single frequency point."""
         return 1.0 / ((f - target_freq) ** 2 + self.gamma ** 2)
 
     def get_mode_weights_at_frequency(self, f: float) -> np.ndarray:
-        """Compute all mode weights at frequency f (vectorized)."""
         freqs = np.array([freq for _, _, freq in self._sorted_eigenfrequencies])
         return 1.0 / ((f - freqs) ** 2 + self.gamma ** 2)
 
     def get_contributing_modes(self, f: float, threshold: float = Config.MODE_WEIGHT_THRESHOLD
                                ) -> List[Tuple[int, int, float, float]]:
-        """Return list of modes with weights above threshold (%) at frequency f."""
         weights = self.get_mode_weights_at_frequency(f)
         total = np.sum(weights)
         if total == 0:
@@ -197,10 +170,6 @@ class ChladniSimulator:
     # Resonance Navigation
     # ----------------------------
     def get_closest_resonance_info(self, current_f: float) -> Tuple[float, List[Tuple[int, int]]]:
-        """
-        Find the eigenfrequency closest to current_f and all degenerate modes.
-        Uses exact equality on sorted eigenfrequencies to capture degeneracies.
-        """
         freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
         idx = np.argmin(np.abs(freqs - current_f))
         f_closest = freqs[idx]
@@ -210,17 +179,14 @@ class ChladniSimulator:
 
     @property
     def current_closest_resonance(self) -> Tuple[float, List[Tuple[int, int]]]:
-        """Current resonance info for UI display."""
         return self.get_closest_resonance_info(self.current_frequency)
 
     def get_next_resonance_frequency(self, current_f: float) -> float:
-        """Return next eigenfrequency above current_f; wrap to lowest if at top."""
         freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
         mask = freqs > current_f
         return freqs[mask][0] if np.any(mask) else freqs[0]
 
     def get_previous_resonance_frequency(self, current_f: float) -> float:
-        """Return previous eigenfrequency below current_f; wrap to highest if at bottom."""
         freqs = np.array([f for _, _, f in self._sorted_eigenfrequencies])
         mask = freqs < current_f
         return freqs[mask][-1] if np.any(mask) else freqs[-1]
@@ -229,10 +195,6 @@ class ChladniSimulator:
     # Sand Simulation
     # ----------------------------
     def get_sand_coordinates_from_Z(self, Z: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Sample sand grain positions based on |Z| distribution.
-        Uses exponential decay probability to accumulate grains at nodes.
-        """
         max_z = np.max(np.abs(Z)) or 1e-12
         p = np.exp(-np.abs(Z) / (max_z * Config.SAND_EXP_SCALE))
         p_flat = p.ravel()
