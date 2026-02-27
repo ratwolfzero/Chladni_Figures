@@ -5,7 +5,7 @@ from matplotlib.widgets import Slider, Button
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
-matplotlib.use("TkAgg")
+matplotlib.use("tkagg")
 
 
 class Config:
