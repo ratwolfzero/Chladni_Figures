@@ -22,7 +22,7 @@ class Config:
     MODE_WEIGHT_THRESHOLD = 1.0  # Minimum % weight for mode to be listed
     MAX_DISPLAY_MODES = None  # Limit number of modes shown (None = all)
     EPS_FREQ_COMPARE = 1e-6  # Small epsilon for frequency equality check
-    # =========================================================                                                                  
+    # =========================================================
     RESOLUTION = 200  # Grid resolution for spatial mode shapes
     K = 1.0  # Frequency scaling factor for eigenmodes
     VISUAL_EXPONENT = 0.2  # Exponent for magnitude visualization (|Z|^exp)
@@ -51,7 +51,7 @@ class ChladniSimulator:
         x = np.linspace(0, 1, self.resolution)
         y = np.linspace(0, 1, self.resolution)
         self.X, self.Y = np.meshgrid(x, y)
-										 
+
         ms, ns = np.meshgrid(np.arange(1, self.max_mode + 1),
                              np.arange(1, self.max_mode + 1))
         self._modes = list(zip(ms.ravel(), ns.ravel()))
@@ -65,37 +65,12 @@ class ChladniSimulator:
 
         self._eigenfrequencies = [
             (m, n, f_mn) for (m, n), f_mn in zip(self._modes, self._mode_frequencies)
-        ]                                                                                                                        
+        ]
         self._eigenfrequencies.sort(key=lambda x: x[2])
-        
-        # Fast lookup: mode (m,n) → frequency
-        self._mode_to_freq = {(m, n): f for m, n, f in self._eigenfrequencies}
 
-        # Observer lists                                                                  
+        # Observer lists
         self._freq_listeners: List[Callable[[float], None]] = []
         self._gamma_listeners: List[Callable[[float], None]] = []
-        
-    def get_eigenfrequency(self, m: int, n: int) -> float:
-        """
-        Return the eigenfrequency for mode (m, n) using precomputed values.
-        
-        Args:
-            m: Mode index in x-direction
-            n: Mode index in y-direction
-            
-        Returns:
-            The eigenfrequency f_mn = k * sqrt(m² + n²)
-            
-        Raises:
-            ValueError: If the mode is outside the computed range
-        """                                  
-        try:
-            return self._mode_to_freq[(m, n)]
-        except KeyError:
-            raise ValueError(                    
-                f"Mode ({m}, {n}) not in precomputed modes "
-                f"(max_mode = {self.max_mode})"
-            )
 
     def add_frequency_listener(self, callback: Callable[[float], None]):
         self._freq_listeners.append(callback)
@@ -245,7 +220,7 @@ class ResonanceCurveWindow:
             f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
         colors = plt.cm.Set1(np.linspace(0, 1, len(modes)))
         for (m, n), c in zip(modes, colors):
-            f_mn = self.simulator.get_eigenfrequency(m, n)          # ← this line
+            f_mn = self.simulator.k * np.sqrt(m**2 + n**2)
             w = self.simulator.compute_lorentzian_weights(self.f_range, f_mn)
             self.ax.plot(self.f_range, w, '-', color=c,
                          lw=2, label=f'Mode ({m},{n})')
