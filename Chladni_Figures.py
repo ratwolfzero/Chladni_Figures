@@ -286,33 +286,40 @@ class ResonanceCurveWindow:
 
 class ChladniUI:
 
-    def _render_magnitude(self, Z: np.ndarray) -> None:
+    # --------------------------------------------------------------
+    # generic render helpers
+    # --------------------------------------------------------------
+    def _update_imshow(self, data: np.ndarray, cmap: str, clim: Tuple[float, float]) -> None:
+        """Prepare the :class:`imshow` artist with *data*, *cmap* and
+        color limits, hiding the scatter artist.
+        """
         self.scatter_artist.set_visible(False)
         self.imshow_artist.set_visible(True)
-        plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
-        self.imshow_artist.set_data(plot_data)
-        self.imshow_artist.set_cmap('plasma')
-        self.imshow_artist.set_clim(vmin=0, vmax=np.max(plot_data))
+        self.imshow_artist.set_data(data)
+        self.imshow_artist.set_cmap(cmap)
+        self.imshow_artist.set_clim(vmin=clim[0], vmax=clim[1])
+
+    def _update_colorbar(self, label: str, visible: bool) -> None:
         if hasattr(self, 'cbar'):
-            self.cbar.ax.set_visible(True)
-            self.cbar.set_label(f'Displacement (|Z|^{Config.VISUAL_EXPONENT})')
+            self.cbar.ax.set_visible(visible)
+            if visible:
+                self.cbar.set_label(label)
+
+    def _render_magnitude(self, Z: np.ndarray) -> None:
+        plot_data = np.abs(Z) ** Config.VISUAL_EXPONENT
+        self._update_imshow(plot_data, 'plasma', (0, np.max(plot_data)))
+        self._update_colorbar(
+            f'Displacement (|Z|^{Config.VISUAL_EXPONENT})', True)
 
     def _render_phase(self, Z: np.ndarray) -> None:
-        self.scatter_artist.set_visible(False)
-        self.imshow_artist.set_visible(True)
         max_abs = np.max(np.abs(Z))
-        self.imshow_artist.set_data(Z)
-        self.imshow_artist.set_cmap('coolwarm')
-        self.imshow_artist.set_clim(vmin=-max_abs, vmax=max_abs)
-        if hasattr(self, 'cbar'):
-            self.cbar.ax.set_visible(True)
-            self.cbar.set_label('Signed Displacement (Phase View)')
+        self._update_imshow(Z, 'coolwarm', (-max_abs, max_abs))
+        self._update_colorbar('Signed Displacement (Phase View)', True)
 
     def _render_sand(self, Z: np.ndarray) -> None:
         self.imshow_artist.set_visible(False)
         self.scatter_artist.set_visible(True)
-        if hasattr(self, 'cbar'):
-            self.cbar.ax.set_visible(False)
+        self._update_colorbar('', False)
         x, y = self.simulator.get_sand_coordinates_from_Z(Z)
         x_plot = x / (self.simulator.resolution - 1)
         y_plot = y / (self.simulator.resolution - 1)
@@ -381,56 +388,90 @@ class ChladniUI:
             self.ax.set_xlabel('')
             self.ax.set_ylabel('')
 
+    # ------------------------------------------------------------------
+    # widget factory helpers
+    # ------------------------------------------------------------------
+    def _make_slider(self, rect: Tuple[float, float, float, float], label: str,
+                     valmin: float, valmax: float, valinit: float,
+                     valstep: float, on_changed: Callable[[float], None]):
+        """Create a :class:`matplotlib.widgets.Slider` at *rect* and hook the
+        *on_changed* callback.  The rectangle is given in figure coordinates
+        [x, y, width, height].
+        """
+        ax = plt.axes(rect)
+        slider = Slider(ax, label, valmin, valmax,
+                        valinit=valinit, valstep=valstep)
+        slider.on_changed(on_changed)
+        return slider
+
+    def _make_button(self, rect: Tuple[float, float, float, float], label: str,
+                     on_clicked: Callable[[object], None]):
+        """Create a :class:`matplotlib.widgets.Button` and register a click
+        callback.
+        """
+        ax = plt.axes(rect)
+        btn = Button(ax, label)
+        btn.on_clicked(on_clicked)
+        return btn
+
     def _setup_widgets(self) -> None:
-        ax_freq = plt.axes([0.05, 0.25, 0.8, 0.03])
-        self.freq_slider = Slider(
-            ax_freq, 'f.', *Config.FREQ_RANGE,
-            valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP)
-        self.freq_slider.on_changed(self.update_freq_slider)
+        # sliders
+        self.freq_slider = self._make_slider(
+            [0.05, 0.25, 0.8, 0.03], 'f.',
+            *Config.FREQ_RANGE,
+            valinit=Config.INIT_FREQ, valstep=Config.FREQ_STEP,
+            on_changed=self.update_freq_slider
+        )
 
-        ax_gamma = plt.axes([0.05, 0.2, 0.8, 0.03])
-        self.gamma_slider = Slider(
-            ax_gamma, 'γ', *Config.GAMMA_RANGE,
-            valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP)
-        self.gamma_slider.on_changed(self.update_gamma_slider)
+        self.gamma_slider = self._make_slider(
+            [0.05, 0.2, 0.8, 0.03], 'γ',
+            *Config.GAMMA_RANGE,
+            valinit=Config.INIT_GAMMA, valstep=Config.GAMMA_STEP,
+            on_changed=self.update_gamma_slider
+        )
 
-        ax_prev = plt.axes([0.05, 0.1, 0.08, 0.04])
-        self.prev_button = Button(ax_prev, '◀')
-        self.prev_button.on_clicked(self.jump_to_prev_resonance)
-
-        ax_next = plt.axes([0.14, 0.1, 0.08, 0.04])
-        self.next_button = Button(ax_next, '▶')
-        self.next_button.on_clicked(self.jump_to_next_resonance)
-
+        # resonance navigation buttons and label
+        self.prev_button = self._make_button(
+            [0.05, 0.1, 0.08, 0.04], '◀',
+            self.jump_to_prev_resonance
+        )
+        self.next_button = self._make_button(
+            [0.14, 0.1, 0.08, 0.04], '▶',
+            self.jump_to_next_resonance
+        )
         plt.text(0.135, 0.06, "Resonance Navigation",
                  ha='center', va='center', fontsize=10, fontweight='bold',
                  transform=self.fig.transFigure)
 
-        ax_scan = plt.axes([0.25, 0.1, 0.1, 0.04])
-        self.scan_button = Button(ax_scan, 'Auto Scan')
-        self.scan_button.on_clicked(self.start_scan)
+        # scan controls
+        self.scan_button = self._make_button(
+            [0.25, 0.1, 0.1, 0.04], 'Auto Scan',
+            self.start_scan
+        )
+        self.stop_button = self._make_button(
+            [0.37, 0.1, 0.1, 0.04], 'Stop Scan',
+            self.stop_scan
+        )
 
-        ax_stop = plt.axes([0.37, 0.1, 0.1, 0.04])
-        self.stop_button = Button(ax_stop, 'Stop Scan')
-        self.stop_button.on_clicked(self.stop_scan)
+        # auxiliary windows and toggles
+        self.resonance_button = self._make_button(
+            [0.69, 0.1, 0.15, 0.04], 'Show Resonance Curves',
+            self.open_resonance_curve
+        )
+        self.toggle_button = self._make_button(
+            [0.50, 0.1, 0.16, 0.04], 'Toggle to Phase View',
+            self.toggle_view
+        )
 
-        ax_resonance = plt.axes([0.69, 0.1, 0.15, 0.04])
-        self.resonance_button = Button(ax_resonance, 'Show Resonance Curves')
-        self.resonance_button.on_clicked(self.open_resonance_curve)
-
-        ax_toggle = plt.axes([0.50, 0.1, 0.16, 0.04])
-        self.toggle_button = Button(ax_toggle, 'Toggle to Phase View')
-        self.toggle_button.on_clicked(self.toggle_view)
+    def _refresh_toggle_label(self) -> None:
+        """Update the text on *toggle_button* to indicate the next view."""
+        next_key = self._views[self.view_mode]['next_key']
+        next_title = self._views[next_key]['title']
+        self.toggle_button.label.set_text(f"Toggle to {next_title}")
 
     def toggle_view(self, event) -> None:
-        current_view = self._views[self.view_mode]
-        next_key = current_view['next_key']
-        self.view_mode = next_key
-        # Now update label to the NEXT after the new mode
-        current_view = self._views[self.view_mode]  # Reload after change
-        next_key = current_view['next_key']
-        next_view = self._views[next_key]
-        self.toggle_button.label.set_text(f"Toggle to {next_view['title']}")
+        self.view_mode = self._views[self.view_mode]['next_key']
+        self._refresh_toggle_label()
         self.update(self.freq_slider.val)
 
     def update(self, val: float) -> None:
