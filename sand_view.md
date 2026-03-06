@@ -6,7 +6,7 @@
 
 * Instead of displaying the displacement field directly, this mode generates a large number of simulated “grains” whose spatial distribution is derived from the steady-state amplitude field $Z(x,y;f)$.
 
-* Regions of **low vibration amplitude** (near nodal lines) receive a **higher probability density**, while strongly vibrating regions are statistically suppressed. The result is a granular pattern that visually resembles experimental Chladni figures formed by migrating particles.For details see: [Sand View](sand_view.md)
+* Regions of **low vibration amplitude** (near nodal lines) receive a **higher probability density**, while strongly vibrating regions are statistically suppressed. The result is a granular pattern that visually resembles experimental Chladni figures formed by migrating particles.
 
 ## Statistical Model
 

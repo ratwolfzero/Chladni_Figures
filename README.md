@@ -18,6 +18,7 @@ This Python code (Chladni_Figures.py) simulates the nodal line patterns of Chlad
   - [Visualization](#visualization)
     - [The Magnitude View](#the-magnitude-view)
     - [The Phase View](#the-phase-view)
+    - [The Sand View](#the-sand-view)
     - [The Resonant Curves](#the-resonant-curves)
   - [Approximation and Model Choice](#approximation-and-model-choice)
   - [Key Parameters](#key-parameters)
@@ -156,7 +157,7 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 ![Chladni](images&Animation/Chladni_7.png)
 
->The Sand View is a visually intuitive “nodal detector” derived from the same resonance-weighted field used in magnitude and phase views. In real Chladni experiments, grains bounce dynamically due to plate acceleration, migrating via complex frictional and collisional processes, with accumulation emerging from time-dependent, nonlinear interactions. The Sand View abstracts these dynamics into a stationary probability model, capturing the final accumulation pattern without modeling transient motion.
+>The Sand View is a visually intuitive “nodal detector” derived from the same resonance-weighted field used in magnitude and phase views. In real Chladni experiments, grains bounce dynamically due to plate acceleration, migrating via complex frictional and collisional processes, with accumulation emerging from time-dependent, nonlinear interactions. The Sand View abstracts these dynamics into a stationary probability model, capturing the final accumulation pattern without modeling transient motion. For details see: [Sand View](sand_view.md)
 
 ### The Resonant Curves
 
