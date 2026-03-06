@@ -152,6 +152,12 @@ This table gives a quantitative account of the modal superposition that shapes t
 
 >This view displays the signed spatial amplitude of the steady-state response at a given frequency. The sign indicates whether a region oscillates in phase or π out of phase with a reference. Nodal lines appear where the amplitude vanishes. The membrane motion remains oscillatory in time; this view represents the spatial structure and phase relationships of that motion.
 
+### The Sand View
+
+![Chladni](images&Animation/Chladni_7.png)
+
+>The Sand View is a visually intuitive “nodal detector” derived from the same resonance-weighted field used in magnitude and phase views. In real Chladni experiments, grains bounce dynamically due to plate acceleration, migrating via complex frictional and collisional processes, with accumulation emerging from time-dependent, nonlinear interactions. The Sand View abstracts these dynamics into a stationary probability model, capturing the final accumulation pattern without modeling transient motion.
+
 ### The Resonant Curves
 
 - The Resonance Curves window allows you to examine how the dominant modes respond in frequency space and the impact of damping.

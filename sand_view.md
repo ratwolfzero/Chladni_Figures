@@ -1,4 +1,4 @@
-# The Sand View (Experimental / Development Feature)
+# The Sand View
 
 ![Chladni](/images&Animation/Chladni_7.png)
 
