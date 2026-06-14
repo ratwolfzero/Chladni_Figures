@@ -402,12 +402,22 @@ class ChladniUI_PyQt(QMainWindow):
         slider_group = QGroupBox("Parameters")
         slider_layout = QGridLayout()
 
-        # Freq Slider (0.001 Hz precision)
+        # Freq Slider - High precision + smooth dragging
         self.lbl_freq = QLabel(f"Frequency: {Config.INIT_FREQ:.3f} Hz")
         self.slider_freq = QSlider(Qt.Orientation.Horizontal)
         self.slider_freq.setRange(int(Config.FREQ_RANGE[0] * 1000), 
                                  int(Config.FREQ_RANGE[1] * 1000))
         self.slider_freq.setValue(int(Config.INIT_FREQ * 1000))
+        
+        # Fine control settings
+        self.slider_freq.setSingleStep(1)      # 0.001 Hz
+        self.slider_freq.setPageStep(5)        # 0.005 Hz when clicking track
+        self.slider_freq.setTickInterval(10)   # visual ticks every 0.01 Hz
+        
+        # Make dragging much smoother and more precise
+        self.slider_freq.setTracking(True)     # update live while dragging
+        self.slider_freq.setMinimumWidth(400)  # wider slider = finer mouse control
+        
         self.slider_freq.valueChanged.connect(self.on_freq_slider_changed)
         
         slider_layout.addWidget(self.lbl_freq, 0, 0)
