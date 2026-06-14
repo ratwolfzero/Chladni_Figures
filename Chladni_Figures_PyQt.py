@@ -1,6 +1,7 @@
 
 
 import sys
+from typing import List, Callable, Tuple
 import numpy as np
 import matplotlib
 matplotlib.use('QtAgg')  # Switch to Qt backend
