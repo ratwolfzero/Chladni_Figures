@@ -284,7 +284,8 @@ class ResonanceCurveWindow_PyQt(QMainWindow):
                      bbox=dict(boxstyle='round', fc='white', alpha=0.8))
 
         modes_str = ', '.join(f"({m},{n})" for m, n in modes)
-        self.ax.set_title(f'Lorentzian Resonance Curves – {modes_str}')
+        self.ax.set_title(f'Lorentzian Resonance Curves – {modes_str}\n'
+                          '(Normalized Lorentzian; peak rescaled, width ∝ γ)')
         self.ax.set_xlabel('Driving Frequency (f)')
         self.ax.set_ylabel('Resonance Weight')
         self.ax.legend()
@@ -328,7 +329,7 @@ class ChladniUI_PyQt(QMainWindow):
         super().__init__()
         self.simulator = simulator
         self.setWindowTitle("Chladni Plate Simulator")
-        self.resize(1200, 800)
+        self.resize(1500, 800)
 
         # Single source of truth for view modes
         self._views = {
