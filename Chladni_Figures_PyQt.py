@@ -187,13 +187,21 @@ class ChladniSimulator:
         y = y_idx + np.random.normal(0, Config.SAND_NOISE_STD, len(y_idx))
         return x, y
 
-    def get_next_resonance_frequency(self, current_f: float) -> float:
-        freqs = [f for _, _, f in self._eigenfrequencies if f > current_f]
-        return min(freqs) if freqs else (self._eigenfrequencies[0][2] if self._eigenfrequencies else current_f)
-
     def get_previous_resonance_frequency(self, current_f: float) -> float:
-        freqs = [f for _, _, f in self._eigenfrequencies if f < current_f]
-        return max(freqs) if freqs else (self._eigenfrequencies[-1][2] if self._eigenfrequencies else current_f)
+        freqs = [f for _, _, f in self._eigenfrequencies 
+                 if f < current_f - Config.EPS_FREQ_COMPARE]
+        if freqs:
+            return max(freqs)
+        # Wrap around to highest
+        return self._eigenfrequencies[-1][2]
+
+    def get_next_resonance_frequency(self, current_f: float) -> float:
+        freqs = [f for _, _, f in self._eigenfrequencies 
+                 if f > current_f + Config.EPS_FREQ_COMPARE]
+        if freqs:
+            return min(freqs)
+        # Wrap around to lowest
+        return self._eigenfrequencies[0][2]
 
     def remove_frequency_listener(self, callback: Callable[[float], None]):
         if callback in self._freq_listeners:
