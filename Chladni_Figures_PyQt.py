@@ -205,11 +205,6 @@ class ChladniSimulator:
 
 
 
-
-# =============================================================================
-# PyQt6 Drop-In Replacements
-# =============================================================================
-
 class ResonanceCurveWindow_PyQt(QMainWindow):
     def __init__(self, simulator: ChladniSimulator, parent=None):
         super().__init__(parent)
@@ -399,11 +394,12 @@ class ChladniUI_PyQt(QMainWindow):
         slider_group = QGroupBox("Parameters")
         slider_layout = QGridLayout()
 
-        # Freq Slider (PyQt sliders use integers, so we scale by 100)
-        self.lbl_freq = QLabel(f"Frequency: {Config.INIT_FREQ:.2f} Hz")
+        # Freq Slider (0.001 Hz precision)
+        self.lbl_freq = QLabel(f"Frequency: {Config.INIT_FREQ:.3f} Hz")
         self.slider_freq = QSlider(Qt.Orientation.Horizontal)
-        self.slider_freq.setRange(int(Config.FREQ_RANGE[0] * 100), int(Config.FREQ_RANGE[1] * 100))
-        self.slider_freq.setValue(int(Config.INIT_FREQ * 100))
+        self.slider_freq.setRange(int(Config.FREQ_RANGE[0] * 1000), 
+                                 int(Config.FREQ_RANGE[1] * 1000))
+        self.slider_freq.setValue(int(Config.INIT_FREQ * 1000))
         self.slider_freq.valueChanged.connect(self.on_freq_slider_changed)
         
         slider_layout.addWidget(self.lbl_freq, 0, 0)
@@ -470,8 +466,8 @@ class ChladniUI_PyQt(QMainWindow):
         self.update_plot(self.simulator.current_frequency)
 
     def on_freq_slider_changed(self, val):
-        f = val / 100.0
-        self.lbl_freq.setText(f"Frequency: {f:.2f} Hz")
+        f = val / 1000.0
+        self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
         self.simulator.set_current_frequency(f)
         self.update_plot(f)
 
@@ -485,38 +481,33 @@ class ChladniUI_PyQt(QMainWindow):
         """Jump to previous resonance exactly."""
         current = self.simulator.current_frequency
         f_exact = self.simulator.get_previous_resonance_frequency(current)
-    
+        
         self.simulator.set_current_frequency(f_exact)
-    
-        slider_value = round(f_exact * 100)
-    
+        
+        slider_value = round(f_exact * 1000)
         self.slider_freq.blockSignals(True)
         self.slider_freq.setValue(slider_value)
         self.slider_freq.blockSignals(False)
-    
-        # Update label and plot
-        self.lbl_freq.setText(f"Frequency: {f_exact:.2f} Hz")
+        
+        self.lbl_freq.setText(f"Frequency: {f_exact:.3f} Hz")
         self.update_plot(f_exact)
-    
         self.slider_freq.repaint()
+
 
     def jump_next(self):
         """Jump to next resonance exactly."""
         current = self.simulator.current_frequency
         f_exact = self.simulator.get_next_resonance_frequency(current)
-    
+        
         self.simulator.set_current_frequency(f_exact)
-    
-        slider_value = round(f_exact * 100)
-    
+        
+        slider_value = round(f_exact * 1000)
         self.slider_freq.blockSignals(True)
         self.slider_freq.setValue(slider_value)
         self.slider_freq.blockSignals(False)
-    
-        # Update label and plot
-        self.lbl_freq.setText(f"Frequency: {f_exact:.2f} Hz")
+        
+        self.lbl_freq.setText(f"Frequency: {f_exact:.3f} Hz")
         self.update_plot(f_exact)
-    
         self.slider_freq.repaint()
 
     def start_scan(self):
@@ -530,17 +521,18 @@ class ChladniUI_PyQt(QMainWindow):
         self.btn_stop.setEnabled(False)
 
     def _scan_step(self):
+        """Auto scan with clean updates."""
         f = self.simulator.current_frequency + Config.SCAN_SPEED
         if f > Config.FREQ_RANGE[1]:
             f = Config.FREQ_RANGE[0]
-    
+        
         self.simulator.set_current_frequency(f)
-    
+        
         self.slider_freq.blockSignals(True)
-        self.slider_freq.setValue(round(f * 100))
+        self.slider_freq.setValue(round(f * 1000))
         self.slider_freq.blockSignals(False)
-    
-        self.lbl_freq.setText(f"Frequency: {f:.2f} Hz")
+        
+        self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
         self.update_plot(f)
         self.slider_freq.repaint()
 
