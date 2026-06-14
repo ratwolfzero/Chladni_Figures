@@ -482,14 +482,42 @@ class ChladniUI_PyQt(QMainWindow):
         self.update_plot(self.simulator.current_frequency)
 
     def jump_prev(self):
-        # Subtract 0.02 to reliably jump past the PyQt integer truncation
-        f = self.simulator.get_previous_resonance_frequency(self.simulator.current_frequency - 0.02)
-        self.slider_freq.setValue(int(f * 100))
+        """Jump to previous resonance exactly."""
+        current = self.simulator.current_frequency
+        f_exact = self.simulator.get_previous_resonance_frequency(current)
+    
+        self.simulator.set_current_frequency(f_exact)
+    
+        slider_value = round(f_exact * 100)
+    
+        self.slider_freq.blockSignals(True)
+        self.slider_freq.setValue(slider_value)
+        self.slider_freq.blockSignals(False)
+    
+        # Update label and plot
+        self.lbl_freq.setText(f"Frequency: {f_exact:.2f} Hz")
+        self.update_plot(f_exact)
+    
+        self.slider_freq.repaint()
 
     def jump_next(self):
-        # Add 0.02 to reliably jump past the PyQt integer truncation
-        f = self.simulator.get_next_resonance_frequency(self.simulator.current_frequency + 0.02)
-        self.slider_freq.setValue(int(f * 100))
+        """Jump to next resonance exactly."""
+        current = self.simulator.current_frequency
+        f_exact = self.simulator.get_next_resonance_frequency(current)
+    
+        self.simulator.set_current_frequency(f_exact)
+    
+        slider_value = round(f_exact * 100)
+    
+        self.slider_freq.blockSignals(True)
+        self.slider_freq.setValue(slider_value)
+        self.slider_freq.blockSignals(False)
+    
+        # Update label and plot
+        self.lbl_freq.setText(f"Frequency: {f_exact:.2f} Hz")
+        self.update_plot(f_exact)
+    
+        self.slider_freq.repaint()
 
     def start_scan(self):
         self.btn_scan.setEnabled(False)
@@ -505,7 +533,16 @@ class ChladniUI_PyQt(QMainWindow):
         f = self.simulator.current_frequency + Config.SCAN_SPEED
         if f > Config.FREQ_RANGE[1]:
             f = Config.FREQ_RANGE[0]
-        self.slider_freq.setValue(int(f * 100))
+    
+        self.simulator.set_current_frequency(f)
+    
+        self.slider_freq.blockSignals(True)
+        self.slider_freq.setValue(round(f * 100))
+        self.slider_freq.blockSignals(False)
+    
+        self.lbl_freq.setText(f"Frequency: {f:.2f} Hz")
+        self.update_plot(f)
+        self.slider_freq.repaint()
 
     def show_resonance_window(self):
         if self.resonance_window is None or not self.resonance_window.isVisible():
