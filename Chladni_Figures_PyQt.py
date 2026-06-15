@@ -15,11 +15,11 @@ from PyQt6.QtGui import QFont, QFontDatabase
 
 class Config:
     FREQ_RANGE = (1.0, 20.0)  # Range for driving frequency slider (Hz)
-    FREQ_STEP = 0.01  # Frequency slider step size
+    #FREQ_STEP = 0.01  # Frequency slider step size
     INIT_FREQ = 5.0  # Initial driving frequency (Hz)
     # =========================================================
     GAMMA_RANGE = (0.001, 0.05)  # Range for damping coefficient γ
-    GAMMA_STEP = 0.001  # Damping slider step size
+    #GAMMA_STEP = 0.001  # Damping slider step size
     INIT_GAMMA = 0.01  # Default damping value (γ)
     # =========================================================
     MAX_MODE = 15  # Maximum mode indices m,n to compute
