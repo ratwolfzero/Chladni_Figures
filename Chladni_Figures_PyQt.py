@@ -8,7 +8,8 @@ matplotlib.use('QtAgg')  # Switch to Qt backend
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
-                             QHBoxLayout, QSlider, QLabel, QPushButton, QGroupBox, QGridLayout)
+                             QHBoxLayout, QSlider, QLabel, QPushButton, QGroupBox, QGridLayout,
+                             QDoubleSpinBox)
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFontDatabase
 
@@ -425,11 +426,19 @@ class ChladniUI_PyQt(QMainWindow):
         self.slider_freq.setTracking(True)
         self.slider_freq.setMinimumWidth(400)
         self.slider_freq.setToolTip(f"Drive frequency in Hz (step {Config.FREQ_STEP:.3f})")
-        
         self.slider_freq.valueChanged.connect(self.on_freq_slider_changed)
-        
+
+        self.spin_freq = QDoubleSpinBox()
+        self.spin_freq.setRange(*Config.FREQ_RANGE)
+        self.spin_freq.setDecimals(3)
+        self.spin_freq.setSingleStep(Config.FREQ_STEP)
+        self.spin_freq.setValue(Config.INIT_FREQ)
+        self.spin_freq.setToolTip("Exact frequency input")
+        self.spin_freq.valueChanged.connect(self.on_freq_spinbox_changed)
+
         slider_layout.addWidget(self.lbl_freq, 0, 0)
         slider_layout.addWidget(self.slider_freq, 1, 0)
+        slider_layout.addWidget(self.spin_freq, 2, 0)
 
         self.gamma_scale = max(1, int(round(1.0 / Config.GAMMA_STEP)))
         self.lbl_gamma = QLabel(f"Damping (γ): {Config.INIT_GAMMA:.3f}")
@@ -443,8 +452,17 @@ class ChladniUI_PyQt(QMainWindow):
         self.slider_gamma.setToolTip(f"Damping coefficient gamma (step {Config.GAMMA_STEP:.3f})")
         self.slider_gamma.valueChanged.connect(self.on_gamma_slider_changed)
 
-        slider_layout.addWidget(self.lbl_gamma, 2, 0)
-        slider_layout.addWidget(self.slider_gamma, 3, 0)
+        self.spin_gamma = QDoubleSpinBox()
+        self.spin_gamma.setRange(*Config.GAMMA_RANGE)
+        self.spin_gamma.setDecimals(3)
+        self.spin_gamma.setSingleStep(Config.GAMMA_STEP)
+        self.spin_gamma.setValue(Config.INIT_GAMMA)
+        self.spin_gamma.setToolTip("Exact damping input")
+        self.spin_gamma.valueChanged.connect(self.on_gamma_spinbox_changed)
+
+        slider_layout.addWidget(self.lbl_gamma, 3, 0)
+        slider_layout.addWidget(self.slider_gamma, 4, 0)
+        slider_layout.addWidget(self.spin_gamma, 5, 0)
         slider_group.setLayout(slider_layout)
         layout.addWidget(slider_group)
 
@@ -478,6 +496,10 @@ class ChladniUI_PyQt(QMainWindow):
         btn_res_win.clicked.connect(self.show_resonance_window)
         layout.addWidget(btn_res_win)
 
+        self.btn_reset = QPushButton("Reset to Defaults")
+        self.btn_reset.clicked.connect(self.reset_to_defaults)
+        layout.addWidget(self.btn_reset)
+
         # Modes Text
         self.lbl_modes = QLabel("")
         
@@ -495,17 +517,58 @@ class ChladniUI_PyQt(QMainWindow):
         self.btn_toggle_view.setText(f"Toggle to {self._views[self._views[self.view_mode]['next_key']]['title']}")
         self.update_plot(self.simulator.current_frequency)
 
+    def _sync_frequency_controls(self, f: float):
+        f = float(np.clip(f, Config.FREQ_RANGE[0], Config.FREQ_RANGE[1]))
+        self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
+
+        self.slider_freq.blockSignals(True)
+        self.slider_freq.setValue(int(round(f * self.freq_scale)))
+        self.slider_freq.blockSignals(False)
+
+        self.spin_freq.blockSignals(True)
+        self.spin_freq.setValue(f)
+        self.spin_freq.blockSignals(False)
+
+    def _sync_gamma_controls(self, gamma: float):
+        gamma = float(np.clip(gamma, Config.GAMMA_RANGE[0], Config.GAMMA_RANGE[1]))
+        self.lbl_gamma.setText(f"Damping (γ): {gamma:.3f}")
+
+        self.slider_gamma.blockSignals(True)
+        self.slider_gamma.setValue(int(round(gamma * self.gamma_scale)))
+        self.slider_gamma.blockSignals(False)
+
+        self.spin_gamma.blockSignals(True)
+        self.spin_gamma.setValue(gamma)
+        self.spin_gamma.blockSignals(False)
+
     def on_freq_slider_changed(self, val):
         f = val / self.freq_scale
-        self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
+        self._sync_frequency_controls(f)
         self.simulator.set_current_frequency(f)
         self.update_plot(f)
 
+    def on_freq_spinbox_changed(self, value):
+        self._sync_frequency_controls(float(value))
+        self.simulator.set_current_frequency(float(value))
+        self.update_plot(float(value))
+
     def on_gamma_slider_changed(self, val):
         gamma = val / self.gamma_scale
-        self.lbl_gamma.setText(f"Damping (γ): {gamma:.3f}")
+        self._sync_gamma_controls(gamma)
         self.simulator.set_gamma(gamma)
         self.update_plot(self.simulator.current_frequency)
+
+    def on_gamma_spinbox_changed(self, value):
+        self._sync_gamma_controls(float(value))
+        self.simulator.set_gamma(float(value))
+        self.update_plot(self.simulator.current_frequency)
+
+    def reset_to_defaults(self):
+        self._sync_frequency_controls(Config.INIT_FREQ)
+        self._sync_gamma_controls(Config.INIT_GAMMA)
+        self.simulator.set_gamma(Config.INIT_GAMMA)
+        self.simulator.set_current_frequency(Config.INIT_FREQ)
+        self.update_plot(Config.INIT_FREQ)
 
     def jump_prev(self):
         """Jump to previous resonance exactly."""
