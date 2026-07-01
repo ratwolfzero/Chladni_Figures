@@ -10,16 +10,16 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QSlider, QLabel, QPushButton, QGroupBox, QGridLayout)
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QFont, QFontDatabase
+from PyQt6.QtGui import QFontDatabase
 
 
 class Config:
     FREQ_RANGE = (1.0, 20.0)  # Range for driving frequency slider (Hz)
-    #FREQ_STEP = 0.01  # Frequency slider step size
+    FREQ_STEP = 0.01  # Frequency slider step size
     INIT_FREQ = 5.0  # Initial driving frequency (Hz)
     # =========================================================
     GAMMA_RANGE = (0.001, 0.05)  # Range for damping coefficient γ
-    #GAMMA_STEP = 0.001  # Damping slider step size
+    GAMMA_STEP = 0.001  # Damping slider step size
     INIT_GAMMA = 0.01  # Default damping value (γ)
     # =========================================================
     MAX_MODE = 15  # Maximum mode indices m,n to compute
@@ -330,6 +330,7 @@ class ChladniUI_PyQt(QMainWindow):
         self.simulator = simulator
         self.setWindowTitle("Chladni Plate Simulator")
         self.resize(1500, 800)
+        self.setMinimumSize(1100, 700)
 
         # Single source of truth for view modes
         self._views = {
@@ -370,6 +371,12 @@ class ChladniUI_PyQt(QMainWindow):
         self.simulator.set_current_frequency(Config.INIT_FREQ)
         self.update_plot(Config.INIT_FREQ)
 
+    def closeEvent(self, event):
+        self.scan_timer.stop()
+        if self.resonance_window is not None:
+            self.resonance_window.close()
+        super().closeEvent(event)
+
     def _setup_matplotlib_artists(self):
         self.ax.set_facecolor('white')
         if Config.SHOW_AXES:
@@ -404,31 +411,36 @@ class ChladniUI_PyQt(QMainWindow):
         slider_layout = QGridLayout()
 
         # Freq Slider - High precision + smooth dragging
+        self.freq_scale = max(1, int(round(1.0 / Config.FREQ_STEP)))
         self.lbl_freq = QLabel(f"Frequency: {Config.INIT_FREQ:.3f} Hz")
         self.slider_freq = QSlider(Qt.Orientation.Horizontal)
-        self.slider_freq.setRange(int(Config.FREQ_RANGE[0] * 1000), 
-                                 int(Config.FREQ_RANGE[1] * 1000))
-        self.slider_freq.setValue(int(Config.INIT_FREQ * 1000))
-        
-        # Fine control settings
-        self.slider_freq.setSingleStep(1)      # 0.001 Hz
-        self.slider_freq.setPageStep(5)        # 0.005 Hz when clicking track
-        self.slider_freq.setTickInterval(10)   # visual ticks every 0.01 Hz
-        
-        # Make dragging much smoother and more precise
-        self.slider_freq.setTracking(True)     # update live while dragging
-        self.slider_freq.setMinimumWidth(400)  # wider slider = finer mouse control
+        self.slider_freq.setRange(int(Config.FREQ_RANGE[0] * self.freq_scale),
+                                  int(Config.FREQ_RANGE[1] * self.freq_scale))
+        self.slider_freq.setValue(int(Config.INIT_FREQ * self.freq_scale))
+
+        self.slider_freq.setSingleStep(max(1, int(round(Config.FREQ_STEP * self.freq_scale))))
+        self.slider_freq.setPageStep(max(1, int(round(5 * Config.FREQ_STEP * self.freq_scale))))
+        self.slider_freq.setTickInterval(max(1, int(round(10 * Config.FREQ_STEP * self.freq_scale))))
+
+        self.slider_freq.setTracking(True)
+        self.slider_freq.setMinimumWidth(400)
+        self.slider_freq.setToolTip(f"Drive frequency in Hz (step {Config.FREQ_STEP:.3f})")
         
         self.slider_freq.valueChanged.connect(self.on_freq_slider_changed)
         
         slider_layout.addWidget(self.lbl_freq, 0, 0)
         slider_layout.addWidget(self.slider_freq, 1, 0)
 
-        # Gamma Slider (Scale by 1000)
+        self.gamma_scale = max(1, int(round(1.0 / Config.GAMMA_STEP)))
         self.lbl_gamma = QLabel(f"Damping (γ): {Config.INIT_GAMMA:.3f}")
         self.slider_gamma = QSlider(Qt.Orientation.Horizontal)
-        self.slider_gamma.setRange(int(Config.GAMMA_RANGE[0] * 1000), int(Config.GAMMA_RANGE[1] * 1000))
-        self.slider_gamma.setValue(int(Config.INIT_GAMMA * 1000))
+        self.slider_gamma.setRange(int(Config.GAMMA_RANGE[0] * self.gamma_scale),
+                                   int(Config.GAMMA_RANGE[1] * self.gamma_scale))
+        self.slider_gamma.setValue(int(Config.INIT_GAMMA * self.gamma_scale))
+        self.slider_gamma.setSingleStep(max(1, int(round(Config.GAMMA_STEP * self.gamma_scale))))
+        self.slider_gamma.setPageStep(max(1, int(round(5 * Config.GAMMA_STEP * self.gamma_scale))))
+        self.slider_gamma.setTickInterval(max(1, int(round(10 * Config.GAMMA_STEP * self.gamma_scale))))
+        self.slider_gamma.setToolTip(f"Damping coefficient gamma (step {Config.GAMMA_STEP:.3f})")
         self.slider_gamma.valueChanged.connect(self.on_gamma_slider_changed)
 
         slider_layout.addWidget(self.lbl_gamma, 2, 0)
@@ -469,13 +481,12 @@ class ChladniUI_PyQt(QMainWindow):
         # Modes Text
         self.lbl_modes = QLabel("")
         
-        # --- THE BULLETPROOF FONT FIX ---
-        # Ask the system for its exact native monospace font (no searching required)
         font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
         self.lbl_modes.setFont(font)
-        # --------------------------------
         
         self.lbl_modes.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.lbl_modes.setWordWrap(True)
+        self.lbl_modes.setMinimumHeight(220)
         layout.addWidget(self.lbl_modes, stretch=1)
 
     # ---------------- UI Callbacks ----------------
@@ -485,13 +496,13 @@ class ChladniUI_PyQt(QMainWindow):
         self.update_plot(self.simulator.current_frequency)
 
     def on_freq_slider_changed(self, val):
-        f = val / 1000.0
+        f = val / self.freq_scale
         self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
         self.simulator.set_current_frequency(f)
         self.update_plot(f)
 
     def on_gamma_slider_changed(self, val):
-        gamma = val / 1000.0
+        gamma = val / self.gamma_scale
         self.lbl_gamma.setText(f"Damping (γ): {gamma:.3f}")
         self.simulator.set_gamma(gamma)
         self.update_plot(self.simulator.current_frequency)
@@ -503,7 +514,7 @@ class ChladniUI_PyQt(QMainWindow):
         
         self.simulator.set_current_frequency(f_exact)
         
-        slider_value = round(f_exact * 1000)
+        slider_value = round(f_exact * self.freq_scale)
         self.slider_freq.blockSignals(True)
         self.slider_freq.setValue(slider_value)
         self.slider_freq.blockSignals(False)
@@ -520,7 +531,7 @@ class ChladniUI_PyQt(QMainWindow):
         
         self.simulator.set_current_frequency(f_exact)
         
-        slider_value = round(f_exact * 1000)
+        slider_value = round(f_exact * self.freq_scale)
         self.slider_freq.blockSignals(True)
         self.slider_freq.setValue(slider_value)
         self.slider_freq.blockSignals(False)
@@ -548,7 +559,7 @@ class ChladniUI_PyQt(QMainWindow):
         self.simulator.set_current_frequency(f)
         
         self.slider_freq.blockSignals(True)
-        self.slider_freq.setValue(round(f * 1000))
+        self.slider_freq.setValue(round(f * self.freq_scale))
         self.slider_freq.blockSignals(False)
         
         self.lbl_freq.setText(f"Frequency: {f:.3f} Hz")
@@ -560,7 +571,10 @@ class ChladniUI_PyQt(QMainWindow):
             self.resonance_window = ResonanceCurveWindow_PyQt(self.simulator, self)
             self.resonance_window.show()
         else:
-            self.resonance_window.raise_()
+            try:
+                self.resonance_window.raise_()
+            except Exception:
+                pass
             self.resonance_window.activateWindow()
 
     # ---------------- Plot Updating ----------------
