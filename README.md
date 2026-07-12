@@ -290,7 +290,7 @@ Its role in the simulation is multi-faceted:
 | Control                  | Type   | Range / Options            | Default | Function                                                                                        |
 | :----------------------- | :----- | :------------------------- | :------ | :---------------------------------------------------------------------------------------------- |
 | **Frequency Slider**     | Slider | 1.0 – 20.0 Hz (step 0.001) | 5.0 Hz  | Adjusts the driving frequency to explore resonant modes.                                        |
-| **γ (Damping) Slider**   | Slider | 0.001 – 0.15 (step 0.001)  | 0.01    | Controls damping γ — lower γ gives sharper, symmetric modes; higher γ blends and broadens them. |
+| **γ (Damping) Slider**   | Slider | 0.001 – 0.95 (step 0.001)  | 0.01    | Controls damping γ — lower γ gives sharper, symmetric modes; higher γ blends and broadens them. |
 | **◀ Previous Resonance** | Button | —                          | —       | Jumps to the next lower eigenfrequency (resonance).                                             |
 | **▶ Next Resonance**     | Button | —                          | —       | Jumps to the next higher eigenfrequency (resonance).                                            |
 | **Auto Scan**            | Button | —                          | —       | Automatically sweeps the driving frequency across the range.                                    |
