@@ -1,5 +1,3 @@
-
-
 import sys
 from typing import List, Callable, Tuple
 import numpy as np
