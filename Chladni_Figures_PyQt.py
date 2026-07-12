@@ -2,6 +2,7 @@ import sys
 from typing import List, Callable, Tuple
 import numpy as np
 import matplotlib
+import matplotlib.cm as cm
 matplotlib.use('QtAgg')  # Switch to Qt backend
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
@@ -271,8 +272,6 @@ class ResonanceCurveWindow_PyQt(QMainWindow):
         f_max = min(Config.FREQ_RANGE[1], f_res + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
         
-        # --- THE FIX: Use standard colormaps instead of internal properties ---
-        import matplotlib.cm as cm
         colors = cm.Set1(np.linspace(0, 1, max(1, len(modes))))
         
         for (m, n), c in zip(modes, colors):
