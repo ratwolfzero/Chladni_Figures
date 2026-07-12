@@ -278,7 +278,6 @@ class ResonanceCurveWindow_PyQt(QMainWindow):
             f_mn = self.simulator.get_eigenfrequency(m, n)
             w = self.simulator.compute_lorentzian_weights(self.f_range, f_mn)
             self.ax.plot(self.f_range, w, '-', color=c, lw=2, label=f'Mode ({m},{n})')
-        # ---------------------------------------------------------------------
 
         self.ax.axvline(f_res, color='red', ls='--', alpha=0.7, label=f'Resonance: f={f_res:.2f}')
         max_w = 1.0 / (self.simulator.gamma ** 2)
