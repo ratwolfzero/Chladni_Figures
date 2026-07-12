@@ -212,6 +212,11 @@ class ChladniSimulator:
         if callback in self._gamma_listeners:
             self._gamma_listeners.remove(callback)
 
+    def clear_listeners(self):
+        """Remove all listeners. Safe to call on application shutdown."""
+        self._freq_listeners.clear()
+        self._gamma_listeners.clear()
+
 
 
 class ResonanceCurveWindow_PyQt(QMainWindow):
@@ -245,8 +250,11 @@ class ResonanceCurveWindow_PyQt(QMainWindow):
 
     def closeEvent(self, event):
         """Cleanup listeners when window closes."""
-        self.simulator.remove_frequency_listener(self._on_frequency_update)
-        self.simulator.remove_gamma_listener(self._on_gamma_update)
+        try:
+            self.simulator.remove_frequency_listener(self._on_frequency_update)
+            self.simulator.remove_gamma_listener(self._on_gamma_update)
+        except Exception:
+            pass  # Already removed or shutting down
         event.accept()
 
     def _needs_full_redraw(self) -> bool:
@@ -374,8 +382,17 @@ class ChladniUI_PyQt(QMainWindow):
 
     def closeEvent(self, event):
         self.scan_timer.stop()
+        
         if self.resonance_window is not None:
-            self.resonance_window.close()
+            try:
+                self.resonance_window.close()
+            except Exception:
+                pass
+            self.resonance_window = None
+        
+        # Final cleanup of all listeners
+        self.simulator.clear_listeners()
+        
         super().closeEvent(event)
 
     def _setup_matplotlib_artists(self):
