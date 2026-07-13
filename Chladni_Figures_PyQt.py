@@ -2,7 +2,6 @@ import sys
 from typing import List, Callable, Tuple
 import numpy as np
 import matplotlib
-import matplotlib.cm as cm
 matplotlib.use('QtAgg')  # Switch to Qt backend
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
@@ -15,7 +14,7 @@ from PyQt6.QtGui import QFontDatabase
 
 class Config:
     FREQ_RANGE = (1.0, 20.0)  # Range for driving frequency slider (Hz)
-    FREQ_STEP = 0.001  # Frequency slider step size
+    FREQ_STEP = 0.01  # Frequency slider step size
     INIT_FREQ = 5.0  # Initial driving frequency (Hz)
     # =========================================================
     GAMMA_RANGE = (0.001, 0.05)  # Range for damping coefficient γ
@@ -32,8 +31,12 @@ class Config:
     K = 1.0  # Frequency scaling factor for eigenmodes
     VISUAL_EXPONENT = 0.2  # Exponent for magnitude visualization (|Z|^exp)
     # =========================================================
-    SCAN_SPEED = 0.02  # Frequency step per frame during Auto Scan
+    # =========================================================
+    SCAN_SPEED = 0.02  # Initial frequency step per frame during Auto Scan
+    SCAN_SPEED_RANGE = (0.001, 0.1)  # Range for scan speed slider
+    SCAN_SPEED_STEP = 0.001  # Step size for scan speed slider
     SHOW_AXES = False  # Toggle for showing coordinate axes
+    # =========================================================
     # =========================================================
     RESONANCE_CURVE_RANGE = 1  # Frequency range around resonance (Hz)
     RESONANCE_CURVE_SAMPLES = 20000  # Number of sampling points per Lorentzian
@@ -272,12 +275,15 @@ class ResonanceCurveWindow_PyQt(QMainWindow):
         f_max = min(Config.FREQ_RANGE[1], f_res + Config.RESONANCE_CURVE_RANGE)
         self.f_range = np.linspace(f_min, f_max, Config.RESONANCE_CURVE_SAMPLES)
         
+        # --- THE FIX: Use standard colormaps instead of internal properties ---
+        import matplotlib.cm as cm
         colors = cm.Set1(np.linspace(0, 1, max(1, len(modes))))
         
         for (m, n), c in zip(modes, colors):
             f_mn = self.simulator.get_eigenfrequency(m, n)
             w = self.simulator.compute_lorentzian_weights(self.f_range, f_mn)
             self.ax.plot(self.f_range, w, '-', color=c, lw=2, label=f'Mode ({m},{n})')
+        # ---------------------------------------------------------------------
 
         self.ax.axvline(f_res, color='red', ls='--', alpha=0.7, label=f'Resonance: f={f_res:.2f}')
         max_w = 1.0 / (self.simulator.gamma ** 2)
@@ -493,14 +499,36 @@ class ChladniUI_PyQt(QMainWindow):
 
         # Scan Group
         scan_group = QGroupBox("Auto Scan")
-        scan_layout = QHBoxLayout()
+        scan_layout = QVBoxLayout()  # Changed to VBox to stack buttons and slider
+
+        # Buttons layout
+        btn_layout = QHBoxLayout()
         self.btn_scan = QPushButton("Start Scan")
         self.btn_stop = QPushButton("Stop Scan")
         self.btn_stop.setEnabled(False)
         self.btn_scan.clicked.connect(self.start_scan)
         self.btn_stop.clicked.connect(self.stop_scan)
-        scan_layout.addWidget(self.btn_scan)
-        scan_layout.addWidget(self.btn_stop)
+        btn_layout.addWidget(self.btn_scan)
+        btn_layout.addWidget(self.btn_stop)
+        scan_layout.addLayout(btn_layout)
+
+        # Scan Speed Slider layout
+        speed_layout = QHBoxLayout()
+        self.scan_speed = Config.SCAN_SPEED
+        self.lbl_speed = QLabel(f"Speed: {self.scan_speed:.3f}")
+        
+        self.speed_scale = max(1, int(round(1.0 / Config.SCAN_SPEED_STEP)))
+        self.slider_speed = QSlider(Qt.Orientation.Horizontal)
+        self.slider_speed.setRange(int(Config.SCAN_SPEED_RANGE[0] * self.speed_scale),
+                                   int(Config.SCAN_SPEED_RANGE[1] * self.speed_scale))
+        self.slider_speed.setValue(int(self.scan_speed * self.speed_scale))
+        self.slider_speed.setToolTip(f"Scan step size (step {Config.SCAN_SPEED_STEP:.3f})")
+        self.slider_speed.valueChanged.connect(self.on_speed_slider_changed)
+        
+        speed_layout.addWidget(self.lbl_speed)
+        speed_layout.addWidget(self.slider_speed)
+        scan_layout.addLayout(speed_layout)
+
         scan_group.setLayout(scan_layout)
         layout.addWidget(scan_group)
 
@@ -553,6 +581,14 @@ class ChladniUI_PyQt(QMainWindow):
         self.spin_gamma.blockSignals(True)
         self.spin_gamma.setValue(gamma)
         self.spin_gamma.blockSignals(False)
+        
+    def _sync_speed_controls(self, speed: float):
+        speed = float(np.clip(speed, Config.SCAN_SPEED_RANGE[0], Config.SCAN_SPEED_RANGE[1]))
+        self.lbl_speed.setText(f"Speed: {speed:.3f}")
+
+        self.slider_speed.blockSignals(True)
+        self.slider_speed.setValue(int(round(speed * self.speed_scale)))
+        self.slider_speed.blockSignals(False)     
 
     def on_freq_slider_changed(self, val):
         f = val / self.freq_scale
@@ -577,8 +613,15 @@ class ChladniUI_PyQt(QMainWindow):
         self.update_plot(self.simulator.current_frequency)
 
     def reset_to_defaults(self):
+        # Sync original controls
         self._sync_frequency_controls(Config.INIT_FREQ)
         self._sync_gamma_controls(Config.INIT_GAMMA)
+        
+        # Reset and sync the scan speed control
+        self.scan_speed = Config.SCAN_SPEED
+        self._sync_speed_controls(self.scan_speed)
+        
+        # Update simulator and plot
         self.simulator.set_gamma(Config.INIT_GAMMA)
         self.simulator.set_current_frequency(Config.INIT_FREQ)
         self.update_plot(Config.INIT_FREQ)
@@ -626,9 +669,15 @@ class ChladniUI_PyQt(QMainWindow):
         self.btn_scan.setEnabled(True)
         self.btn_stop.setEnabled(False)
 
+    def on_speed_slider_changed(self, val):
+        """Callback for the scan speed slider."""
+        self.scan_speed = val / self.speed_scale
+        self.lbl_speed.setText(f"Speed: {self.scan_speed:.3f}")
+
     def _scan_step(self):
         """Auto scan with clean updates."""
-        f = self.simulator.current_frequency + Config.SCAN_SPEED
+        # Use the dynamic scan_speed instead of Config.SCAN_SPEED
+        f = self.simulator.current_frequency + self.scan_speed
         if f > Config.FREQ_RANGE[1]:
             f = Config.FREQ_RANGE[0]
         
